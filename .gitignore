@@ -11,3 +11,7 @@ backend/.env
 # OS
 .DS_Store
 Thumbs.db
+
+.env
+frontend/.env
+backend/.env
