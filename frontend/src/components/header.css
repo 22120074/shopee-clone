@@ -11,7 +11,7 @@
 .navbar_input-wrapper {
     position: relative;
     border-radius: 3px;
-
+    margin-top: 16px;
 }
 
 .navbar_input-wrapper::after {

@@ -1,0 +1,27 @@
+/* Phần bọc xong quanh phần đăng ký */
+.auth_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    /* height: 430px; */
+    width: 400px;
+    border-radius: 3px;
+    padding: 32px;
+}
+
+/* form đăng ký  */
+.auth_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.line {
+    color: #DBDBDB;
+    border: 1px solid #DBDBDB;
+    flex: 1;
+}
