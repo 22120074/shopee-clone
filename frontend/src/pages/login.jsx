@@ -4,29 +4,71 @@ import PrimaryButton from '../components/Button';
 import { FcGoogle } from 'react-icons/fc'; // Icon Google đầy đủ màu
 import { FaFacebook } from 'react-icons/fa'; // Icon Facebook đầy đủ màu
 import { Link } from "react-router-dom";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
 
   const [formData, setFormData] = useState({
     phone: '',
     password: ''
   });
 
+  const [errors, setErrors] = useState({
+    phone: '',
+    password: '',
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
 
+    setErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Ngăn reload trang
+  const API_URL = process.env.REACT_APP_API_URL; // giờ sẽ là 'http://localhost:5000'
 
-    console.log('Dữ liệu submit:', formData);
-    // Gọi API, validate, hoặc xử lý logic ở đây
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setServerError('');
+    setSuccessMsg('');
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${API_URL}/auth/login`,
+        { phone: formData.phone, password: formData.password },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      setLoading(false);
+      setSuccessMsg(res.data.message);
+
+      // Nếu server trả token, bạn có thể lưu vào localStorage hoặc Context
+      localStorage.setItem('token', res.data.token);
+
+      console.log(res.data);
+
+      // Chuyển trang sau khi login thành công
+      navigate('/');
+    } catch (err) {
+      setLoading(false);
+      const msg = err.response?.data?.message || 'Lỗi kết nối. Vui lòng thử lại.';
+      // Nếu lỗi xác thực (401) thì hiển thị dưới form
+      setServerError(msg);
+    }
+
   };
 
   return (
@@ -44,16 +86,24 @@ function Login() {
           placeholder="Số điện thoại"
           className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
           required
-        />        
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Mật khẩu"
-          className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
-          required
-        />
+        />     
+
+        <div className='relative w-full'>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Mật khẩu"
+            className="border border-gray-300 px-4 py-2 mb-5 w-full rounded"
+            required
+          />
+          {serverError && (
+            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: 'calc(39px)', left: '0' }}>
+              Lỗi tài khoản hoặc mật khẩu
+            </p>
+        )}
+        </div>
 
         <PrimaryButton height='40px' width='340px' text="Đăng nhập" type='submit' />
         <span className='block text-left w-full'><Link to="/" className='text-xs' style={{ color: "#0055AA" }}>Quên mật khẩu</Link></span>

@@ -2,12 +2,25 @@ import './auth.css';
 import React, { useState } from 'react';
 import PrimaryButton from '../components/Button';
 import { FcGoogle } from 'react-icons/fc'; // Icon Google đầy đủ màu
-import { FaFacebook } from 'react-icons/fa'; // Icon Facebook đầy đủ màu
+import { FaFacebook } from 'react-icons/fa'; // Icon Facebook
 import { Link } from "react-router-dom";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   const [formData, setFormData] = useState({
+    phone: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const [errors, setErrors] = useState({
     phone: '',
     password: '',
     confirmPassword: ''
@@ -19,13 +32,81 @@ function Register() {
       ...prev,
       [name]: value
     }));
+
+    setErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Ngăn reload trang
+  const validateForm = () => {
+    const newErrors = {};
 
-    console.log('Dữ liệu submit:', formData);
-    // Gọi API, validate, hoặc xử lý logic ở đây
+    // Kiểm tra số điện thoại
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Vui lòng nhập số điện thoại';
+    } else if (!/^\d{9,11}$/.test(formData.phone)) {
+      newErrors.phone = 'Số điện thoại không hợp lệ';
+    }
+
+    // Kiểm tra mật khẩu
+    if (!formData.password) {
+      newErrors.password = 'Vui lòng nhập mật khẩu';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+    }
+
+    // Kiểm tra xác nhận mật khẩu
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Vui lòng xác nhận mật khẩu';
+    } else if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
+    }
+
+    setErrors(newErrors);
+
+    // Trả về true nếu không có lỗi
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const API_URL = process.env.REACT_APP_API_URL; // giờ sẽ là 'http://localhost:5000'
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setServerError('');
+    setSuccessMsg('');
+
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${API_URL}/auth/register`,
+        {
+          phone: formData.phone,
+          password: formData.password
+        },
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+
+      // 4. Xử lý kết quả thành công
+      setLoading(false);
+      setSuccessMsg(response.data.message || 'Đăng ký thành công!');
+      // 5. Chuyển hướng (ví dụ về trang Login sau 1.5s)
+      setTimeout(() => navigate('/login'), 1500);
+    } catch (err) {
+      setLoading(false);
+      // 6. Xử lý lỗi
+      if (err.response && err.response.data && err.response.data.message) {
+        setServerError(err.response.data.message);
+      } else {
+        setServerError('Lỗi kết nối. Vui lòng thử lại.');
+      }
+    }
   };
 
   return (
@@ -35,33 +116,49 @@ function Register() {
       </div>
 
       <form onSubmit={handleSubmit} className='auth_form' >
-        <input
-          type="text"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          placeholder="Số điện thoại"
-          className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
-          required
-        />        
+        <div className='relative w-full'>
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Số điện thoại"
+            className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
+            required
+          />
+          {errors.phone && (
+            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: 'calc(39px)', left: '0' }}>
+              {errors.phone}
+            </p>
+          )}
+        </div>
+
         <input
           type="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
           placeholder="Mật khẩu"
-          className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
+          className="border border-gray-300 px-4 py-2 mb-4 w-full rounded check_password"
           required
         />
-        <input
-          type="password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Nhập lại mật khẩu"
-          className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
-          required
-        />
+
+        <div className='relative w-full'>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Nhập lại mật khẩu"
+            className="border border-gray-300 px-4 py-2 mb-5 w-full rounded check_password"
+            required
+          />
+          {errors.confirmPassword && (
+            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: 'calc(39px)', left: '0' }}>
+              {errors.confirmPassword}
+            </p>
+          )}
+        </div>
         
         <PrimaryButton height='40px' width='340px' text="Đăng ký" type='submit' />
       </form>

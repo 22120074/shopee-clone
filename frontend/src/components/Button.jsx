@@ -18,7 +18,7 @@ function PrimaryButton({
             fontSize: "16px",
         }}
         className="flex items-center justify-center"
-    >
+        >
         {text}
     </button>
   );
