@@ -1,4 +1,4 @@
-const { User } = require('../models/User');
+const { User, DataUser } = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -26,10 +26,22 @@ exports.register = async (req, res, next) => {
       phone,
       password: hashedPassword
     });
-
     await newUser.save();
 
-    // 5. Trả về kết quả
+    // 5. Tạo luôn profile mặc định trong collection 'dataUser'
+    const newProfile = new DataUser({
+      userId:      newUser._id, // tham chiếu đến user vừa tạo
+      phone:       newUser.phone,
+      email:       '',          // để trống
+      name:        '',          // để trống
+      gender:      'other',     // theo default enum
+      dateOfBirth: null,        // để trống
+      avatarUrl:   ''           // để trống
+      // createdAt tự động theo schema
+    });
+    await newProfile.save();
+
+    // 6. Trả về kết quả
     return res.status(201).json({ message: 'Đăng ký thành công!' });
 
   } catch (error) {
@@ -74,11 +86,29 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.getMe = (req, res) => {
-  // req.user do middleware protect gán sẵn
-  res.json({ user: {
-      phone: req.user.phone,
-  } });
+exports.getMe = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    // console.log('Lấy thông tin người dùng:', userId);
+    // console.log('Payload từ middleware:', req.user);
+
+    // Tìm thông tin người dùng chi tiết từ collection dataUser dựa theo userId
+    const userData = await DataUser.findOne({ userId });
+
+    if (!userData) {
+      return res.status(404).json({ message: 'Không tìm thấy dữ liệu người dùng' });
+    }
+
+    // console.log(userData);
+
+    // Trả về toàn bộ dữ liệu trong document dataUser
+    res.json({ dataUser: userData });
+    
+  } catch (error) {
+    console.error('Lỗi khi lấy thông tin người dùng:', error);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
 };
 
 exports.logout = (req, res) => {

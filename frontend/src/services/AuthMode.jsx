@@ -4,29 +4,53 @@ import axios from 'axios';
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);      // null = chưa load hoặc chưa login
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);      // null = chưa load hoặc chưa login
+    const [loading, setLoading] = useState(true);
+
+    const fetchCurrentUser = async () => {
+        setLoading(true);
+        try {
+        const res = await axios.get(
+            `${process.env.REACT_APP_API_URL}/auth/me`, { withCredentials: true }
+        );
+            setUser(res.data.dataUser);
+        } catch (err) {
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        // Khi app mount, gọi API /me để check cookie và lấy user
-        axios.get(`${process.env.REACT_APP_API_URL}/auth/me`, { withCredentials: true })
-        .then(res => {
-            setUser(res.data.user);   //{ userId, phone, name, avatar, … }
-        })
-        .catch(() => {
-            setUser(null);
-        })
-        .finally(() => setLoading(false));
+        fetchCurrentUser();
     }, []);
 
-    const login = (userData) => {
-        setUser(userData);
+    const login = async (credentials) => {
+        setLoading(true);
+        try {
+            // gọi API login, server set cookie
+            await axios.post(
+                `${process.env.REACT_APP_API_URL}/auth/login`,
+                credentials,
+                { withCredentials: true }
+            );
+            // sau khi login thành công, gọi /me để lấy profile đầy đủ
+            await fetchCurrentUser();
+        } catch (err) {
+            // bạn có thể throw lỗi để component Login bắt
+            throw err;
+        }
     };
 
     const logout = () => {
+        try {
+            axios.post(`${process.env.REACT_APP_API_URL}/auth/logout`, {}, { withCredentials: true })
+            .finally(() => setUser(null));
+        } catch (err) {
+            // bạn có thể throw lỗi để component Login bắt
+            throw err;
+        }
         // xóa cookie ở server
-        axios.post(`${process.env.REACT_APP_API_URL}/auth/logout`, {}, { withCredentials: true })
-        .finally(() => setUser(null));
     };
 
     return (

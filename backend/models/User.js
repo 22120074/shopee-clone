@@ -16,6 +16,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+},{
+  collection: 'users'  // đặt tên collection rõ ràng
 });
 
 const dataUserSchema = new mongoose.Schema({
@@ -27,19 +29,17 @@ const dataUserSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    unique: true,
     trim: true
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
-    trim: true
+    trim: true,
+    default: ''
   },
   name: {
     type: String,
-    required: true,
-    trim: true
+    trim: true,
+    default: ''  
   },
   gender: {
     type: String,
@@ -47,7 +47,8 @@ const dataUserSchema = new mongoose.Schema({
     default: 'other'
   },
   dateOfBirth: {
-    type: Date
+    type: Date,
+    default: null
   },
   avatarUrl: {
     type: String,

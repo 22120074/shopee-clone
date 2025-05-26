@@ -1,37 +1,46 @@
 import './header.css';
 import React, { useContext } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext  } from '../services/AuthMode';
 
 function Header() {
     const { user, loading, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
 
+    const handleLogout = async () => {
+        try {
+            await logout();           // gọi hàm logout từ context
+            navigate('/');       // chuyển về trang /login sau khi đăng xuất
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
     return (
         <header className="Web-header flex flex-col" style={{ backgroundColor: "#FA5130", height: "120px", width: "100%" }}>
 
-            <div className="navbar flex items-center justify-between" style={{ height: "32px", width: "100%", maxWidth: "1200px", margin: "0 auto" }}>
+            <div className="navbar flex items-center justify-between" style={{ height: "32px", width: "100%", maxWidth: "1200px", margin: "0 auto", marginTop: '2px' }}>
                 <ul className="flex flex-row items-center">
                     <li className="text-sm text-white li_borderleft" style={{ padding: "0 9px 0 8px", position: "relative"  }}>Kênh Người bán</li>
                     <li className="text-sm text-white li_borderleft" style={{ padding: "0 9px 0 8px", position: "relative"  }}>Trờ thành Người bán Shoppe</li>
                     <li className="text-sm text-white li_borderleft" style={{ padding: "0 9px 0 8px", position: "relative"  }}>Tải ứng dụng</li>
                     <li className="text-sm text-white " style={{ padding: "0 9px 0 8px", position: "relative", marginRight: "50px" }}>
                         Kết nối
-                        <i class="fa-brands fa-facebook" style={{ position: "absolute", top: "calc(50% - 6px)", right: "-10px"}}></i>
-                        <i class="fa-brands fa-instagram" style={{ position: "absolute", top: "calc(50% - 6px)", right: "-30px" }}></i>                    
+                        <i className="fa-brands fa-facebook" style={{ position: "absolute", top: "calc(50% - 6px)", right: "-10px"}}></i>
+                        <i className="fa-brands fa-instagram" style={{ position: "absolute", top: "calc(50% - 6px)", right: "-30px" }}></i>                    
                     </li>
                 </ul>
                 <ul className="flex flex-row items-center">
                     <li className="text-sm text-white" style={{ position: "relative", margin: "0 6px" }}>
-                        <i class="fa-regular fa-bell" style={{ position: "absolute", top: "calc(50% - 5px)", left: "-18px"}}></i>
+                        <i className="fa-regular fa-bell" style={{ position: "absolute", top: "calc(50% - 5px)", left: "-18px"}}></i>
                         Thông Báo
                     </li>
                     <li className="text-sm text-white" style={{ position: "relative", margin: "0 18px" }}>
-                        <i class="fa-regular fa-question" style={{ position: "absolute", top: "calc(50% - 6px)", left: "-14px"}}></i>
+                        <i className="fa-regular fa-question" style={{ position: "absolute", top: "calc(50% - 6px)", left: "-14px"}}></i>
                         Hỗ Trợ
                     </li>
                     <li className="text-sm text-white" style={{ position: "relative", marginLeft: "16px"}}>
-                        <i class="fa-sharp fa-solid fa-globe" style={{ position: "absolute", top: "calc(50% - 6px)", left: "-20px"}}></i>
+                        <i className="fa-sharp fa-solid fa-globe" style={{ position: "absolute", top: "calc(50% - 6px)", left: "-20px"}}></i>
                         Tiếng Việt
                     </li>
                     <li className="text-sm text-white" style={{ margin: "0 8px 0 16px"}}>
@@ -47,8 +56,32 @@ function Header() {
                                 </>
                             ) : (
                                 <>
-                                    <li className="" style={{ padding: "0 9px 0 0", position: "relative"}}>
-                                        <Link to="/user">{user.phone || user.name}</Link>
+                                    <li className="user_wrapper" style={{ padding: "0 9px 0 0", position: "relative"}}>
+                                        <Link to="/user">
+                                            <div className='flex items-center ' style={{ alignItems: "center" }}>
+                                                <div className='' style={{ width: "32px", height: "32px", borderRadius: "50%", overflow: "hidden", marginRight: "8px" }}>
+                                                    <img src={user.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                                                </div>
+                                                <div className='user_name'> 
+                                                    {user._id || user.phone || user.name}
+                                                </div>
+                                            </div>
+                                        </Link>
+                                        <div className='user_dropdown w-auto min-w-max' style={{ position: "absolute" }}>
+                                            <ul className='flex flex-col text-black'>
+                                                <li className='user_dropdown-item hover:bg-gray-100 hover:text-[#00b9c7]'>
+                                                    <Link to="/" className='user_dropdown-item_link'>Tài khoản của tôi</Link>
+                                                </li>
+                                                <li className='user_dropdown-item hover:bg-gray-100 hover:text-[#00b9c7]'>
+                                                    <Link to="/" className='user_dropdown-item_link'>Đơn mua</Link>
+                                                </li>
+                                                <li className='user_dropdown-item hover:bg-gray-100 hover:text-[#00b9c7]'
+                                                    onClick={handleLogout}
+                                                    >
+                                                    <span  className='user_dropdown-item_link'>Đăng xuất</span>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
                                 </>
                             )}
@@ -68,7 +101,7 @@ function Header() {
                     <div className="navbar_input-wrapper flex items-center" style={{ width: "100%", height: "40px", backgroundColor: "white", padding: "0 0 0 10px" }}>
                         <input type="text" className='navbar_input text-sm' style={{width: "100%", height: "40px", flex: "1"}} placeholder='Shopee bao ship 0Đ - Đăng kí ngay!' />
                         <button className="navbar_input-search-icon">
-                            <i class="fa-solid fa-magnifying-glass text-white"></i>
+                            <i className="fa-solid fa-magnifying-glass text-white"></i>
                         </button>
                     </div>
                     <ul className='flex flex-row gap-3 justify-start max-w-full overflow-x-hidden whitespace-nowrap py-[8px] w-full'>
@@ -82,12 +115,13 @@ function Header() {
                     </ul>
                 </div>
                 <div className='navbar_cart'>
-                    <i class="fa-solid fa-cart-shopping text-white navbar_cart-icon"></i>
+                    <i className="fa-solid fa-cart-shopping text-white navbar_cart-icon"></i>
                 </div>
             </div>
 
         </header>
     );
+
 }
 
 export default Header;

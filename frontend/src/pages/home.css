@@ -1,0 +1,78 @@
+/* phần sự kiện, giảm giả ở home */
+.home_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F5F5F5;
+    height: 1200px;
+    width: 100%;
+}
+
+.home-events-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    background-color: white;
+}
+
+.home-events-banner_ads {
+    height: 240px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 32px;
+}
+
+/* Phần hiển thị các sự kiện giảm giá 1 */
+.home-events-banner_ads-content_1 {
+    width: 800px;
+    height: 240px;       
+    background-size: contain;
+    background-position: center;  
+    background-repeat: no-repeat; 
+    margin-right: 8px;
+    position: relative;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideFadeOut {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+.banner_ads-content-button {
+    position: absolute;
+    height: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(135, 135, 135, 0.5);
+    border: none;
+    border-radius: 2px;
+    color: white;
+    font-size: 20px;
+    padding: 0 0.5rem;
+    cursor: pointer;
+    display: none; /* ẩn nút bấm */
+    animation: slideFadeIn 0.5s ease-in-out;
+}
+.banner_ads-content-button.left  { left: 0; }
+.banner_ads-content-button.right { right: 0; }
+
+.home-events-banner_ads-content_1:hover .banner_ads-content-button {
+    display: block;
+}
