@@ -1,4 +1,3 @@
-/* phần sự kiện, giảm giả ở home */
 .home_wrapper {
   display: flex;
   flex-direction: column;
@@ -8,6 +7,7 @@
   width: 100%;
 }
 
+/* phần sự kiện, giảm giả ở home */
 .home-events-banner {
   display: flex;
   flex-direction: column;
@@ -15,6 +15,7 @@
   width: 100%;
   height: auto;
   background-color: white;
+  margin-bottom: 20px;
 }
 
 .home-events-banner_ads {
@@ -45,3 +46,64 @@
 
 }
 
+/* Phần hiển thị danh mục quảng cáo và voucher */
+.home-events-banner_list {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1200px;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.home-events-banner_list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  transition: transform 0.1s linear;
+}
+
+.home-events-banner_list-item:hover {
+  transform: translateY(-2px);
+}
+
+.home-events-banner_list-img {
+  height: 44px;
+  width: 44px;
+}
+
+.home-events-banner_list-text {
+  font-size: 14px;
+  color: black;
+  text-align: center;
+  margin: 8px 0;
+  font-weight: 400;
+  width: 85px;
+  word-wrap: normal;
+}
+
+/* Danh mục sản phẩm */
+.home-category {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  background-color: white;
+}
+
+.home-category-title {
+  display: flex;
+  align-items: center;       
+  justify-content: flex-start;
+  height: 64px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 400;
+  color: #757575;
+  margin-left: 32px;
+  text-transform: uppercase;
+}
