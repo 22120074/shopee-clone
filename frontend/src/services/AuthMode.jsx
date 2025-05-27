@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);      // null = chưa load hoặc chưa login
     const [loading, setLoading] = useState(true);
 
+    // Hàm này sẽ gọi API /auth/me để lấy thông tin người dùng hiện tại
     const fetchCurrentUser = async () => {
         setLoading(true);
         try {
@@ -21,6 +22,7 @@ export function AuthProvider({ children }) {
         }
     };
 
+    // Gọi hàm này khi component AuthProvider được mount
     useEffect(() => {
         fetchCurrentUser();
     }, []);

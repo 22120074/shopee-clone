@@ -13,6 +13,7 @@ function AuthLayout() {
 
     return (
         <div>
+            {/* Phần Header ở Layout đăng nhập/Đăng ký */}
             <div className="flex items-center justify-between" style={{ height: "85px", width: "100%", maxWidth: "1200px", margin: "0 auto", padding: "0 20px"}}>
                 <div className='flex items-center'>
                     <Link to="/" className="flex items-center" style={{ textDecoration: "none", color: "#FA5130", height: "100%", fontSize: "24px", fontWeight: "400" }}>
@@ -25,6 +26,7 @@ function AuthLayout() {
                     <Link to="/">Bạn cần giúp đỡ?</Link>
                 </div>
             </div>
+            {/* Phần chứa nội dung đăng nhập/Đăng ký */}
             <div style={{ height: "600px", width: "100%", backgroundColor: 'rgb(238, 77, 45)', }}>
                 <div style={{
                         backgroundImage: 'url("https://down-vn.img.susercontent.com/file/sg-11134004-7rcdu-m6hs9t6ff10y6b")',
@@ -41,6 +43,7 @@ function AuthLayout() {
                     </div>
                 </div>
             </div>
+            {/* Phần Footer ở Layout đăng nhập/Đăng ký */}
             <div>
 
             </div>

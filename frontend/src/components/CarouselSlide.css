@@ -1,0 +1,68 @@
+.home-events-banner_ads-content_1 {
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto 0;
+  border-radius: 3px;
+}
+
+.slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.slider-slide {
+  flex: 0 0 calc(100% / var(--n)); /* var(--n) = số ảnh */
+  /* Nếu bạn không dùng CSS biến, có thể flex: 0 0 100%; track width = length*100% sẽ đảm bảo mỗi slide đúng 1 khung */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Phần nut điều hướng của slider */
+.banner_ads-content-button {
+  position: absolute;
+  height: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(135, 135, 135, 0.5);
+  border: none;
+  border-radius: 2px;
+  color: white;
+  font-size: 20px;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  display: none;
+  animation: slideFadeIn 0.5s ease-in-out;
+}
+.banner_ads-content-button.left  { left: 0; }
+.banner_ads-content-button.right { right: 0; }
+
+.home-events-banner_ads-content_1:hover .banner_ads-content-button {
+  display: block;
+}
+
+/* Phần hiển thị index của slider */
+.slider_dot_wrapper {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.slider_dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}

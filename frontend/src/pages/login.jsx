@@ -27,6 +27,7 @@ function Login() {
     password: '',
   });
 
+  // Hàm xử lý post của form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -80,11 +81,13 @@ function Login() {
 
   return (
     <div className='auth_container'>
+      {/* Phần tiêu đề */}
       <div className='self-start mb-4' style={{ fontSize: "20px"}}>
         Đăng nhập
       </div>
-
+      {/* Phần form */}
       <form onSubmit={handleSubmit} className='auth_form' >
+        {/* Input số điện thoại */}
         <input
           type="text"
           name="phone"
@@ -94,7 +97,7 @@ function Login() {
           className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
           required
         />     
-
+        {/* Input mật khẩu */}
         <div className='relative w-full'>
           <input
             type="password"
@@ -105,43 +108,41 @@ function Login() {
             className="border border-gray-300 px-4 py-2 mb-5 w-full rounded"
             required
           />
+          {/* Hiển thị lỗi nếu có */}
           {serverError && (
             <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: 'calc(39px)', left: '0' }}>
               Lỗi tài khoản hoặc mật khẩu
             </p>
-        )}
+          )}
         </div>
 
         <PrimaryButton height='40px' width='340px' text="Đăng nhập" type='submit' />
         <span className='block text-left w-full'><Link to="/" className='text-xs' style={{ color: "#0055AA" }}>Quên mật khẩu</Link></span>
       </form>
-
+      {/* Phần đường kẻ ngăn cách */}
       <div className='flex items-center justify-center w-full' style={{ margin: '32px 0'}}>
         <div className='line'></div>
         <div style={{ font: '12px', color: '#DBDBDB', padding: '0 16px'}}>Hoặc</div>
         <div className='line'></div>
       </div>
-
+      {/* Phần đăng nhập bằng tài khoản khác */}
       <div className='flex items-center justify-between w-full' style={{ gap: '16px'}}>
         <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center" 
             style={{ backgroundColor: 'white', color: 'black', height: '40px'}}
-          >
+        >
           <FaFacebook className="w-5 h-5 mr-2" style={{ color: '#1877F2' }} />
           <span>Facebook</span>
         </button>
-
-        <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center"
-          >
+        <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center">
           <FcGoogle className="w-5 h-5 mr-2" />
           <span>Google</span>
         </button>
       </div>
-
+      {/* Phần chưa có tài khoản */}
       <div className='text-sm text-[#BDBDBD]' style={{ marginTop: '16px'}}>
         Bạn mới biết đến Shopee?
         <Link to="/register" className="text-[#FA5130] font-semibold"> Đăng ký</Link>
       </div>
-
     </div>
   );
 }

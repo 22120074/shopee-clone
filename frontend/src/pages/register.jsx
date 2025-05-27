@@ -39,6 +39,7 @@ function Register() {
     }));
   };
 
+  // Hàm kiểm tra tính hợp lệ của form
   const validateForm = () => {
     const newErrors = {};
 
@@ -71,6 +72,7 @@ function Register() {
 
   const API_URL = process.env.REACT_APP_API_URL; // giờ sẽ là 'http://localhost:5000'
 
+  // Hàm xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -111,10 +113,11 @@ function Register() {
 
   return (
     <div className='auth_container'>
+      {/* Phần tiêu đề */}
       <div className='self-start mb-4' style={{ fontSize: "20px"}}>
         Đăng ký
       </div>
-
+      {/* Phần form đăng ký */}
       <form onSubmit={handleSubmit} className='auth_form' >
         <div className='relative w-full'>
           <input
@@ -126,13 +129,14 @@ function Register() {
             className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
             required
           />
+          {/* Thông báo lỗi nếu có */}
           {errors.phone && (
             <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: 'calc(39px)', left: '0' }}>
               {errors.phone}
             </p>
           )}
         </div>
-
+        {/* Phần nhập mật khẩu */}
         <input
           type="password"
           name="password"
@@ -142,7 +146,7 @@ function Register() {
           className="border border-gray-300 px-4 py-2 mb-4 w-full rounded check_password"
           required
         />
-
+        {/* Phần nhập lại mật khẩu */}
         <div className='relative w-full'>
           <input
             type="password"
@@ -153,6 +157,7 @@ function Register() {
             className="border border-gray-300 px-4 py-2 mb-5 w-full rounded check_password"
             required
           />
+          {/* Thông báo lỗi nếu có */}
           {errors.confirmPassword && (
             <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: 'calc(39px)', left: '0' }}>
               {errors.confirmPassword}
@@ -162,13 +167,13 @@ function Register() {
         
         <PrimaryButton height='40px' width='340px' text="Đăng ký" type='submit' />
       </form>
-
+      {/* Phần đường kẻ */}
       <div className='flex items-center justify-center w-full' style={{ margin: '32px 0'}}>
         <div className='line'></div>
         <div style={{ font: '12px', color: '#DBDBDB', padding: '0 16px'}}>Hoặc</div>
         <div className='line'></div>
       </div>
-
+      {/* Phần đăng ký bằng tài khoản khác */}
       <div className='flex items-center justify-between w-full' style={{ gap: '16px'}}>
         <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center" 
             style={{ backgroundColor: 'white', color: 'black', height: '40px'}}
@@ -183,7 +188,7 @@ function Register() {
           <span>Google</span>
         </button>
       </div>
-
+      {/* Nếu đã có tài khoản */}
       <div className='text-sm text-[#BDBDBD]' style={{ marginTop: '16px'}}>
         Bạn đã có tài khoản?
         <Link to="/login" className="text-[#FA5130] font-semibold"> Đăng nhập</Link>
