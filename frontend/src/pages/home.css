@@ -1,29 +1,13 @@
 .home_wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #F5F5F5;
   height: 1200px;
-  width: 100%;
 }
 
 /* phần sự kiện, giảm giả ở home */
 .home-events-banner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: auto;
-  background-color: white;
   margin-bottom: 20px;
 }
 
 .home-events-banner_ads {
-  display: flex;
-  height: 240px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   margin-top: 32px;
   gap: 8px;
 }
@@ -31,79 +15,63 @@
 /* Phần hiển thị các sự kiện giảm giá 2 */
 .home-events-banner_ads-wrapper_2 {
   flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
   gap: 8px;
-
-}
-.home-events-banner_ads-content_2 {
-  width: 100%;
-  height: 116px;       
-  background-size: cover;
-  background-position: left center;
-  background-repeat: no-repeat; 
-  border-radius: 3px;
-
 }
 
 /* Phần hiển thị danh mục quảng cáo và voucher */
 .home-events-banner_list {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 1200px;
   gap: 16px;
   margin-top: 24px;
 }
 
-.home-events-banner_list-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  transition: transform 0.1s linear;
-}
-
-.home-events-banner_list-item:hover {
-  transform: translateY(-2px);
-}
-
-.home-events-banner_list-img {
-  height: 44px;
-  width: 44px;
-}
-
 .home-events-banner_list-text {
-  font-size: 14px;
-  color: black;
-  text-align: center;
   margin: 8px 0;
   font-weight: 400;
-  width: 85px;
   word-wrap: normal;
 }
 
 /* Danh mục sản phẩm */
 .home-category {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 1200px;
-  background-color: white;
+  margin-bottom: 20px;
+}
+.home-category-title {
+  font-weight: 400;
+  margin-left: 32px;
+}
+/* Phần List */
+.home-category_list-item {
+  overflow-x: unset;
+  padding-top: 10px;
 }
 
-.home-category-title {
-  display: flex;
-  align-items: center;       
-  justify-content: flex-start;
-  height: 64px;
-  width: 100%;
-  font-size: 16px;
+.home-category_list-item > h3 {
   font-weight: 400;
-  color: #757575;
-  margin-left: 32px;
-  text-transform: uppercase;
+  padding: 0 6px;
+}
+
+/* Phần Button trong Slide */
+.round_button {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  font-size: 10px;
+  border-radius: 50%;
+  top: 50%;
+  background: white;
+  border: none;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  color: black;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  transition: all 0.1s cubic-bezier(0.5, 0, 0.2, 1);
+}
+
+/* 64px là chiều cao của title */
+.round_button.left { left: 0; transform: translateX(-50%) translateY(calc(-50% + 64px * 0.5)); }
+.round_button.right { right: 0; transform: translateX(50%) translateY(calc(-50% + 64px * 0.5)); }
+
+.home-category:hover .round_button.cate_button {
+  font-size: 20px;
+  height: 50px;
+  width: 50px;
 }

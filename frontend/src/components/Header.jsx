@@ -17,7 +17,7 @@ function Header() {
     };
 
     return (
-        <header className="Web-header flex flex-col" style={{ backgroundColor: "#FA5130", height: "120px", width: "100%" }}>
+        <header className="Web-header sticky top-0 z-10 flex flex-col" style={{ backgroundColor: "#FA5130", height: "120px", width: "100%" }}>
             {/* Phần 1 của Navbar */}
             <div className="navbar flex items-center justify-between" style={{ height: "32px", width: "100%", maxWidth: "1200px", margin: "0 auto", marginTop: '2px' }}>
                 {/* Hỗ trợ của web */}
