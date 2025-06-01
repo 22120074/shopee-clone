@@ -8,13 +8,8 @@ import Home from "../pages/home";
 import Login from "../pages/login";
 import Register from "../pages/register";
 
-export const appRoutes = (
+export const authRoutes = (
   <>
-    {/* Main layout */}
-    <Route element={<MainLayout />}>
-      <Route path="/" element={<Home />} />
-    </Route>
-
     {/* Auth layout */}
     <Route element={<AuthLayout />}>
       <Route path="/login" element={<Login />} />

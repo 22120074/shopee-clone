@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes } from 'react-router-dom';
-import { appRoutes } from './routes/authRoute';
+import { authRoutes } from './routes/authRoute';
+import { mainRoutes } from './routes/mainRoute';
 
 const App = () => (
   <Router>
     <Routes>
-      {appRoutes}
+      {authRoutes}
+      {mainRoutes}
     </Routes>
   </Router>
 );

@@ -32,7 +32,7 @@
 
 /* Danh mục sản phẩm */
 .home-category {
-  margin-bottom: 20px;
+  margin-bottom: 32px;
 }
 .home-category-title {
   font-weight: 400;
@@ -42,6 +42,11 @@
 .home-category_list-item {
   overflow-x: unset;
   padding-top: 10px;
+}
+
+.home-category_list-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: #dddddd;
 }
 
 .home-category_list-item > h3 {

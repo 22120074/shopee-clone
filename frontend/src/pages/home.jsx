@@ -2,6 +2,7 @@ import './home.css';
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import CarouselSlider from '../components/CarouselSlide';
+import TrendingProducts from './TrendingProducts';
 
 function Home() {
 
@@ -63,7 +64,9 @@ function Home() {
         {/* Phần hiển thị danh sách ảnh quảng cáo */}
         <div className='home-events-banner_ads flex h-[240px] mx-auto w-full max-w-[1200px]'>
           {/* Hiển thị ảnh quảng cáo 1 dạng Slide*/}
-          <CarouselSlider images={images} width={800} height={240} />
+          <div className='w-[800px] h-[240px] rounded-[3px] overflow-hidden'>
+            <CarouselSlider images={images} width={800} height={240} />
+          </div>
           {/* Hiển thị ảnh quảng cáo 2 và 3 */}
           <div className='home-events-banner_ads-wrapper_2 flex flex-col'>
             <div
@@ -142,12 +145,14 @@ function Home() {
             }}
           >
             {categories.map((cat, index) => (
-              <li key={index} className="home-category_list-item flex flex-col items-center border border-[#F2F2F2] w-[120px] h-[150px]">
-                <div
-                  className="w-[84px] h-[84px] bg-cover bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url(${cat.image})` }}
-                ></div>
-                <h3 className='text-[14px] text-black text-center'>{cat.name}</h3>
+              <li key={index} className="w-[120px] h-[150px]">
+                <Link to={`/category/${cat.name}`} className="home-category_list-item w-full h-full flex flex-col items-center border border-[#F2F2F2]">
+                  <div
+                    className="w-[84px] h-[84px] bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url(${cat.image})` }}
+                  ></div>
+                  <h3 className='text-[14px] text-black text-center'>{cat.name}</h3>
+                </Link>
               </li>
             ))}
           </ul>
@@ -164,6 +169,7 @@ function Home() {
           </button>
         }
       </div>
+      <TrendingProducts />
     </div>
   );
 }
