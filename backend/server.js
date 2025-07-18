@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const dbPostgre = require('./models/PostgreSql/index');
 
 // const errorHandler = require('./middleware/errorHandler');
 
@@ -34,6 +35,9 @@ app.get('/', (req, res) => {
 const authRoute = require('./routes/authRoute');
 app.use('/auth', authRoute);
 
+const productRoute = require('./routes/productRoute');
+app.use('/product', productRoute);
+
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -43,3 +47,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   })
   .catch(err => console.log(err)
 );
+
+dbPostgre.sequelize.sync({ force: false }).then(() => {
+  console.log('✅ Database synced');
+}).catch(err => console.error('Sync failed:', err));

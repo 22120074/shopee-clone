@@ -4,8 +4,8 @@ import PrimaryButton from '../components/Button';
 import { FcGoogle } from 'react-icons/fc'; // Icon Google đầy đủ màu
 import { FaFacebook } from 'react-icons/fa'; // Icon Facebook
 import { Link } from "react-router-dom";
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { register } from '../services/user.service'; // Import hàm đăng ký từ service
 
 function Register() {
   const navigate = useNavigate();
@@ -70,8 +70,6 @@ function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const API_URL = process.env.REACT_APP_API_URL; // giờ sẽ là 'http://localhost:5000'
-
   // Hàm xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,16 +82,10 @@ function Register() {
     }
     try {
       setLoading(true);
-      const response = await axios.post(
-        `${API_URL}/auth/register`,
-        {
-          phone: formData.phone,
-          password: formData.password
-        },
-        {
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
+      const response = await register({
+        phone: formData.phone,
+        password: formData.password
+      });
 
       // 4. Xử lý kết quả thành công
       setLoading(false);

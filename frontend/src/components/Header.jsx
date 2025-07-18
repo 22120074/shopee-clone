@@ -1,15 +1,15 @@
 import './header.css';
 import React, { useContext } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext  } from '../services/AuthMode';
+import { AuthContext  } from '../contexts/AuthMode';
 
 function Header() {
-    const { user, loading, logout } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
-            await logout();           // gọi hàm logout từ context
+            await logout();      // gọi hàm logout từ context
             navigate('/');       // chuyển về trang /login sau khi đăng xuất
         } catch (error) {
             console.error('Logout failed:', error);
@@ -17,7 +17,7 @@ function Header() {
     };
 
     return (
-        <header className="Web-header sticky top-0 z-10 flex flex-col" style={{ backgroundColor: "#FA5130", height: "120px", width: "100%" }}>
+        <header className="Web-header sticky top-0 z-[100] flex flex-col relaticve" style={{ backgroundColor: "#FA5130", height: "120px", width: "100%" }}>
             {/* Phần 1 của Navbar */}
             <div className="navbar flex items-center justify-between" style={{ height: "32px", width: "100%", maxWidth: "1200px", margin: "0 auto", marginTop: '2px' }}>
                 {/* Hỗ trợ của web */}

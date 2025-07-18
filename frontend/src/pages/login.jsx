@@ -4,16 +4,14 @@ import PrimaryButton from '../components/Button';
 import { FcGoogle } from 'react-icons/fc'; // Icon Google đầy đủ màu
 import { FaFacebook } from 'react-icons/fa'; // Icon Facebook đầy đủ màu
 import { Link } from "react-router-dom";
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../services/AuthMode';
+import { AuthContext } from '../contexts/AuthMode';
 
 function Login() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
   const { login } = useContext(AuthContext);
 
 
@@ -47,21 +45,14 @@ function Login() {
     e.preventDefault();
 
     setServerError('');
-    setSuccessMsg('');
 
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${API_URL}/auth/login`,
-        { phone: formData.phone, password: formData.password },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
 
       await login({ phone: formData.phone, password: formData.password });
 
       setLoading(false);
-      setSuccessMsg(res.data.message);
-
+      
       // // Nếu server trả token, bạn có thể lưu vào localStorage hoặc Context
       // localStorage.setItem('token', res.data.token);
       // Đã có cockie nên không cần lưu token nữa

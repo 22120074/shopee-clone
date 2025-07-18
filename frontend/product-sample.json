@@ -1,0 +1,455 @@
+[
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+
+      "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+      "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  },
+  {
+    "name": "Dép Đúc Quai Ngang Siêu Nhẹ, Êm Chân, Họa Tiết Gấu",
+    "images": ["https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxr9p583@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lxe9gxyxpuxn55@resize_w900_nl.webp",
+    "https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-ma02s5ieiru694@resize_w900_nl.webp"
+],
+    "favorite": true,
+    "likes": 292,
+    "rating": 0,
+    "ratingCount": 0,
+    "sold": 14200,
+    "discount": 0,
+    "attributes": {
+      "name": "Màu Sắc",
+      "values": [
+        { "valueName": "Gấu Đen", "image": "", "price": 35000 },
+        { "valueName": "Gấu Trắng", "image": "", "price": 36000 },
+        { "valueName": "Gấu Xanh", "image": "", "price": 36000 }
+      ]
+    },
+    "sizes": [35, 36, 37, 38, 39, 40],
+    "fromStore": "july_store.hn",
+    "details": {
+      "stock": 17898,
+      "material": "Cao su cao cấp",
+      "origin": "Việt Nam",
+      "shippedFrom": "Hà Nội"
+    },
+    "description": "Đây là test product"
+  }
+
+
+]
