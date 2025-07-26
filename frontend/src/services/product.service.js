@@ -8,3 +8,12 @@ export const getAllProducts = () => {
         }
     );
 };
+
+export const getOneProduct = (productID) => {
+  return axios.get(
+        `${process.env.REACT_APP_API_URL}/product/getDataProduct?productID=${productID}`,
+        {
+        headers: { 'Content-Type': 'application/json' }
+        }
+    );
+};

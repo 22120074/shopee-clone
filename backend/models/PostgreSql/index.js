@@ -1,6 +1,10 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('postgres://postgres:123456789@localhost:5432/Shoppe_Database');
+const sequelize = new Sequelize('postgres://postgres:123456789@localhost:5432/Shoppe_Database', 
+    {
+        logging: false,
+    }
+);
 
 const dbPostgre = {};
 dbPostgre.Sequelize = Sequelize;

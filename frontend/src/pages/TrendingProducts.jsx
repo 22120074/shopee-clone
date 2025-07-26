@@ -11,9 +11,8 @@ function TrendingProducts() {
     const fetchProducts = useCallback(async () => {
       try {
         const response = await getAllProducts();
-        console.log('Đã lấy sản phẩm:', response.data);
+        // console.log('Đã lấy sản phẩm:', response.data);
         setProducts(response.data);
-        // console.log('Sản phẩm:', response.data);
       } catch (error) {
         console.error('Lỗi khi fetch sản phẩm:', error);
       }
