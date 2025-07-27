@@ -6,26 +6,44 @@ const sequelize = new Sequelize('postgres://postgres:123456789@localhost:5432/Sh
     }
 );
 
-const dbPostgre = {};
-dbPostgre.Sequelize = Sequelize;
-dbPostgre.sequelize = sequelize;
+const db = {};
 
-dbPostgre.Product = require('./product.model')(sequelize);
-dbPostgre.Attribute = require('./attribute.model')(sequelize);
-dbPostgre.Detail = require('./detail.model')(sequelize);
-dbPostgre.Rating = require('./rating.model')(sequelize);
-dbPostgre.Size = require('./size.model')(sequelize);
-dbPostgre.ImageProduct = require('./image_product.model')(sequelize);
-dbPostgre.Sold = require('./sold.model')(sequelize);
-dbPostgre.Like = require('./like.model')(sequelize);
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
 
-// Quan hệ
-dbPostgre.Product.hasMany(dbPostgre.ImageProduct, { foreignKey: 'productId' });
-dbPostgre.Product.hasMany(dbPostgre.Size, { foreignKey: 'productId' });
-dbPostgre.Product.hasMany(dbPostgre.Rating, { foreignKey: 'productId' });
-dbPostgre.Product.hasOne(dbPostgre.Detail, { foreignKey: 'productId' });
-dbPostgre.Product.hasMany(dbPostgre.Attribute, { foreignKey: 'productId' });
-dbPostgre.Product.hasMany(dbPostgre.Sold, { foreignKey: 'productId' });
-dbPostgre.Product.hasMany(dbPostgre.Like, { foreignKey: 'productId' });
+// Import models
+db.Product = require('./product.model')(sequelize);
+db.Attribute = require('./attribute.model')(sequelize);
+db.ImageProduct = require('./image_product.model')(sequelize);
+db.Like = require('./like.model')(sequelize);
+db.Rating = require('./rating.model')(sequelize);
+db.Detail = require('./detail.model')(sequelize);
+db.Stock = require('./stock.model')(sequelize);
+db.Sold = require('./sold.model')(sequelize);
 
-module.exports = dbPostgre;
+// Associations
+db.Product.hasMany(db.Attribute, { foreignKey: 'productId' });
+db.Attribute.belongsTo(db.Product, { foreignKey: 'productId' });
+
+db.Product.hasMany(db.ImageProduct, { foreignKey: 'productId' });
+db.ImageProduct.belongsTo(db.Product, { foreignKey: 'productId' });
+
+db.Product.hasMany(db.Like, { foreignKey: 'productId' });
+db.Like.belongsTo(db.Product, { foreignKey: 'productId' });
+
+db.Product.hasMany(db.Rating, { foreignKey: 'productId' });
+db.Rating.belongsTo(db.Product, { foreignKey: 'productId' });
+
+db.Product.hasOne(db.Detail, { foreignKey: 'productId' });
+db.Detail.belongsTo(db.Product, { foreignKey: 'productId' });
+
+db.Product.hasMany(db.Stock, { foreignKey: 'productId' });
+db.Stock.belongsTo(db.Product, { foreignKey: 'productId' });
+
+db.Attribute.hasMany(db.Stock, { foreignKey: 'attributeID' });
+db.Stock.belongsTo(db.Attribute, { foreignKey: 'attributeID' });
+
+db.Product.hasMany(db.Sold, { foreignKey: 'productId' });
+db.Sold.belongsTo(db.Product, { foreignKey: 'productId' });
+
+module.exports = db;

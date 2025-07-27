@@ -13,7 +13,6 @@ module.exports = (sequelize) =>
       type: DataTypes.UUID,
       allowNull: false,
     },
-    stock: DataTypes.INTEGER,
     material: DataTypes.STRING,
     origin: DataTypes.STRING,
     shipFrom: DataTypes.STRING,

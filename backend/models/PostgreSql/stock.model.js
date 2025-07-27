@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = (sequelize) =>
-  sequelize.define('Size', {
+  sequelize.define('Stock', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -13,8 +13,5 @@ module.exports = (sequelize) =>
       type: DataTypes.UUID,
       allowNull: false,
     },
-    size: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    attributeID: DataTypes.UUID
   });

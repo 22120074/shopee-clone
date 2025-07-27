@@ -13,7 +13,8 @@ module.exports = (sequelize) =>
       type: DataTypes.UUID,
       allowNull: false,
     },
-    nameEach: DataTypes.STRING,
-    imageUrl: DataTypes.STRING,
-    price: DataTypes.FLOAT,
+    nameEach: DataTypes.STRING,   
+    size: DataTypes.STRING,     
+    price: DataTypes.FLOAT,    
+    imageUrl: DataTypes.STRING
   });

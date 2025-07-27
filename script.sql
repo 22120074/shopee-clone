@@ -4,35 +4,69 @@ INSERT INTO "Products" (
   id, name, favorite, discount, "attributeName", "fromStore", category, "createdAt", "updatedAt"
 ) VALUES (
   uuid_generate_v4(),
-  'GIÀY CAO GÓT MÃ LTC93 CAO 8P CÓ 2 MÀU ĐEN DA LỘN, KEM DA TRƠN THỜI TRANG 2023',
-  false,
+  'Lót chuột cỡ lớn họa tiết Typography tối giản đa dạng kích thước, pad chuột gaming chống trơn trượt',
+  true,
   10,
-  'Color',
+  'Màu sắc',
   'Kho tổng',
-  'Giày Dép Nữ',
+  'Máy Tính & Laptop',
   NOW(),
   NOW()
 );
 
 INSERT INTO "ImageProducts" (id, "productId", "imageUrl", "createdAt", "updatedAt") VALUES
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lz8lx3bzpzyl40@resize_w900_nl.webp', Now(), Now()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'https://down-vn.img.susercontent.com/file/vn-11134201-7qukw-leuyk4ce8sjue2@resize_w900_nl.webp', Now(), Now()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lz8lwwao0psx52@resize_w900_nl.webp', Now(), Now()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lz8lwwao3ixtd5@resize_w900_nl.webp', Now(), Now()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lz8lwwao243xbf@resize_w900_nl.webp', Now(), Now());
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eow14d1pdo7f@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eowfv5gyik27@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eowfv5gy0126@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eowl11wwxo47@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eowl11wwf576@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0boxpk7a@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0bnik517@resize_w900_nl.webp', Now(), Now());
 
-INSERT INTO "Attributes" (id, "productId", "nameEach", "imageUrl", "price", "createdAt", "updatedAt") VALUES
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'Đen C93', 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lz8lzkk73xcxbc@resize_w48_nl.webp', 100000, Now(), Now()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'Kem C93', 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lz8lzlxv38lpad@resize_w48_nl.webp', 200000, Now(), Now()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 'Đỏ C93', 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lz8lzn9l5eoxfc@resize_w48_nl.webp', 90000, Now(), Now());
+INSERT INTO "Attributes" (id, "productId", "nameEach", "size", "price", "imageUrl", "createdAt", "updatedAt") VALUES
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 'Đen - Topography', '80x30cm', 
+65000,
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0bnik517@resize_w900_nl.webp', 
+Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 'Đen - Topography', '90x40cm', 
+80000,
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0bnik517@resize_w900_nl.webp', 
+Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 'Đen - Topography', '100x50cm', 
+160000,
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0bnik517@resize_w900_nl.webp', 
+Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 'Đen - Topography', '40x45cm', 
+650000,
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0bnik517@resize_w900_nl.webp', 
+Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 'Trắng - Topography', '40x45cm', 
+650000,
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0bnik517@resize_w900_nl.webp', 
+Now(), Now()),
+(uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 'Trắng - Topography', '90x40cm', 
+80000,
+'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3eoxi0bnik517@resize_w900_nl.webp', 
+Now(), Now());
 
-INSERT INTO "Sizes" (id, "productId", "size", "createdAt", "updatedAt") VALUES
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 35, NOW(), NOW()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 36, NOW(), NOW()),
-(uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 37, NOW(), NOW());
 
 INSERT INTO "Details" (
-  id, "productId", "stock", "material", "origin", "shipFrom", description, "createdAt", "updatedAt"
+  id, "productId", "material", "origin", "shipFrom", description, "createdAt", "updatedAt"
 ) VALUES (
-  uuid_generate_v4(), 'ccaebcc9-187b-4f09-a9b3-b5ee97614ddc', 99828, 'Da cao cấp', 'Việt Nam', 'Hà Nội', 'Đây là sản phẩm mẫu', NOW(), NOW()
+  uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 'Vải cao cấp', 'Việt Nam', 'Hà Nội', 'Đây là sản phẩm mẫu', NOW(), NOW()
+);
+
+INSERT INTO "Stocks" (
+  id, "productId", "attributeID", "createdAt", "updatedAt"
+) VALUES (
+  uuid_generate_v4(), '91481205-3905-4d41-b456-1db4aafb6d8b', 
+  (SELECT id FROM "Attributes" WHERE "productId" = '91481205-3905-4d41-b456-1db4aafb6d8b' AND "nameEach" = 'Đen - Topography' AND size = '80x30cm'),
+  100, NOW(), NOW()
 );
