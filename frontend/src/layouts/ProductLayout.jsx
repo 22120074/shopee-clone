@@ -214,11 +214,10 @@ function ProductLayout() {
                                 { (maxPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
                             </div>
                             { product.discount && 
-                            
-                                <div className='relative text-[18px] text-[#929292]'>
+                                <div className='relative text-[18px] text-[#929292] whitespace-nowrap'>
                                     <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                                     { minPrice.toLocaleString('vi-VN') }
-                                <i className="fa-solid fa-minus text-[10px] mx-1"></i>
+                                    <i className="fa-solid fa-minus text-[10px] mx-1"></i>
                                     <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                                     { maxPrice.toLocaleString('vi-VN') }
                                     <div className='absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]'></div>
@@ -236,24 +235,64 @@ function ProductLayout() {
                             <h2 className='font-normal text-[#757575] capitalize w-[100px] pt-[8px]'>
                                 { product.attributeName }
                             </h2>
-                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start'>
+                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start w-[400px]'>
                                 {
                                     reducedAttributes.map((attribute, index) => (
-                                        <div key={index} className='flex items-center h-[40px] border border-[#e8e8e8] p-2 gap-2'>
+                                        <div key={index} className='flex items-center h-[40px] border border-[#e8e8e8] p-2 gap-2 
+                                        hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer'>
                                             <div className=''
                                                 style={{
                                                     width: '24px',
                                                     height: '24px',
                                                     backgroundImage: `url(${attribute.imageUrl})`,
                                                     backgroundSize: 'cover',
-                                                    backgroundPosition: 'center',
-
+                                                    backgroundPosition: 'center'
                                                 }}>
                                             </div>
-                                            <span className='text-[15px] text-[#313131]'>{reducedAttributes[index]?.nameEach}</span>
+                                            <span className='text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
                                         </div>
                                     ))
                                 }
+                            </div>
+                        </div>
+                        <div className='w-full flex flex-row justify-start pl-6 mt-6'>
+                            <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
+                                Kích Thước
+                            </h2>
+                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start flex-1 max-w-[430px]'>
+                                {
+                                    reducedSizes.map((attribute, index) => (
+                                        <div key={index} className='flex items-center h-[40px] border border-[#e8e8e8] 
+                                        p-2 text-[15px] text-inherit hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer'>
+                                            { attribute.size }
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                        {/* Phần điều chỉnh số lượng */}
+                        <div className='w-full flex flex-row justify-start pl-6 mt-6'>
+                            <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
+                                Số lượng
+                            </h2>
+                            <div className='flex items-center h-[40px] border border-[#CCCCCC] text-[15px] text-inherit'>
+                                <button className='w-[40px] h-full text-[#CCCCCC] flex items-center justify-center
+                                border-r border-[#CCCCCC] flex-1 '>
+                                    <i className="fa-solid fa-minus"></i>
+                                </button>
+                                <input
+                                type="number"
+                                min="1"
+                                defaultValue="1"
+                                className="flex-1 h-full text-center [appearance:textfield] max-w-[80px] text-[#CCCCCC]
+                                [&::-webkit-outer-spin-button]:appearance-none 
+                                [&::-webkit-inner-spin-button]:appearance-none
+                                focus:outline-none"
+                                />
+                                <button className='w-[40px] h-full text-[#CCCCCC] flex items-center justify-center
+                                border-l border-[#CCCCCC] flex-1 '>
+                                    <i className="fa-solid fa-plus"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
