@@ -15,7 +15,6 @@ function ImagePreview({ images }) {
     };
 
     useEffect(() => {
-        console.log("Hover index updated:", hoverIndex);
     }, [hoverIndex]);
 
     return (

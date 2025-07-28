@@ -170,6 +170,7 @@ function Home() {
         }
       </div>
       <TrendingProducts />
+
     </div>
   );
 }

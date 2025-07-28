@@ -8,14 +8,22 @@ import ImagePreview from '../components/ImagePreview';
 function ProductLayout() {
     const { productName } = useParams();
     const [product, setProduct] = useState();
+
     const [rating, setRating] = useState(0);
     const [numReviews, setNumReviews] = useState(0);
+
+    const prices = product?.attributes?.map(attr => attr.price) || [];
+    const minPrice = prices.length ? Math.min(...prices) : 0;
+    const maxPrice = prices.length ? Math.max(...prices) : 0;
+
+    const [reducedAttributes, setReducedAttributes] = useState([]);
+    const [reducedSizes, setReducedSizes] = useState([]);
 
     const fetchProducts = async (productName, setProduct) => {
         try {
             const product = await getOneProduct(productName);
             setProduct(product.data);
-            // console.log('Fetched Products:', product.data);
+            console.log('Fetched Products:', product.data);
         } catch (error) {
             console.error('Error fetching products:', error);
         }
@@ -28,13 +36,15 @@ function ProductLayout() {
         return sold.toString();
     };
 
-
+    // Sử dụng useEffect để gọi API khi productName thay đổi
     useEffect(() => {
         if (productName) {
             fetchProducts(productName, setProduct);
         }
     }, [productName]);
 
+    // Sử dụng useEffect để tính rating và số lượng đánh giá
+    // Sử dụng useEffect để xử lí data trong product.attribute
     useEffect(() => {
         if (product?.rating?.length > 0) {
             const total = product.rating.reduce((sum, item) => sum + item.rating, 0);
@@ -43,6 +53,21 @@ function ProductLayout() {
         } else {
             setRating(0);
             setNumReviews(0);
+        }
+
+        if (product?.attributes) {
+            const map = new Map();
+            const sizeMap = new Map();
+            product.attributes.forEach(attr => {
+                if (!map.has(attr.nameEach)) {
+                    map.set(attr.nameEach, attr);
+                }
+                if (!sizeMap.has(attr.size)) {
+                    sizeMap.set(attr.size, attr);
+                }
+            });
+            setReducedAttributes(Array.from(map.values()));
+            setReducedSizes(Array.from(sizeMap.values()));
         }
     }, [product]);
 
@@ -107,7 +132,7 @@ function ProductLayout() {
                         </div>
                     </div>
                     {/* Nữa bên phải chứa thông tin đơn hàng */}
-                    <div className=''>
+                    <div className='w-full flex flex-col'>
                         {/* Tên sản phẩm */}
                         <div className='text-[19px] leading-[23px] line-clamp-2'>
                             { product.favorite && 
@@ -120,7 +145,7 @@ function ProductLayout() {
                             {product.name}
                         </div>
                         {/* Phần đánh giá */}
-                        <div className='flex flex-row items-center mt-1'>
+                        <div className='flex flex-row items-center my-3'>
                             {/* Phần điểm đánh giá */}
                             <div className='relative flex gap-[2px] justify-start items-center text-[18px]'>
                                 <div className='mr-1 underline underline-offset-[3px] decoration-1'>
@@ -179,7 +204,58 @@ function ProductLayout() {
                                 </div>
                             </div>
                         </div>
-                        
+                        {/* Phần giá bán */}
+                        <div className='w-full h-[64px] flex items-center justify-start bg-[#FAFAFA] gap-4 pl-6'>
+                            <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
+                                <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                                { (minPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
+                                <i className="fa-solid fa-minus text-[18px] mx-3"></i>
+                                <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                                { (maxPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
+                            </div>
+                            { product.discount && 
+                            
+                                <div className='relative text-[18px] text-[#929292]'>
+                                    <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                                    { minPrice.toLocaleString('vi-VN') }
+                                <i className="fa-solid fa-minus text-[10px] mx-1"></i>
+                                    <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                                    { maxPrice.toLocaleString('vi-VN') }
+                                    <div className='absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]'></div>
+                                </div>
+                            }
+                            { product.discount &&
+                                <div className='text-[12px] text-[#ee4d2d] font-bold bg-[#feeeea] w-[34px] h-[18px]
+                                flex items-center justify-center rounded-sm'>
+                                    -{ product.discount }%
+                                </div>
+                            }
+                        </div>
+                        {/* Phần màu sắc và size */}
+                        <div className='w-full flex flex-row justify-start pl-6 mt-6'>
+                            <h2 className='font-normal text-[#757575] capitalize w-[100px] pt-[8px]'>
+                                { product.attributeName }
+                            </h2>
+                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start'>
+                                {
+                                    reducedAttributes.map((attribute, index) => (
+                                        <div key={index} className='flex items-center h-[40px] border border-[#e8e8e8] p-2 gap-2'>
+                                            <div className=''
+                                                style={{
+                                                    width: '24px',
+                                                    height: '24px',
+                                                    backgroundImage: `url(${attribute.imageUrl})`,
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'center',
+
+                                                }}>
+                                            </div>
+                                            <span className='text-[15px] text-[#313131]'>{reducedAttributes[index]?.nameEach}</span>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             }

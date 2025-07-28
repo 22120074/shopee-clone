@@ -61,7 +61,7 @@ const getOneProduct = async (productID) => {
 
     const attributes = await Attribute.findAll({
         where: { productId: product.id },
-        attributes: ['imageUrl', 'nameEach', 'price'],
+        attributes: ['imageUrl', 'nameEach', 'price', 'size'],
         raw: true
     });
 
@@ -91,12 +91,6 @@ const getOneProduct = async (productID) => {
         raw: true
     });
 
-    const sizes = await Size.findAll({
-        where: { productId: product.id },
-        attributes: ['size'],
-        raw: true
-    });
-
     return {
         ...product,
         attributes,
@@ -104,8 +98,7 @@ const getOneProduct = async (productID) => {
         soldCount,
         detailedProduct,
         likes, 
-        ratings,
-        sizes
+        ratings
     };
 }
 

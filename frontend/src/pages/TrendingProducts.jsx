@@ -32,7 +32,7 @@ function TrendingProducts() {
 
 
     return (
-    <div className='w-full max-w-[1200px]'>
+    <div className='w-full max-w-[1200px] relative'>
         <div className='h-[58px] text-[#ee4d2d] uppercase text-[18px] font-[400] bg-white 
         flex items-center justify-center border-b-[4px] border-[#ee4d2d] sticky top-[120px] z-[30]'>   
             Gợi Ý Hôm Nay
@@ -85,7 +85,7 @@ function TrendingProducts() {
                 ))
             }
         </div>
-        <div className='w-full flex items-center justify-center mt-10 mb-[80px]'>
+        <div className='w-full flex items-center justify-center mt-10'>
             <Link to="/product/TrendingProduct?pageNumber=2" className='w-[380px] h-[40px] bg-[white] 
             text-[#555] text-center text-[16px] border border-[#DFDFDF] flex items-center justify-center 
             hover:bg-[#E5E5E5] rounded-[3px]'>
