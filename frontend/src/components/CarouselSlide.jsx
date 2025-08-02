@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import './CarouselSlide.css';
 
@@ -12,9 +12,10 @@ export default function CarouselSlider({ images, width = 800, height = 240 }) {
     setCurrentIndex(i => (i === 0 ? length - 1 : i - 1));
 
   // Chuyển sang ảnh kế tiếp
-  const goNext = () =>
+  const goNext = useCallback(() => {
     setCurrentIndex(i => (i === length - 1 ? 0 : i + 1));
-  
+  }, [length]);
+
   // Tự động chuyển slide mỗi 7 giây
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,7 +24,7 @@ export default function CarouselSlider({ images, width = 800, height = 240 }) {
 
     // Clear interval khi unmount hoặc currentIndex thay đổi
     return () => clearInterval(interval);
-  }, [currentIndex, length]);
+  }, [currentIndex, length, goNext]);
 
   return (
     <div className="home-events-banner_ads-content_1"
