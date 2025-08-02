@@ -1,4 +1,5 @@
-const dbPostgre = require('../models/PostgreSql/index'); 
+const dbPostgre = require('../models/PostgreSql/index');
+const { Sequelize } = require('sequelize');
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
@@ -7,7 +8,7 @@ const Sold = dbPostgre.Sold;
 const Like = dbPostgre.Like;
 const Detail = dbPostgre.Detail;
 const Rating = dbPostgre.Rating;
-const Size = dbPostgre.Size;
+const Stock = dbPostgre.Stock;
 
 const getAllProduct = async ( limit ) => {
     // Bước 1: lấy danh sách sản phẩm
@@ -61,7 +62,7 @@ const getOneProduct = async (productID) => {
 
     const attributes = await Attribute.findAll({
         where: { productId: product.id },
-        attributes: ['imageUrl', 'nameEach', 'price', 'size'],
+        attributes: ['id', 'imageUrl', 'nameEach', 'price', 'size'],
         raw: true
     });
 
@@ -91,6 +92,19 @@ const getOneProduct = async (productID) => {
         raw: true
     });
 
+    const stockCounts = await Stock.findAll({
+    attributes: [
+        'productId',
+        'attributeID',
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
+    ],
+    where: {
+        productId: product.id
+    },
+    group: ['productId', 'attributeID'],
+    raw: true
+    });
+
     return {
         ...product,
         attributes,
@@ -98,7 +112,8 @@ const getOneProduct = async (productID) => {
         soldCount,
         detailedProduct,
         likes, 
-        ratings
+        ratings,
+        stockCounts
     };
 }
 

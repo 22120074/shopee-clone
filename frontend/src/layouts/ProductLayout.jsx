@@ -4,6 +4,7 @@ import { getOneProduct } from '../services/product.service';
 // import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import ImagePreview from '../components/ImagePreview';
+import PrimaryButton from '../components/Button';
 
 function ProductLayout() {
     const { productName } = useParams();
@@ -18,6 +19,19 @@ function ProductLayout() {
 
     const [reducedAttributes, setReducedAttributes] = useState([]);
     const [reducedSizes, setReducedSizes] = useState([]);
+
+    const [value, setValue] = useState(1);
+
+    const [focusColor, setFocusColor] = useState(null);
+    const [focusSize, setFocusSize] = useState(null);
+    const [focusAttribute, setFocusAttribute] = useState(null);
+
+    const [validAttribute, setValidAttribute] = useState([]);
+    const [validSize, setValidSize] = useState([]);
+
+    const [inStockProduct, setInStockProduct] = useState([]);
+
+    const stock = product?.stockCounts.find(attr => attr.attributeID === focusAttribute?.id)?.count || 0
 
     const fetchProducts = async (productName, setProduct) => {
         try {
@@ -43,8 +57,8 @@ function ProductLayout() {
         }
     }, [productName]);
 
-    // Sử dụng useEffect để tính rating và số lượng đánh giá
-    // Sử dụng useEffect để xử lí data trong product.attribute
+    // 1. Sử dụng useEffect để tính rating và số lượng đánh giá
+    // 2. Sử dụng useEffect để xử lí data trong product.attribute
     useEffect(() => {
         if (product?.rating?.length > 0) {
             const total = product.rating.reduce((sum, item) => sum + item.rating, 0);
@@ -70,6 +84,74 @@ function ProductLayout() {
             setReducedSizes(Array.from(sizeMap.values()));
         }
     }, [product]);
+
+    // Các hàm xử lí tăng, giảm số lượng sản phẩm; 
+    // thay đổi giá trị input; xử lí blur (khi mất focus trong input) trong input
+    const quantityIncrease = () => {
+        setValue(prevValue => prevValue + 1);
+    };
+
+    const quantityDecrease = () => {
+        setValue(prevValue => Math.max(1, prevValue - 1));
+    };
+
+    const handleQuantityChange = (e) => {
+        const newValue = parseInt(e.target.value) || 1;
+        setValue(Math.max(1, newValue));
+    };
+    
+    const handleBlur = () => {
+    if (value > stock) {
+        setValue(stock);
+    } else if (value < 1) {
+        setValue(1);
+    }
+    };
+
+    // 1. sử dụng useEffect để tìm focusAttribute dựa trên focusColor và focusSize
+    // 2. sử dụng useEffect để tìm validAttribute và validSize dựa trên focusColor và focusSize, 
+    // áp dụng để vô hiệu hóa việc chọn sản phẩm không có trong kho
+    useEffect(() => {
+        const found = product?.attributes.find(attr => attr.nameEach === focusColor && attr.size === focusSize);
+        setFocusAttribute(found);
+
+        if (focusSize) {
+            const validAttributes = product?.attributes.filter(attr => attr.size === focusSize);
+            setValidAttribute(validAttributes);
+        } 
+        if (focusColor) {
+            const validSizes = product?.attributes.filter(attr => attr.nameEach === focusColor);
+            setValidSize(validSizes);
+        }
+    }, [focusColor, focusSize, product]);
+
+    // sử dụng useEffect để đặt giá trị ban đầu cho value khi focusAttribute thay đổi
+    useEffect(() => {
+        setValue(1);
+    }, [focusAttribute]);
+
+    // sử dụng useEffect để kiểm tra các mã hàng còn trong kho không?
+    useEffect(() => {
+        const inStock = [];
+        if (product?.stockCounts) {
+            product.stockCounts.forEach(attr => {
+                if (attr.count > 0) {
+                    const matchedAttr = product.attributes.find(
+                        a => a.id === attr.attributeID
+                    );
+                    console.log('In Stock Name:', matchedAttr?.nameEach);
+                    console.log('In Stock Size:', matchedAttr?.size);
+                    inStock.push(matchedAttr?.nameEach);
+                    inStock.push(matchedAttr?.size);
+                }
+            });
+        }
+        setInStockProduct(inStock);
+    }, [product]);
+
+    // console.log(reducedAttributes, reducedSizes);
+    console.log('In Stock Product:', inStockProduct);
+    console.log(stock);
 
     return (
         <div className="w-full bg-[#F5F5F5] h-[100vh]">
@@ -206,14 +288,27 @@ function ProductLayout() {
                         </div>
                         {/* Phần giá bán */}
                         <div className='w-full h-[64px] flex items-center justify-start bg-[#FAFAFA] gap-4 pl-6'>
-                            <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
-                                <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
-                                { (minPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
-                                <i className="fa-solid fa-minus text-[18px] mx-3"></i>
-                                <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
-                                { (maxPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
-                            </div>
-                            { product.discount && 
+                            { focusColor && focusSize && focusAttribute ? (
+                                <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
+                                    <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                                    { (focusAttribute.price * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
+                                </div>
+                            ) : (
+                                <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
+                                    <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                                    { (minPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
+                                    <i className="fa-solid fa-minus text-[18px] mx-3"></i>
+                                    <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                                    { (maxPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
+                                </div>
+                            )}
+                            { focusAttribute && product.discount ? (
+                                <div className='relative text-[18px] text-[#929292] whitespace-nowrap'>
+                                    <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                                    { focusAttribute.price.toLocaleString('vi-VN') }
+                                    <div className='absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]'></div>
+                                </div>
+                            ) : (
                                 <div className='relative text-[18px] text-[#929292] whitespace-nowrap'>
                                     <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                                     { minPrice.toLocaleString('vi-VN') }
@@ -222,10 +317,11 @@ function ProductLayout() {
                                     { maxPrice.toLocaleString('vi-VN') }
                                     <div className='absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]'></div>
                                 </div>
-                            }
+                            )}
                             { product.discount &&
+                                
                                 <div className='text-[12px] text-[#ee4d2d] font-bold bg-[#feeeea] w-[34px] h-[18px]
-                                flex items-center justify-center rounded-sm'>
+                                    flex items-center justify-center rounded-sm'>
                                     -{ product.discount }%
                                 </div>
                             }
@@ -235,11 +331,19 @@ function ProductLayout() {
                             <h2 className='font-normal text-[#757575] capitalize w-[100px] pt-[8px]'>
                                 { product.attributeName }
                             </h2>
-                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start w-[400px]'>
+                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start w-[400px]
+                                max-h-[100px] overflow-y-auto'>
                                 {
                                     reducedAttributes.map((attribute, index) => (
-                                        <div key={index} className='flex items-center h-[40px] border border-[#e8e8e8] p-2 gap-2 
-                                        hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer'>
+                                        <div key={index} className={`relative flex items-center h-[40px] border p-2 gap-2
+                                            ${focusColor === attribute.nameEach ? 'border-[#FA5130] text-[#FA5130]' : 'border-[#e8e8e8] text-inherit'}
+                                            hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer select-none rounded-sm
+                                            ${!validAttribute.some(item => item.nameEach === attribute.nameEach) && focusSize
+                                                ? 'pointer-events-none opacity-50' : ''}
+                                            ${!inStockProduct.includes(attribute.nameEach) ? 'pointer-events-none opacity-50' : ''}`}
+                                            onClick={() => setFocusColor(
+                                                focusColor === attribute.nameEach ? null : attribute.nameEach
+                                            )}>
                                             <div className=''
                                                 style={{
                                                     width: '24px',
@@ -250,6 +354,12 @@ function ProductLayout() {
                                                 }}>
                                             </div>
                                             <span className='text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
+                                            { focusColor === attribute.nameEach && 
+                                                <div className="absolute bottom-0 right-0 w-0 h-0 
+                                                    border-b-[14px] border-l-[14px] border-b-[#FA5130] border-l-transparent">
+                                                    <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
+                                                </div>
+                                            }
                                         </div>
                                     ))
                                 }
@@ -259,12 +369,26 @@ function ProductLayout() {
                             <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
                                 Kích Thước
                             </h2>
-                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start flex-1 max-w-[430px]'>
+                            <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start flex-1 max-w-[430px] 
+                                max-h-[100px] overflow-y-auto'>
                                 {
                                     reducedSizes.map((attribute, index) => (
-                                        <div key={index} className='flex items-center h-[40px] border border-[#e8e8e8] 
-                                        p-2 text-[15px] text-inherit hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer'>
+                                        <div key={index} className={`relative flex items-center h-[40px] border
+                                            ${focusSize === attribute.size ? 'border-[#FA5130] text-[#FA5130]' : 'border-[#e8e8e8] text-inherit'}
+                                            p-2 text-[15px] hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer select-none rounded-sm
+                                            ${!validSize.some(item => item.size === attribute.size) && focusColor
+                                                ? 'pointer-events-none opacity-50' : ''}
+                                            ${!inStockProduct.includes(attribute.size) ? 'pointer-events-none opacity-50' : ''}`}
+                                            onClick={() => setFocusSize(
+                                                focusSize === attribute.size ? null : attribute.size
+                                            )}>
                                             { attribute.size }
+                                            { focusSize === attribute.size && 
+                                                <div className="absolute bottom-0 right-0 w-0 h-0 
+                                                    border-b-[14px] border-l-[14px] border-b-[#FA5130] border-l-transparent">
+                                                    <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
+                                                </div>
+                                            }
                                         </div>
                                     ))
                                 }
@@ -276,24 +400,53 @@ function ProductLayout() {
                                 Số lượng
                             </h2>
                             <div className='flex items-center h-[40px] border border-[#CCCCCC] text-[15px] text-inherit'>
-                                <button className='w-[40px] h-full text-[#CCCCCC] flex items-center justify-center
-                                border-r border-[#CCCCCC] flex-1 '>
+                                <button className={`w-[40px] h-full flex items-center justify-center
+                                    border-r border-[#CCCCCC] flex-1 text-[12px]
+                                    ${ value === 1 || !focusAttribute ? 'text-[#CCCCCC]' : ''}`}
+                                    disabled={!focusAttribute}
+                                    onClick={quantityDecrease}>
                                     <i className="fa-solid fa-minus"></i>
                                 </button>
                                 <input
-                                type="number"
-                                min="1"
-                                defaultValue="1"
-                                className="flex-1 h-full text-center [appearance:textfield] max-w-[80px] text-[#CCCCCC]
-                                [&::-webkit-outer-spin-button]:appearance-none 
-                                [&::-webkit-inner-spin-button]:appearance-none
-                                focus:outline-none"
+                                    type="number"
+                                    min="1"
+                                    value={focusAttribute ? value : 1}
+                                    disabled={!focusAttribute}
+                                    onChange={handleQuantityChange}
+                                    onBlur={handleBlur}
+                                    defaultValue="1"
+                                    className={`flex-1 h-full text-center [appearance:textfield] max-w-[80px]
+                                    [&::-webkit-outer-spin-button]:appearance-none 
+                                    [&::-webkit-inner-spin-button]:appearance-none
+                                    focus:outline-none
+                                    bg-transparent
+                                    ${focusAttribute ? 'text-[#FA5130]' : 'text-[#CCCCCC]'}`}
                                 />
-                                <button className='w-[40px] h-full text-[#CCCCCC] flex items-center justify-center
-                                border-l border-[#CCCCCC] flex-1 '>
+                                <button className={`w-[40px] h-full flex items-center justify-center
+                                    border-l border-[#CCCCCC] flex-1 text-[12px]
+                                    ${focusAttribute ? '' : 'text-[#CCCCCC]'}`}
+                                    onClick={quantityIncrease}
+                                    disabled={!focusAttribute || value >= stock}>
                                     <i className="fa-solid fa-plus"></i>
                                 </button>
                             </div>
+                            { focusAttribute &&
+                                <p className='text-[#757575] text-sm pt-[8px] flex-shrink-0 ml-4'>
+                                    Số hàng còn lại trong kho: {stock}
+                                </p>                            
+                            }
+                        </div>
+                        {/* Phần nút thêm vào giỏ hàng */}
+                        <div className='w-full flex flex-row justify-start pl-6 mt-10 gap-4'>
+                            <button className='w-[200px] h-[48px] bg-[#FFEEE8] text-[#FA5130] rounded border border-[#FA5130]
+                            text-[16px] flex items-center justify-center gap-1'>
+                                <i className="fa-solid fa-cart-shopping"
+                                style={{ 
+                                    transform: 'translateY(1px)' 
+                                }}></i>
+                                Thêm vào giỏ hàng
+                            </button>
+                            <PrimaryButton height='48px' width='180px' text="Mua Ngay" />
                         </div>
                     </div>
                 </div>
