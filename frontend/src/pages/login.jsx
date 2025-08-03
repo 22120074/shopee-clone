@@ -1,18 +1,21 @@
 import './auth.css';
-import React, { useState, useContext } from 'react';
+import { useState } from 'react';
 import PrimaryButton from '../components/Button';
 import { FcGoogle } from 'react-icons/fc'; // Icon Google đầy đủ màu
 import { FaFacebook } from 'react-icons/fa'; // Icon Facebook đầy đủ màu
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthMode';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/auth/authSlice';
+import { login as loginService } from '../services/user.service';
+import { getCurrentUser } from '../services/user.service';
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState('');
-  const { login } = useContext(AuthContext);
 
 
   const [formData, setFormData] = useState({
@@ -48,23 +51,22 @@ function Login() {
 
     try {
       setLoading(true);
-
-      await login({ phone: formData.phone, password: formData.password });
-
+      // Gọi API đăng nhập
+      await loginService({ phone: formData.phone, password: formData.password });
+      // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng 
+      const currentUser = await getCurrentUser();
+      // Nếu không có lỗi, cập nhật state auth
+      if (currentUser) {
+        dispatch(login(currentUser.data.dataUser));
+      }
+      // Lưu vào localStorage
+      localStorage.setItem("user", JSON.stringify(currentUser.data.dataUser));
+      // Chuyển hướng về trang chủ
       setLoading(false);
-      
-      // // Nếu server trả token, bạn có thể lưu vào localStorage hoặc Context
-      // localStorage.setItem('token', res.data.token);
-      // Đã có cockie nên không cần lưu token nữa
-
-      // console.log(res.data);
-
-      // Chuyển trang sau khi login thành công
       navigate('/');
     } catch (err) {
       setLoading(false);
       const msg = err.response?.data?.message || 'Lỗi kết nối. Vui lòng thử lại.';
-      // Nếu lỗi xác thực (401) thì hiển thị dưới form
       setServerError(msg);
     }
 

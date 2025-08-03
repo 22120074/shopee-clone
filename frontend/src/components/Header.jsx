@@ -1,17 +1,20 @@
 import './header.css';
-import React, { useContext } from 'react';
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { AuthContext  } from '../contexts/AuthMode';
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { logout } from '../features/auth/authSlice';
+import { useDispatch } from 'react-redux';
 
 function Header() {
-    const { user, logout } = useContext(AuthContext);
-    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    // Lấy thông tin người dùng từ Redux store
+    const user = useSelector((state) => state.auth.currentUser);
     const isSticky = useLocation().pathname === '/';
 
     const handleLogout = async () => {
         try {
-            await logout();      // gọi hàm logout từ context
-            navigate('/');       // chuyển về trang /login sau khi đăng xuất
+            dispatch(logout());
+            localStorage.removeItem('user'); 
         } catch (error) {
             console.error('Logout failed:', error);
         }
