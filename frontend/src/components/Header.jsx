@@ -127,9 +127,15 @@ function Header() {
                         <li className='text-xs text-white'>Ốp Iphone xinh cute</li>
                     </ul>
                 </div>
-                {/* Phần giở hàng */}
-                <div className='navbar_cart'>
+                {/* Phần giỏ hàng */}
+                <div className='navbar_cart group relative'>
                     <i className="fa-solid fa-cart-shopping text-white navbar_cart-icon"></i>
+                    {/* Layout sản phẩm trong giỏ hàng */}
+                    <div className='absolute right-0 top-[70px] hidden group-hover:block bg-white shadow-lg 
+                        w-[400px] h-[300px] z-10'>
+                        {/* Nội dung giỏ hàng */}
+
+                    </div>
                 </div>
             </div>
 
