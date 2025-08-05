@@ -1,8 +1,8 @@
 import './header.css';
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import emptyCart from '../assets/Empty-bro.svg';
 
 function Header() {
     const dispatch = useDispatch();
@@ -10,6 +10,9 @@ function Header() {
     // Lấy thông tin người dùng từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
     const isSticky = useLocation().pathname === '/';
+
+    // Lấy thông tin giỏ hàng từ Redux store
+    const items = useSelector(state => state.cart.items);
 
     const handleLogout = async () => {
         try {
@@ -65,7 +68,7 @@ function Header() {
                                 <>
                                     <li className="user_wrapper" style={{ padding: "0 9px 0 0", position: "relative"}}>
                                         <Link to="/user">
-                                            <div className='flex items-center ' style={{ alignItems: "center" }}>
+                                            <div className='flex items-center' style={{ alignItems: "center" }}>
                                                 <div className='' 
                                                     style={{ width: "32px", height: "32px", borderRadius: "50%", 
                                                         overflow: "hidden", marginRight: "8px" }}
@@ -128,13 +131,20 @@ function Header() {
                     </ul>
                 </div>
                 {/* Phần giỏ hàng */}
-                <div className='navbar_cart group relative'>
-                    <i className="fa-solid fa-cart-shopping text-white navbar_cart-icon"></i>
+                <div className='navbar_cart relative'>
+                    <i className="navbar_cart-icon fa-solid fa-cart-shopping text-white"></i>
                     {/* Layout sản phẩm trong giỏ hàng */}
-                    <div className='absolute right-0 top-[70px] hidden group-hover:block bg-white shadow-lg 
+                    <div className='cart_dropdown absolute bg-white shadow-lg rounded-sm
                         w-[400px] h-[300px] z-10'>
                         {/* Nội dung giỏ hàng */}
+                        {/* Nếu giỏ hàng trống */}
+                        {items.length === 0 && 
+                            <div className='relative flex flex-col items-center justify-center h-full w-full'>
+                                <img src={emptyCart} alt="Giỏ hàng trống" className="w-60 h-60 object-contain" />
+                                <div className="absolute bottom-[32px] text-[16px] text-gray-400 text-center capitalize">chưa có sản phẩm nào</div>
+                            </div>
 
+                        }
                     </div>
                 </div>
             </div>

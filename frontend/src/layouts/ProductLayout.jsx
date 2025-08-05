@@ -328,7 +328,7 @@ function ProductLayout() {
                                 { product.attributeName }
                             </h2>
                             <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start w-[400px]
-                                max-h-[100px] overflow-y-auto'>
+                                max-h-[130px] overflow-y-auto'>
                                 {
                                     reducedAttributes.map((attribute, index) => (
                                         <div key={index} className={`relative flex items-center h-[40px] border p-2 gap-2
@@ -366,7 +366,7 @@ function ProductLayout() {
                                 Kích Thước
                             </h2>
                             <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start flex-1 max-w-[430px] 
-                                max-h-[100px] overflow-y-auto'>
+                                max-h-[130px] overflow-y-auto'>
                                 {
                                     reducedSizes.map((attribute, index) => (
                                         <div key={index} className={`relative flex items-center h-[40px] border
@@ -427,7 +427,7 @@ function ProductLayout() {
                             </div>
                             { focusAttribute &&
                                 <p className='text-[#757575] text-sm pt-[8px] flex-shrink-0 ml-4'>
-                                    Số hàng còn lại trong kho: {stock}
+                                    {stock} sản phẩm có sẵn
                                 </p>                            
                             }
                         </div>
