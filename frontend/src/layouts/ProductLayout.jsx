@@ -5,33 +5,51 @@ import { getOneProduct } from '../services/product.service';
 import { Link } from 'react-router-dom';
 import ImagePreview from '../components/ImagePreview';
 import PrimaryButton from '../components/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../features/cart/cartSlice';
 
 function ProductLayout() {
+    // Sử dụng useParams để lấy productName từ URL
+    // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
+    // setProduct là hàm để cập nhật state product
     const { productName } = useParams();
     const [product, setProduct] = useState();
 
+    // Sử dụng useState để lưu rating, numReviews
     const [rating, setRating] = useState(0);
     const [numReviews, setNumReviews] = useState(0);
 
+    // Sử dụng biến để lưu min-max giá, mảng giá để dùng hiển thị
     const prices = product?.attributes?.map(attr => attr.price) || [];
     const minPrice = prices.length ? Math.min(...prices) : 0;
     const maxPrice = prices.length ? Math.max(...prices) : 0;
 
+    // Sử dụng useState để lưu các thuộc tính đã giảm bớt trùng lặp
     const [reducedAttributes, setReducedAttributes] = useState([]);
     const [reducedSizes, setReducedSizes] = useState([]);
 
+    // Sử dụng useState để giá trị số lượng sản phẩm
     const [value, setValue] = useState(1);
 
+    // Sử dụng useState để lưu các thuộc tính đang được chọn
     const [focusColor, setFocusColor] = useState(null);
     const [focusSize, setFocusSize] = useState(null);
     const [focusAttribute, setFocusAttribute] = useState(null);
 
+    // Sử dụng useState để lưu các thuộc tính hợp lệ dựa trên focusColor và focusSize
     const [validAttribute, setValidAttribute] = useState([]);
     const [validSize, setValidSize] = useState([]);
 
+    // Sử dụng useState để lưu các mã hàng còn trong kho
+    // inStockProduct là mảng chứa tên và kích thước của các sản phẩm còn
     const [inStockProduct, setInStockProduct] = useState([]);
 
+    // Tính số lượng sản phẩm còn trong kho dựa trên focusAttribute
     const stock = product?.stockCounts.find(attr => attr.attributeID === focusAttribute?.id)?.count || 0
+
+    // Sử dụng useDispatch và useSelector từ Redux để quản lý giỏ hàng
+    const dispatch = useDispatch();
+    const cartItems = useSelector(state => state.items);
 
     const fetchProducts = async (productName, setProduct) => {
         try {
