@@ -138,11 +138,20 @@ function Header() {
                         w-[400px] h-[300px] z-10'>
                         {/* Nội dung giỏ hàng */}
                         {/* Nếu giỏ hàng trống */}
-                        {items.length === 0 && 
+                        {items.length === 0 ? (
                             <div className='relative flex flex-col items-center justify-center h-full w-full'>
                                 <img src={emptyCart} alt="Giỏ hàng trống" className="w-60 h-60 object-contain" />
                                 <div className="absolute bottom-[32px] text-[16px] text-gray-400 text-center capitalize">chưa có sản phẩm nào</div>
                             </div>
+                        ) : (
+                            <ul className='flex flex-col w-full h-full overflow-y-auto'>
+                                {items.map((item) => (
+                                    <li key={item.id} className='flex items-center justify-between p-2 border-b border-gray-200'>
+                                        
+                                    </li>
+                                ))}
+                            </ul>
+                        )
 
                         }
                     </div>
