@@ -20,6 +20,11 @@ const cartSlice = createSlice({
             }
             state.totalQuantity += item.quantity || 1;
             state.totalPrice += (item.price || 0) * (item.quantity || 1);
+            localStorage.setItem("cart", JSON.stringify({
+                items: state.items,
+                totalQuantity: state.totalQuantity,
+                totalPrice: state.totalPrice
+            }));
         },
         removeItem(state, action) {
             const id = action.payload;

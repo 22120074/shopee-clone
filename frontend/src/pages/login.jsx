@@ -59,8 +59,6 @@ function Login() {
       if (currentUser) {
         dispatch(login(currentUser.data.dataUser));
       }
-      // Lưu vào localStorage
-      localStorage.setItem("user", JSON.stringify(currentUser.data.dataUser));
       // Chuyển hướng về trang chủ
       setLoading(false);
       navigate('/');

@@ -12,12 +12,11 @@ function Header() {
     const isSticky = useLocation().pathname === '/';
 
     // Lấy thông tin giỏ hàng từ Redux store
-    const items = useSelector(state => state.cart.items);
+    const items = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")).items : [];
 
     const handleLogout = async () => {
         try {
             dispatch(logout());
-            localStorage.removeItem('user'); 
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -146,8 +145,8 @@ function Header() {
                         ) : (
                             <ul className='flex flex-col w-full h-full overflow-y-auto'>
                                 {items.map((item) => (
-                                    <li key={item.id} className='flex items-center justify-between p-2 border-b border-gray-200'>
-                                        
+                                    <li key={item.id} className='flex items-center justify-between'>
+                                        {item.name}
                                     </li>
                                 ))}
                             </ul>

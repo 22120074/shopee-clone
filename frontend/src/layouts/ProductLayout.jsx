@@ -5,7 +5,7 @@ import { getOneProduct } from '../services/product.service';
 import { Link } from 'react-router-dom';
 import ImagePreview from '../components/ImagePreview';
 import PrimaryButton from '../components/Button';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addItem } from '../features/cart/cartSlice';
 
 function ProductLayout() {
@@ -49,7 +49,6 @@ function ProductLayout() {
 
     // Sử dụng useDispatch và useSelector từ Redux để quản lý giỏ hàng
     const dispatch = useDispatch();
-    const cartItems = useSelector(state => state.items);
 
     const fetchProducts = async (productName, setProduct) => {
         try {
@@ -166,6 +165,25 @@ function ProductLayout() {
         }
         setInStockProduct(inStock);
     }, [product]);
+
+    // Hàm xử lí thêm sản phẩm vào giỏ hàng
+    const handleAddToCart = () => {
+        if (focusAttribute) {
+            const item = {
+                id: product.id,
+                name: product.name,
+                attributes: product.attributes,
+                stock: product.stockCounts,
+                quantity: value,
+                selectedAttributes: {
+                    color: focusColor,
+                    size: focusSize,
+                    attribute: focusAttribute
+                }
+            };
+            dispatch(addItem(item));
+        }
+    };
 
     return (
         <div className="w-full bg-[#F5F5F5] h-[100vh]">
@@ -452,7 +470,8 @@ function ProductLayout() {
                         {/* Phần nút thêm vào giỏ hàng */}
                         <div className='w-full flex flex-row justify-start pl-6 mt-10 gap-4'>
                             <button className='w-[200px] h-[48px] bg-[#FFEEE8] text-[#FA5130] rounded border border-[#FA5130]
-                            text-[16px] flex items-center justify-center gap-1'>
+                            text-[16px] flex items-center justify-center gap-1'
+                                onClick={handleAddToCart}>
                                 <i className="fa-solid fa-cart-shopping"
                                 style={{ 
                                     transform: 'translateY(1px)' 
