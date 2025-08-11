@@ -64,10 +64,27 @@ function Login() {
       navigate('/');
     } catch (err) {
       setLoading(false);
+      if (err.response?.status === 401) {
+        try {
+          // Gọi API refresh
+          await axios.post(`${process.env.REACT_APP_API_URL}/auth/refresh`, {}, { withCredentials: true });
+
+          // Refresh thành công → gọi lại /me
+          const refreshedUser = await getCurrentUser();
+          dispatch(login(refreshedUser.data.dataUser));
+          return; // Không navigate về login nữa
+
+        } catch (refreshErr) {
+          // Refresh thất bại → quay về login
+          navigate('/login');
+          return;
+        }
+      }
+      // Lỗi khác 401
+      console.error('Lỗi khi lấy user:', err);
       const msg = err.response?.data?.message || 'Lỗi kết nối. Vui lòng thử lại.';
       setServerError(msg);
     }
-
   };
 
   return (

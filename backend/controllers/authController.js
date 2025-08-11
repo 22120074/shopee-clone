@@ -66,23 +66,36 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ message: 'Số điện thoại hoặc mật khẩu không đúng.' });
     }
 
-    // Nếu muốn trả token JWT
-    const token = jwt.sign(
+    // Tạo access token (15 phút)
+    const accessToken = jwt.sign(
       { userId: user._id, phone: user.phone },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '15m' }
+    );
+
+    // Tạo refresh token (7 ngày)
+    const refreshToken = jwt.sign(
+      { userId: user._id, phone: user.phone },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: '7d' }
     );
 
     res
-      .cookie('token', token, {
-        httpOnly: true,                                 // Không cho JS client truy cập
-        secure: process.env.NODE_ENV === 'production', // HTTPS khi deploy
-        sameSite: 'Lax',                              // hoặc 'Strict'
-        maxAge: 60 * 60 * 1000                        // 1 giờ (ms)
+      .cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Lax',
+        maxAge: 15 * 60 * 1000 // 15 phút
       })
-      .json({ message: 'Đăng nhập thành công!' });  
-    } catch (err) {
-      next(err);
+      .cookie('refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
+      })
+      .json({ message: 'Đăng nhập thành công!' });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -119,4 +132,36 @@ exports.logout = (req, res) => {
       sameSite: 'Lax'
     })
     .json({ message: 'Đăng xuất thành công' });
+};
+
+exports.refreshToken = (req, res) => {
+  try {
+    const refreshToken = req.cookies?.refresh_token;
+    if (!refreshToken) {
+      return res.status(401).json({ message: 'Không có refresh token' });
+    }
+
+    // Xác thực refresh token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    // Tạo access token mới
+    const newAccessToken = jwt.sign(
+      { userId: decoded.userId, phone: decoded.phone },
+      process.env.JWT_SECRET,
+      { expiresIn: '1m' } // 1 phút để test
+    );
+
+    // Gửi access token mới vào cookie
+    res.cookie('access_token', newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Lax',
+      maxAge: 1 * 60 * 1000 // 1 phút
+    });
+
+    return res.json({ message: 'Access token mới đã được cấp' });
+  } catch (err) {
+    console.error('Lỗi refresh token:', err);
+    return res.status(401).json({ message: 'Refresh token không hợp lệ hoặc đã hết hạn' });
+  }
 };
