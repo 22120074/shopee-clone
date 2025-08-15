@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../features/auth/authSlice';
 import { login as loginService } from '../services/user.service';
-import { getCurrentUser } from '../services/user.service';
+import { getCurrentUser, refreshToken } from '../services/user.service';
 
 function Login() {
   const navigate = useNavigate();
@@ -67,8 +67,7 @@ function Login() {
       if (err.response?.status === 401) {
         try {
           // Gọi API refresh
-          await axios.post(`${process.env.REACT_APP_API_URL}/auth/refresh`, {}, { withCredentials: true });
-
+          await refreshToken();
           // Refresh thành công → gọi lại /me
           const refreshedUser = await getCurrentUser();
           dispatch(login(refreshedUser.data.dataUser));
