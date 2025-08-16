@@ -1,6 +1,7 @@
 import './header.css';
 import { Link, useLocation } from "react-router-dom";
 import { logout } from '../features/auth/authSlice';
+import { clearAllItem } from '../features/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import emptyCart from '../assets/Empty-bro.svg';
 
@@ -12,11 +13,12 @@ function Header() {
     const isSticky = useLocation().pathname === '/';
 
     // Lấy thông tin giỏ hàng từ Redux store
-    const items = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")).items : [];
+    const items = useSelector((state) => state.cart.items);
 
     const handleLogout = async () => {
         try {
             dispatch(logout());
+            dispatch(clearAllItem());
         } catch (error) {
             console.error('Logout failed:', error);
         }
