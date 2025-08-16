@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const savedUser = JSON.parse(localStorage.getItem("user"));
+
 const initialState = {
-  currentUser: null, // hoặc lấy từ localStorage nếu muốn lưu lâu dài
+  currentUser: savedUser || null,
 };
 
 const authSlice = createSlice({

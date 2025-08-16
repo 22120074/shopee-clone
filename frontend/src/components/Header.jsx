@@ -22,6 +22,8 @@ function Header() {
         }
     };
 
+    console.log(items)
+
     return (
         <header className={`${isSticky ? 'sticky top-0 z-[100]' : 'relative'} Web-header flex flex-col`} style={{ backgroundColor: "#FA5130", height: "120px", width: "100%" }}>
             {/* Phần 1 của Navbar */}
@@ -143,15 +145,32 @@ function Header() {
                                 <div className="absolute bottom-[32px] text-[16px] text-gray-400 text-center capitalize">chưa có sản phẩm nào</div>
                             </div>
                         ) : (
-                            <ul className='flex flex-col w-full h-full overflow-y-auto'>
-                                {items.map((item) => (
-                                    <li key={item.id} className='flex items-center justify-between'>
-                                        {item.name}
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className='relative flex flex-col items-start justify-center h-full w-full p-2'>
+                                <h3 className='text-gray-400 text-[16px]'>Sản Phẩm Mới Thêm</h3>
+                                <ul className='flex flex-col w-full h-full overflow-y-auto'>
+                                    {items.map((item) => (
+                                        <li key={item.id} className='flex flex-row items-start justify-between w-full'>
+                                            <div className='flex items-start'>
+                                                <div className=''
+                                                    style={{
+                                                        width: '48px',
+                                                        height: '48px',
+                                                        backgroundImage: `url(${item.selectedAttributes.attribute.imageUrl})`,
+                                                        backgroundSize: 'cover',
+                                                        backgroundPosition: 'center'
+                                                    }}>
+                                                </div>
+                                                <span className='max-w-[250px] line-clamp-1'>{item.name}</span>
+                                            </div>
+                                            <div className='text-[16px] font-normal text-[#ee4d2d] flex items-center'>
+                                                <i className="fa-solid fa-dong-sign text-[11px] relative top-[0px]"></i>
+                                                {item.selectedAttributes.attribute.price}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         )
-
                         }
                     </div>
                 </div>
