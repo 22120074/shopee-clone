@@ -1,13 +1,16 @@
 import './header.css';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logout } from '../features/auth/authSlice';
 import { clearAllItem } from '../features/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import emptyCart from '../assets/Empty-bro.svg';
+import PrimaryButton from './Button';
+
 
 function Header() {
     const dispatch = useDispatch();
-    
+    const navigate = useNavigate();
+
     // Lấy thông tin người dùng từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
     const isSticky = useLocation().pathname === '/';
@@ -137,8 +140,9 @@ function Header() {
                 <div className='navbar_cart relative'>
                     <i className="navbar_cart-icon fa-solid fa-cart-shopping text-white"></i>
                     {/* Layout sản phẩm trong giỏ hàng */}
-                    <div className='cart_dropdown absolute bg-white shadow-lg rounded-sm
-                        w-[400px] h-[300px] z-10'>
+                    <div className={`cart_dropdown absolute bg-white shadow-lg rounded-sm
+                        w-[400px] z-10 
+                        ${items.length === 0 ? "h-[300px]" : "h-auto"}`}>
                         {/* Nội dung giỏ hàng */}
                         {/* Nếu giỏ hàng trống */}
                         {items.length === 0 ? (
@@ -147,30 +151,40 @@ function Header() {
                                 <div className="absolute bottom-[32px] text-[16px] text-gray-400 text-center capitalize">chưa có sản phẩm nào</div>
                             </div>
                         ) : (
-                            <div className='relative flex flex-col items-start justify-center h-full w-full p-2'>
-                                <h3 className='text-gray-400 text-[16px]'>Sản Phẩm Mới Thêm</h3>
-                                <ul className='flex flex-col w-full h-full overflow-y-auto'>
-                                    {items.map((item) => (
+                            <div className='relative flex flex-col items-start justify-center h-full w-full pt-2 pb-3 px-3'>
+                                <h3 className='text-gray-400 text-[16px] mb-5'>Sản Phẩm Mới Thêm</h3>
+                                <ul className='flex flex-col w-full h-full overflow-y-auto gap-4'>
+                                    {items.slice(0, 5).map((item) => (
                                         <li key={item.id} className='flex flex-row items-start justify-between w-full'>
-                                            <div className='flex items-start'>
+                                            <div className='flex items-start gap-2'>
                                                 <div className=''
                                                     style={{
-                                                        width: '48px',
-                                                        height: '48px',
+                                                        width: '36px',
+                                                        height: '36px',
                                                         backgroundImage: `url(${item.selectedAttributes.attribute.imageUrl})`,
                                                         backgroundSize: 'cover',
                                                         backgroundPosition: 'center'
                                                     }}>
                                                 </div>
-                                                <span className='max-w-[250px] line-clamp-1'>{item.name}</span>
+                                                <p className='text-[14px] leading-5 max-w-[250px] line-clamp-1'>{item.name}</p>
                                             </div>
                                             <div className='text-[16px] font-normal text-[#ee4d2d] flex items-center'>
                                                 <i className="fa-solid fa-dong-sign text-[11px] relative top-[0px]"></i>
-                                                {item.selectedAttributes.attribute.price}
+                                                {(item.selectedAttributes.attribute.price * ((100 - item.discount) / 100)).toLocaleString('vi-VN')}
                                             </div>
                                         </li>
                                     ))}
                                 </ul>
+                                <div className={`flex flex-row items-center w-full mt-5 order-last
+                                        ${items.length > 5 ? "justify-between" : "justify-end"}`}>
+                                    { items.length > 5 && (
+                                        <p className='text-xs text-gray-400 text-center capitalize'>
+                                            {items.length - 5} sản phẩm khác trong giỏ hàng
+                                        </p>
+                                    )
+                                    }
+                                    <PrimaryButton height='36px' width='136px' text='Xem Giỏ Hàng' onClick={() => navigate("/cart")} type='button' />
+                                </div>
                             </div>
                         )
                         }

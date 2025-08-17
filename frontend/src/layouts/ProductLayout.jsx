@@ -174,6 +174,7 @@ function ProductLayout() {
                 name: product.name,
                 attributes: product.attributes,
                 stock: product.stockCounts,
+                discount: product.discount,
                 quantity: value,
                 selectedAttributes: {
                     color: focusColor,
