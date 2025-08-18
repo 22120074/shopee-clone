@@ -126,12 +126,17 @@ exports.getMe = async (req, res) => {
 
 exports.logout = (req, res) => {
   res
-    .clearCookie('token', {
+    .clearCookie('access_token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Lax'
     })
-    .json({ message: 'Đăng xuất thành công' });
+    .clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Lax'
+    })
+    .json({ message: 'Đăng xuất thành công!' });
 };
 
 exports.refreshToken = (req, res) => {
