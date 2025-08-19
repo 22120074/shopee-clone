@@ -7,8 +7,10 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../features/auth/authSlice';
+import { loadItem } from '../features/cart/cartSlice';
 import { login as loginService } from '../services/user.service';
 import { getCurrentUser, refreshToken } from '../services/user.service';
+import { getCart } from '../services/cart.service';
 
 function Login() {
   const navigate = useNavigate();
@@ -58,6 +60,10 @@ function Login() {
       // Nếu không có lỗi, cập nhật state auth
       if (currentUser) {
         dispatch(login(currentUser.data.dataUser));
+        const cart = await getCart(currentUser.data.dataUser.userId);
+        if(cart) {
+          dispatch(loadItem(cart.data));
+        }
       }
       // Chuyển hướng về trang chủ
       setLoading(false);

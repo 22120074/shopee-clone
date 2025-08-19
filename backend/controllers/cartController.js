@@ -1,4 +1,3 @@
-const Cart = require('../models/Cart');
 const { createCart, getCartByUserId, updateCart, deleteCart, checkExistingCart } = require('../services/cart.service');
 
 module.exports.createOrUpdateCart = async (req, res) => {
@@ -15,4 +14,12 @@ module.exports.createOrUpdateCart = async (req, res) => {
     }
 };
 
-
+module.exports.getCart = async (req, res) => {
+    const { userId } = req.query;
+    try {
+        const cart = await getCartByUserId(userId);
+        return res.status(200).json(cart);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}

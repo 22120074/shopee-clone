@@ -5,6 +5,7 @@ import { clearAllItem } from '../features/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import emptyCart from '../assets/Empty-bro.svg';
 import PrimaryButton from './Button';
+import { createOrupdateCart } from '../services/cart.service';
 
 
 function Header() {
@@ -17,11 +18,21 @@ function Header() {
 
     // Lấy thông tin giỏ hàng từ Redux store
     const items = useSelector((state) => state.cart.items);
+    const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+    const totalPrice = useSelector((state) => state.cart.totalPrice);
 
     const handleLogout = async () => {
         try {
+            if(items.length > 0) {
+                await createOrupdateCart({
+                    userId: user.userId,
+                    items: items,
+                    totalQuantity: totalQuantity,
+                    totalPrice: totalPrice
+                });
+                dispatch(clearAllItem());
+            }
             dispatch(logout());
-            dispatch(clearAllItem());
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -155,7 +166,7 @@ function Header() {
                                 <h3 className='text-gray-400 text-[16px] mb-5'>Sản Phẩm Mới Thêm</h3>
                                 <ul className='flex flex-col w-full h-full overflow-y-auto gap-4'>
                                     {items.slice(0, 5).map((item) => (
-                                        <li key={item.id} className='flex flex-row items-start justify-between w-full'>
+                                        <li key={item.selectedAttributes.attribute.id} className='flex flex-row items-start justify-between w-full'>
                                             <div className='flex items-start gap-2'>
                                                 <div className=''
                                                     style={{

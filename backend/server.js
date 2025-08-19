@@ -38,6 +38,9 @@ app.use('/auth', authRoute);
 const productRoute = require('./routes/productRoute');
 app.use('/product', productRoute);
 
+const cartRoute = require('./routes/cartRoute');
+app.use('/cart', cartRoute);
+
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })

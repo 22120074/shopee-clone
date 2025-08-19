@@ -28,6 +28,17 @@ const cartSlice = createSlice({
                 totalPrice: state.totalPrice
             }));
         },
+        loadItem(state, action) {
+            const cart = action.payload;
+            state.items = cart.items || [];
+            state.totalQuantity = cart.totalQuantity || 0;
+            state.totalPrice = cart.totalPrice || 0;
+            localStorage.setItem("cart", JSON.stringify({
+                items: state.items,
+                totalQuantity: state.totalQuantity,
+                totalPrice: state.totalPrice
+            }));
+        },
         removeItem(state, action) {
             const id = action.payload;
             const existingItem = state.items.find(i => i.id === id);
@@ -50,9 +61,10 @@ const cartSlice = createSlice({
             state.items = [];
             state.totalQuantity = 0;
             state.totalPrice = 0;
+            localStorage.removeItem("cart");
         },
     },
 });
 
-export const { addItem, removeItem, updateQuantityItem, clearAllItem } = cartSlice.actions;
+export const { addItem, removeItem, updateQuantityItem, clearAllItem, loadItem } = cartSlice.actions;
 export default cartSlice.reducer;
