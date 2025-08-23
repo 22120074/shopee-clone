@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout";
 import CategoryLayout from "../layouts/CategoryLayout";
 import ProductLayout from "../layouts/ProductLayout";
 import TrendingProductLayout from "../layouts/TrendingProductLayout";
+import CartLayout from "../layouts/CartLayout";
 
 import Home from "../pages/home";
 export const mainRoutes = (
@@ -21,8 +22,9 @@ export const mainRoutes = (
       <Route path="/product/TrendingProduct" element={<TrendingProductLayout />} />
       <Route path="/product/:productName" element={<ProductLayout />} />
     </Route>
-
-
-
+    {/* Giỏ hàng */}
+    <Route element={<MainLayout />}>
+      <Route path="/cart" element={<CartLayout />} />
+    </Route>
   </>
 );
