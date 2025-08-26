@@ -42,7 +42,7 @@ function Header() {
         }
     };
 
-    // console.log(items)
+    console.log(items)
 
     return (
         <header className={`${isSticky ? 'sticky top-0 z-[100]' : 'relative'} Web-header flex flex-col
@@ -100,13 +100,13 @@ function Header() {
                                                 >
                                                     <img src={user.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
                                                 </div>
-                                                <div className='user_name'> 
+                                                <div className='max-w-[100px] overflow-hidden'> 
                                                     {user.name || user.phone || user._id}
                                                 </div>
                                             </div>
                                         </Link>
                                         {/* Dropdown menu người dùng*/}
-                                        <div className='user_dropdown w-auto min-w-max' style={{ position: "absolute" }}>
+                                        <div className='user_dropdown w-auto min-w-max ' style={{ position: "absolute" }}>
                                             <ul className='flex flex-col text-black'>
                                                 <li className='user_dropdown-item hover:bg-gray-100 hover:text-[#00b9c7]'>
                                                     <Link to="/" className='user_dropdown-item_link'>Tài khoản của tôi</Link>
@@ -173,7 +173,7 @@ function Header() {
                     <div className="flex items-center flex-col" style={{ flex: "1", height: "100%" }}>
                         <div className="navbar_input-wrapper flex items-center mt-4" style={{ width: "100%", height: "40px", backgroundColor: "white", padding: "0 0 0 10px" }}>
                             <input type="text" className='navbar_input text-sm' style={{width: "100%", height: "40px", flex: "1"}} placeholder='Shopee bao ship 0Đ - Đăng kí ngay!' />
-                            <button className="navbar_input-search-icon">
+                            <button className="w-[60px] h-[calc(100%-6px)] bg-[#FA5130] flex items-center justify-center m-[3px] rounded-sm">
                                 <i className="fa-solid fa-magnifying-glass text-white"></i>
                             </button>
                         </div>
@@ -189,7 +189,11 @@ function Header() {
                     </div>
                     {/* Phần giỏ hàng */}
                     <div className='navbar_cart relative'>
-                        <i className="navbar_cart-icon fa-solid fa-cart-shopping text-white"></i>
+                        <Link to="/cart" className='flex items-center w-[30%] h-full justify-center'>
+                            <i className="cursor-pointer w-[30%] flex items-center justify-center relative 
+                                fa-solid fa-cart-shopping text-white">
+                            </i>
+                        </Link>
                         {/* Layout sản phẩm trong giỏ hàng */}
                         <div className={`cart_dropdown absolute bg-white shadow-lg rounded-sm
                             w-[400px] z-10 
