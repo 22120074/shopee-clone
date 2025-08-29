@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import emptyCart from '../assets/Empty-bro.svg';
 import PrimaryButton from './Button';
 import { createOrupdateCart } from '../services/cart.service';
+import { useEffect, useState } from 'react';
 
 
 function Header() {
@@ -24,7 +25,11 @@ function Header() {
 
     // Lấy thông tin location từ URL
     const urlPath = location.pathname === "/cart" ? "cart" : "";
-    
+
+    // dùng useState để quản lí animation 
+    const [openUserDropdown, setOpenUserDropdown] = useState("closed");
+    const [openCartDropdown, setOpenCartDropdown] = useState("closed");
+
     const handleLogout = async () => {
         try {
             if(items.length > 0) {
@@ -41,6 +46,23 @@ function Header() {
             console.error('Logout failed:', error);
         }
     };
+
+    // dùng useEffect để quản lí đóng mở dropdown
+    useEffect(() => {
+        let timer;
+        if (openUserDropdown === "close") {
+            timer = setTimeout(() => { setOpenUserDropdown("closed"); }, 200);
+        }
+        return () => clearTimeout(timer);
+    }, [openUserDropdown]);
+
+    useEffect(() => {
+        let timer;
+        if (openCartDropdown === "close") {
+            timer = setTimeout(() => { setOpenCartDropdown("closed"); }, 200);
+        }
+        return () => clearTimeout(timer);
+    }, [openCartDropdown]);
 
     console.log(items)
 
@@ -91,8 +113,11 @@ function Header() {
                                 </>
                             ) : (
                                 <>
-                                    <li className="user_wrapper" style={{ padding: "0 9px 0 0", position: "relative"}}>
-                                        <Link to="/user">
+                                    <li className="user_wrapper" style={{ padding: "0 9px 0 0", position: "relative"}}
+                                        onMouseEnter={() => setOpenUserDropdown("open")}
+                                        onMouseLeave={() => setOpenUserDropdown("close")}
+                                    >
+                                        <Link to="/user" >
                                             <div className='flex items-center' style={{ alignItems: "center" }}>
                                                 <div className='' 
                                                     style={{ width: "32px", height: "32px", borderRadius: "50%", 
@@ -106,7 +131,7 @@ function Header() {
                                             </div>
                                         </Link>
                                         {/* Dropdown menu người dùng*/}
-                                        <div className='user_dropdown w-auto min-w-max ' style={{ position: "absolute" }}>
+                                        <div className={`user_dropdown w-auto min-w-max ${openUserDropdown}`} style={{ position: "absolute" }}>
                                             <ul className='flex flex-col text-black'>
                                                 <li className='user_dropdown-item hover:bg-gray-100 hover:text-[#00b9c7]'>
                                                     <Link to="/" className='user_dropdown-item_link'>Tài khoản của tôi</Link>
@@ -188,7 +213,10 @@ function Header() {
                         </ul>
                     </div>
                     {/* Phần giỏ hàng */}
-                    <div className='navbar_cart relative'>
+                    <div className='navbar_cart relative'
+                        onMouseEnter={() => setOpenCartDropdown("open")}
+                        onMouseLeave={() => setOpenCartDropdown("close")}
+                    >
                         <Link to="/cart" className='flex items-center w-[30%] h-full justify-center'>
                             <i className="cursor-pointer w-[30%] flex items-center justify-center relative 
                                 fa-solid fa-cart-shopping text-white">
@@ -197,7 +225,9 @@ function Header() {
                         {/* Layout sản phẩm trong giỏ hàng */}
                         <div className={`cart_dropdown absolute bg-white shadow-lg rounded-sm
                             w-[400px] z-10 
-                            ${items.length === 0 ? "h-[300px]" : "h-auto"}`}>
+                            ${items.length === 0 ? "h-[300px]" : "h-auto"}
+                            ${openCartDropdown}`}
+                        >
                             {/* Nội dung giỏ hàng */}
                             {/* Nếu giỏ hàng trống */}
                             {items.length === 0 ? (
