@@ -95,7 +95,6 @@ function CartLayout() {
                   <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                   {(attribute.selectedAttributes.attribute.price * (100 - 10) / 100).toLocaleString('vi-VN')}
                 </div>
-
               </div>
               <div className='flex justify-center'>{attribute.quantity}</div>
               <div className='flex justify-center text-base font-normal text-[#ee4d2d]'>
