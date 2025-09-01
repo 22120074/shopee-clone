@@ -445,7 +445,8 @@ function ProductLayout() {
                                     border-r border-[#CCCCCC] flex-1 text-[12px]
                                     ${ value === 1 || !focusAttribute ? 'text-[#CCCCCC]' : ''}`}
                                     disabled={!focusAttribute}
-                                    onClick={quantityDecrease}>
+                                    onClick={quantityDecrease}
+                                >
                                     <i className="fa-solid fa-minus"></i>
                                 </button>
                                 <input
@@ -466,7 +467,8 @@ function ProductLayout() {
                                     border-l border-[#CCCCCC] flex-1 text-[12px]
                                     ${focusAttribute ? '' : 'text-[#CCCCCC]'}`}
                                     onClick={quantityIncrease}
-                                    disabled={!focusAttribute || value >= stock}>
+                                    disabled={!focusAttribute || value >= stock}
+                                >
                                     <i className="fa-solid fa-plus"></i>
                                 </button>
                             </div>

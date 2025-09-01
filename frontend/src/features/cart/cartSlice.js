@@ -50,12 +50,17 @@ const cartSlice = createSlice({
         },
         updateQuantityItem(state, action) {
             const { id, quantity } = action.payload;
-            const existingItem = state.items.find(i => i.id === id);
+            const existingItem = state.items.find(i => i.selectedAttributes.attribute.id === id);
             if (existingItem && quantity > 0) {
                 state.totalQuantity += quantity - existingItem.quantity;
-                state.totalPrice += (quantity - existingItem.quantity) * existingItem.price;
+                state.totalPrice += (quantity - existingItem.quantity) * existingItem.selectedAttributes.attribute.price;
                 existingItem.quantity = quantity;
             }
+            localStorage.setItem("cart", JSON.stringify({
+                items: state.items,
+                totalQuantity: state.totalQuantity,
+                totalPrice: state.totalPrice
+            }));
         },
         clearAllItem(state) {
             state.items = [];

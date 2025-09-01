@@ -1,14 +1,28 @@
 import '../css/CartLayout.css'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import PrimaryButton from '../components/Button';
+import { updateQuantityItem } from '../features/cart/cartSlice';
 
 
 function CartLayout() {
+  const dispatch = useDispatch();
+  // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
 
+  // Lưu trạng thái dropdown cho từng sản phẩm
   const [openDropdown, setOpenDropdown] = useState(null);
 
+  // Các hàm xử lí tăng, giảm số lượng sản phẩm; 
+  const quantityIncrease = (index) => {
+    // Tăng số lượng sản phẩm tại vị trí index
+    dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: cartItems[index].quantity + 1 }));
+  };
+
+  const quantityDecrease = (index) => {
+    // Giảm số lượng sản phẩm tại vị trí index
+    dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: cartItems[index].quantity - 1 }));
+  };
 
 
   return (
@@ -83,12 +97,13 @@ function CartLayout() {
               </div>
 
               {/* Bên phải: 4 thông tin sản phẩm */}
-              <div className='flex justify-center text-base font-normal gap-2'>
+              {/* Đơn giá */}
+              <div className='flex justify-center text-sm font-normal gap-2'>
                 { attribute.discount > 0 &&
                   <div className='relative text-[#929292] whitespace-nowrap'>
                     <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                     { attribute.selectedAttributes.attribute.price.toLocaleString('vi-VN') }
-                    <div className='absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]'></div>
+                    <div className='absolute top-[50%] right-0 w-full h-[1px] bg-black'></div>
                   </div>
                 }
                 <div className='whitespace-nowrap'>
@@ -96,12 +111,43 @@ function CartLayout() {
                   {(attribute.selectedAttributes.attribute.price * (100 - 10) / 100).toLocaleString('vi-VN')}
                 </div>
               </div>
-              <div className='flex justify-center'>{attribute.quantity}</div>
-              <div className='flex justify-center text-base font-normal text-[#ee4d2d]'>
+              {/* Số lượng */}
+              <div className='flex justify-center items-center h-8  text-inherit w-full'>
+                <button className={`w-[30px] h-full flex items-center justify-center
+                    border border-[#CCCCCC] text-xs
+                  `}
+                  onClick={() => quantityDecrease(index)}
+                >
+                  <i className="fa-solid fa-minus"></i>
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  value={attribute.quantity}
+                  // onChange={handleQuantityChange}
+                  className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
+                    [&::-webkit-outer-spin-button]:appearance-none 
+                    [&::-webkit-inner-spin-button]:appearance-none
+                    focus:outline-none
+                    bg-transparent
+                    border-y border-[#CCCCCC]
+                  `}
+                />
+                <button className={`w-[30px] h-full flex items-center justify-center
+                    border border-[#CCCCCC] text-xs
+                  `}
+                  onClick={() => quantityIncrease(index)}
+                >
+                  <i className="fa-solid fa-plus"></i>
+                </button>
+              </div>
+              {/* Số tiền */}
+              <div className='flex justify-center text-sm font-normal text-[#ee4d2d]'>
                 <i className="fa-solid fa-dong-sign text-[10px] relative top-[7px] right-[1px]"></i>
                 {(attribute.quantity * attribute.selectedAttributes.attribute.price).toLocaleString('vi-VN')}
               </div>
-              <div className='flex justify-center'>Xóa</div>
+              {/* Thao tác */}
+              <button className='flex justify-center text-sm font-normal'>Xóa</button>
             </div>
 
 
