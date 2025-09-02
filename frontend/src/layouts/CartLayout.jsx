@@ -64,6 +64,11 @@ function CartLayout() {
       newInputs[index] = (parseInt(newInputs[index]) - 1).toString();
       return newInputs;
     });
+    // Hiển thị popup thông báo về việc thay đổi số lượng
+    setShowPopup_DecreaseQuantity('1');
+    setTimeout(() => {
+      setShowPopup_DecreaseQuantity('0');
+    }, 2000);
     dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: parseInt(quantityInputs[index]) - 1 }));
   };
 
