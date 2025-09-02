@@ -41,12 +41,17 @@ const cartSlice = createSlice({
         },
         removeItem(state, action) {
             const id = action.payload;
-            const existingItem = state.items.find(i => i.id === id);
+            const existingItem = state.items.find(i => i.selectedAttributes.attribute.id === id);
             if (existingItem) {
                 state.totalQuantity -= existingItem.quantity;
-                state.totalPrice -= existingItem.price * existingItem.quantity;
-                state.items = state.items.filter(i => i.id !== id);
+                state.totalPrice -= existingItem.selectedAttributes.attribute.price * existingItem.quantity;
+                state.items = state.items.filter(i => i.selectedAttributes.attribute.id !== id);
             }
+            localStorage.setItem("cart", JSON.stringify({
+                items: state.items,
+                totalQuantity: state.totalQuantity,
+                totalPrice: state.totalPrice
+            }));
         },
         updateQuantityItem(state, action) {
             const { id, quantity } = action.payload;

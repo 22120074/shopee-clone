@@ -93,16 +93,16 @@ const getOneProduct = async (productID) => {
     });
 
     const stockCounts = await Stock.findAll({
-    attributes: [
-        'productId',
-        'attributeID',
-        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
-    ],
-    where: {
-        productId: product.id
-    },
-    group: ['productId', 'attributeID'],
-    raw: true
+        attributes: [
+            'productId',
+            'attributeID',
+            [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
+        ],
+        where: {
+            productId: product.id
+        },
+        group: ['productId', 'attributeID'],
+        raw: true
     });
 
     return {

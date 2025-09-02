@@ -66,8 +66,16 @@ function Header() {
 
     console.log(items)
 
+    // Dùng useEffect để fix lỗi tự open dropdown khi từ /cart quay về trang chủ
+    useEffect(() => {
+        // Mỗi khi đổi trang thì đóng dropdown
+        setOpenCartDropdown("closed");
+        setOpenUserDropdown("closed");
+    }, [location.pathname]);
+
+
     return (
-        <header className={`${isSticky ? 'sticky top-0 z-[100]' : 'relative'} Web-header flex flex-col
+        <header className={`${isSticky ? 'sticky top-0 z-[30]' : 'relative'} Web-header flex flex-col
                 ${urlPath === "cart" ? 'h-[140px]' : 'h-[120px]'} `} 
                 style={{ backgroundColor: "#FA5130", width: "100%" }}>
             {/* Phần 1 của Navbar */}

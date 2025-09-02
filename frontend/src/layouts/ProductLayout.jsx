@@ -122,11 +122,11 @@ function ProductLayout() {
     };
     
     const handleBlur = () => {
-    if (value > stock) {
-        setValue(stock);
-    } else if (value < 1) {
-        setValue(1);
-    }
+        if (value > stock) {
+            setValue(stock);
+        } else if (value < 1) {
+            setValue(1);
+        }
     };
 
     // 1. sử dụng useEffect để tìm focusAttribute dựa trên focusColor và focusSize
