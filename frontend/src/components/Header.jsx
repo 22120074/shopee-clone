@@ -1,4 +1,4 @@
-import './header.css';
+import '../css/header.css';
 import { Link, useLocation, useNavigate  } from "react-router-dom";
 import { logout } from '../features/auth/authSlice';
 import { clearAllItem } from '../features/cart/cartSlice';

@@ -8,7 +8,7 @@ import useToastQueue from '../components/ToastQueue';
 
 
 function CartLayout() {
-  const { toasts, addToast } = useToastQueue(3, 2000);
+  const { toasts, addToast } = useToastQueue(3, 1000);
   const dispatch = useDispatch();
   // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
@@ -173,7 +173,7 @@ function CartLayout() {
           </div>
         ))}
       </div>
-      {/* Thanh ngang phân cột trong giỏ hàng */}
+      {/* Thanh ngang phân cột trong giỏ hàng đại diện chi Header*/}
       <div className="bg-white h-[56px] max-w-[1200px] mx-auto border-b border-gray-200 px-10 grid items-center"
         style={{ gridTemplateColumns: "1fr 150px 150px 150px 150px" }}
       >

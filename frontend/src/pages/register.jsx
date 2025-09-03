@@ -1,4 +1,4 @@
-import './auth.css';
+import '../css/auth.css';
 import React, { useState } from 'react';
 import PrimaryButton from '../components/Button';
 import { FcGoogle } from 'react-icons/fc'; // Icon Google đầy đủ màu

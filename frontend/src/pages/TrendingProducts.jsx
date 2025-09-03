@@ -1,4 +1,4 @@
-import './home.css';
+import '../css/home.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import "../assets/Animation.css"
@@ -9,13 +9,13 @@ function TrendingProducts() {
 
     // Hàm gọi API lấy 48 sản phẩm
     const fetchProducts = useCallback(async () => {
-      try {
-        const response = await getAllProducts();
-        // console.log('Đã lấy sản phẩm:', response.data);
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Lỗi khi fetch sản phẩm:', error);
-      }
+        try {
+            const response = await getAllProducts();
+            // console.log('Đã lấy sản phẩm:', response.data);
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Lỗi khi fetch sản phẩm:', error);
+        }
     }, []);
 
     // Hàm định dạng số lượng đã bán

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
-import './CarouselSlide.css';
+import '../css/CarouselSlide.css';
 
 export default function CarouselSlider({ images, width = 800, height = 240 }) {
   // Tạo chuỗi CSS background-image
