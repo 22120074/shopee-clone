@@ -1,14 +1,17 @@
 import '../css/CartLayout.css'
+import HeaderCart from '../components/cartComponents/headerCart';
+import useToastQueue from '../hooks/useToastQueue';
+import ToastQueue from '../components/cartComponents/toastQueue';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useRef } from 'react';
 import PrimaryButton from '../components/Button';
 import { updateQuantityItem, removeItem } from '../features/cart/cartSlice';
 import '../assets/Animation.css'
-import useToastQueue from '../components/ToastQueue';
 
 
 function CartLayout() {
-  const { toasts, addToast } = useToastQueue(3, 1000);
+  // Sử dụng hook useToastQueue để quản lí toast
+  const { toasts, addToast } = useToastQueue(3, 1500);
   const dispatch = useDispatch();
   // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
@@ -148,48 +151,9 @@ function CartLayout() {
   return (
     <div className="w-full bg-[#F5F5F5] h-screen pt-5">
       {/* Toast Queue để hiển thị từng thông báo */}
-      <div className="fixed top-5 right-5 flex flex-col gap-3 w-[400px] h-auto">
-        {toasts.map(t => (
-          <div key={t.id} className={`flex items-center justify-center rounded-md text-black 
-            bg-white border border-gray-300 p-4 shadow-md
-            w-[400px] h-[100px] animate-slide-bounce
-            `}
-          >
-            <div className='flex items-center justify-center w-[300px] h-full'>
-              {t.message}
-            </div>
-            {  t.icon === 'check' 
-              && (
-                <i className="fa-solid fa-circle-check flex items-center justify-center flex-1 h-full text-green-500 text-4xl"></i>
-            )}
-            {  t.icon === 'warning' 
-              && (
-                <i className="fa-solid fa-triangle-exclamation flex items-center justify-center flex-1 h-full text-yellow-500 text-4xl"></i>
-            )}
-            {  t.icon === 'trash' 
-              && (
-              <i className="fa-solid fa-trash-can flex items-center justify-center flex-1 h-full text-gray-500 text-4xl"></i>
-            )}
-          </div>
-        ))}
-      </div>
+      <ToastQueue toasts={toasts} />
       {/* Thanh ngang phân cột trong giỏ hàng đại diện chi Header*/}
-      <div className="bg-white h-[56px] max-w-[1200px] mx-auto border-b border-gray-200 px-10 grid items-center"
-        style={{ gridTemplateColumns: "1fr 150px 150px 150px 150px" }}
-      >
-        <div className='flex items-center h-full gap-4'>
-          <input type="checkbox" className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
-            checked:bg-[#FA5130] checked:border-[#FA5130]">
-          </input>
-          <div className=''>
-            Sản Phẩm
-          </div>
-        </div>
-        <div className='flex justify-center capitalize text-[#888897]'>đơn giá</div>
-        <div className='flex justify-center capitalize text-[#888897]'>số lượng</div>
-        <div className='flex justify-center capitalize text-[#888897]'>số tiền</div>
-        <div className='flex justify-center capitalize text-[#888897]'>thao tác</div>
-      </div>
+      <HeaderCart />
       {/* Nội dung giỏ hàng sẽ được hiển thị ở đây */}
       {
         cartItems.map((attribute, index) => (

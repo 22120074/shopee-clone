@@ -232,7 +232,7 @@ function Header() {
                         </Link>
                         {/* Layout sản phẩm trong giỏ hàng */}
                         <div className={`cart_dropdown absolute bg-white shadow-lg rounded-sm
-                            w-[400px] z-10 
+                            w-[400px] z-[50] 
                             ${items.length === 0 ? "h-[300px]" : "h-auto"}
                             ${openCartDropdown}`}
                         >
