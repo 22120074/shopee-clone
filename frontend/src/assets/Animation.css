@@ -6,3 +6,15 @@
 .animate-fade-out {
   animation: fadeOut 2s forwards;
 }
+
+@keyframes slideInBounce {
+  0%   { transform: translateX(120%); opacity: 0; } /* bắt đầu ngoài màn hình bên phải */
+  40%  { transform: translateX(0%); opacity: 1; }  /* trượt vào đúng chỗ */
+  60%  { transform: translateX(5px); }            /* nảy qua phải một chút */
+  80%  { transform: translateX(0%); }             /* trở lại vị trí chính */
+  100% { transform: translateX(0%); }             /* ổn định */
+}
+
+.animate-slide-bounce {
+  animation: slideInBounce 2s cubic-bezier(0, 0, 0, 1) forwards;
+}

@@ -1,12 +1,14 @@
 import '../css/CartLayout.css'
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import PrimaryButton from '../components/Button';
 import { updateQuantityItem, removeItem } from '../features/cart/cartSlice';
 import '../assets/Animation.css'
+import useToastQueue from '../components/ToastQueue';
 
 
 function CartLayout() {
+  const { toasts, addToast } = useToastQueue(3, 2000);
   const dispatch = useDispatch();
   // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
@@ -28,48 +30,76 @@ function CartLayout() {
     }
   }
 
+  // Tạo ref để giữ timeout, mỗi popup một ref
+  const popupIncreaseTimeout = useRef(null);
+  const popupDecreaseTimeout = useRef(null);
+
   const quantityIncrease = (index) => {
-    // Tính số lượng sản phẩm còn trong kho dựa trên selectedAttributes
-    const stock = cartItems[index].stock.find(attr => attr.attributeID === cartItems[index].selectedAttributes.attribute.id)?.count || 0
+    const stock = cartItems[index].stock.find(
+      attr => attr.attributeID === cartItems[index].selectedAttributes.attribute.id
+    )?.count || 0;
+
     if (quantityInputs[index] >= stock) {
-      setShowPopup_IncreaseQuantity('2');
-      setTimeout(() => {
-        setShowPopup_IncreaseQuantity('0');
-      }, 2000);
+      // clear timeout cũ
+      if (popupIncreaseTimeout.current) clearTimeout(popupIncreaseTimeout.current);
+
+      // debounce popup
+      popupIncreaseTimeout.current = setTimeout(() => {
+        // Hiển thị popup thông báo cho việc tăng số lượng quá giới hạn
+        addToast('Số lượng sản phẩm đã đạt giới hạn tối đa. Không thể tăng thêm.', 'error', 'warning');
+      }, 400); // chỉ hiện sau khi dừng click 400ms
       return;
     }
+
     setQuantityInputs(prevInputs => {
       const newInputs = [...prevInputs];
       newInputs[index] = (parseInt(newInputs[index]) + 1).toString();
       return newInputs;
     });
-    // Hiển thị popup thông báo về việc thay đổi số lượng
-    setShowPopup_IncreaseQuantity('1');
-    setTimeout(() => {
-      setShowPopup_IncreaseQuantity('0');
-    }, 2000);
-    dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: parseInt(quantityInputs[index]) + 1 }));
+
+    // clear timeout cũ
+    if (popupIncreaseTimeout.current) clearTimeout(popupIncreaseTimeout.current);
+
+    // debounce popup
+    popupIncreaseTimeout.current = setTimeout(() => {
+      // Hiển thị popup thông báo cho việc cập nhật số lượng
+      addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
+    }, 400);
+
+    dispatch(updateQuantityItem({
+      id: cartItems[index].selectedAttributes.attribute.id,
+      quantity: parseInt(quantityInputs[index]) + 1
+    }));
   };
 
   const quantityDecrease = (index) => {
     if (quantityInputs[index] <= 1) {
-      setShowPopup_DecreaseQuantity('2');
-      setTimeout(() => {
-        setShowPopup_DecreaseQuantity('0');
-      }, 2000);
+      if (popupDecreaseTimeout.current) clearTimeout(popupDecreaseTimeout.current);
+
+      popupDecreaseTimeout.current = setTimeout(() => {
+        // Hiển thị popup thông báo cho việc giảm số lượng quá 0
+        addToast('Số lượng sản phẩm nhỏ nhất là 1. Không thể giảm thêm.', 'error', 'warning');
+      }, 400);
       return;
     }
+
     setQuantityInputs(prevInputs => {
       const newInputs = [...prevInputs];
       newInputs[index] = (parseInt(newInputs[index]) - 1).toString();
       return newInputs;
     });
-    // Hiển thị popup thông báo về việc thay đổi số lượng
-    setShowPopup_DecreaseQuantity('1');
-    setTimeout(() => {
-      setShowPopup_DecreaseQuantity('0');
-    }, 2000);
-    dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: parseInt(quantityInputs[index]) - 1 }));
+
+    if (popupDecreaseTimeout.current) clearTimeout(popupDecreaseTimeout.current);
+
+    popupDecreaseTimeout.current = setTimeout(() => {
+      // Hiển thị popup thông báo cho việc cập nhật số lượng
+      addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
+    }, 400);
+
+    dispatch(updateQuantityItem({
+      id: cartItems[index].selectedAttributes.attribute.id,
+      quantity: parseInt(quantityInputs[index]) - 1
+    }));
   };
 
   const handleQuantityChange = (e, index) => {
@@ -93,10 +123,8 @@ function CartLayout() {
           return updated;
         });
         dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: stock }));
-        setShowPopup_changeInputValue('1');
-        setTimeout(() => {
-          setShowPopup_changeInputValue('0');
-        }, 2000);
+        // Hiển thị popup thông báo cho việc quá số lượng
+        addToast('Số lượng sản phẩm vượt quá giới hạn trong kho. Đã tự động điều chỉnh về giá trị tối đa.', 'error', 'warning');
       } else {
         setQuantityInputs(prev => {
           const updated = [...prev];
@@ -104,10 +132,8 @@ function CartLayout() {
           return updated;
         });
         dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: parseInt(value) }));
-        setShowPopup_changeInputValue('2');
-        setTimeout(() => {
-          setShowPopup_changeInputValue('0');
-        }, 2000);
+        // Hiển thị popup thông báo cho việc cập nhật số lượng
+        addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
       }
     }
   }
@@ -116,68 +142,37 @@ function CartLayout() {
   const handleRemoveItem = (id) => {
     dispatch(removeItem(id));
     // Hiển thị popup thông báo cho việc xóa sản phẩm
-    setshowPopup_remove(true);
-    setTimeout(() => {
-      setshowPopup_remove(false);
-    }, 2000);
+    addToast('Sản phẩm đã được xóa khỏi giỏ hàng.', 'success', 'trash');
   };
-
-  // Dùng useState để lưu trạng thái popup thông báo
-  const [showPopup_remove, setshowPopup_remove] = useState(false);
-  const [showPopup_IncreaseQuantity, setShowPopup_IncreaseQuantity] = useState('0');
-  const [showPopup_DecreaseQuantity, setShowPopup_DecreaseQuantity] = useState('0');
-  const [showPopup_changeInputValue, setShowPopup_changeInputValue] = useState('0');
 
   return (
     <div className="w-full bg-[#F5F5F5] h-screen pt-5">
-      {/* Popup thông báo xóa sản phẩm */}
-      {showPopup_remove && (
-        <div className="fixed top-0 right-1 flex items-center justify-center z-50 animate-fade-out">
-          <div className="bg-white p-4 rounded shadow-md">
-            <p>Sản phẩm đã được xóa khỏi giỏ hàng.</p>
+      {/* Toast Queue để hiển thị từng thông báo */}
+      <div className="fixed top-5 right-5 flex flex-col gap-3 w-[400px] h-auto">
+        {toasts.map(t => (
+          <div key={t.id} className={`flex items-center justify-center rounded-md text-black 
+            bg-white border border-gray-300 p-4 shadow-md
+            w-[400px] h-[100px] animate-slide-bounce
+            `}
+          >
+            <div className='flex items-center justify-center w-[300px] h-full'>
+              {t.message}
+            </div>
+            {  t.icon === 'check' 
+              && (
+                <i className="fa-solid fa-circle-check flex items-center justify-center flex-1 h-full text-green-500 text-4xl"></i>
+            )}
+            {  t.icon === 'warning' 
+              && (
+                <i className="fa-solid fa-triangle-exclamation flex items-center justify-center flex-1 h-full text-yellow-500 text-4xl"></i>
+            )}
+            {  t.icon === 'trash' 
+              && (
+              <i className="fa-solid fa-trash-can flex items-center justify-center flex-1 h-full text-gray-500 text-4xl"></i>
+            )}
           </div>
-        </div>
-      )}
-      {/* Popup thông báo thay đổi số lượng bằng cách nút tăng giảm  */}
-      {(showPopup_IncreaseQuantity === '1' || showPopup_DecreaseQuantity === '1') && (
-        <div className="fixed top-0 right-1 flex items-center justify-center z-50 animate-fade-out">
-          <div className="bg-white p-4 rounded shadow-md">
-            <p>Số lượng hàng hóa đã được cập nhật 1.</p>
-          </div>
-        </div>
-      )}
-      {/* Popup thông báo tăng vượt quá số lượng có sẵn */}
-      {showPopup_IncreaseQuantity === '2' && (
-        <div className="fixed top-0 right-1 flex items-center justify-center z-50 animate-fade-out">
-          <div className="bg-white p-4 rounded shadow-md">
-            <p>Số lượng hàng hóa đã đạt tối đa. Không thể tăng thêm.</p>
-          </div>
-        </div>
-      )}
-      {/* Popup thông báo giảm dưới 1 */}
-      {showPopup_DecreaseQuantity === '2' && (
-        <div className="fixed top-0 right-1 flex items-center justify-center z-50 animate-fade-out">
-          <div className="bg-white p-4 rounded shadow-md">
-            <p>Số lượng hàng hóa đã giảm xuống dưới 1. Không thể giảm thêm.</p>
-          </div>
-        </div>
-      )}
-      {/* Popup thông báo thay đổi giá trị input khi thành công*/}
-      {showPopup_changeInputValue === '2' && (
-        <div className="fixed top-0 right-1 flex items-center justify-center z-50 animate-fade-out">
-          <div className="bg-white p-4 rounded shadow-md">
-            <p>Số lượng hàng hóa đã được cập nhật 2.</p>
-          </div>
-        </div>
-      )}
-      {/* Popup thông báo thay đổi giá trị input khi số lượng vượt quá*/}
-      {showPopup_changeInputValue === '1' && (
-        <div className="fixed top-0 right-1 flex items-center justify-center z-50 animate-fade-out">
-          <div className="bg-white p-4 rounded shadow-md">
-            <p>Số lượng hàng hóa vượt quá giới hạn trong kho. Hệ thống đã tự động điều chỉnh về giá trị tối đa.</p>
-          </div>
-        </div>
-      )}
+        ))}
+      </div>
       {/* Thanh ngang phân cột trong giỏ hàng */}
       <div className="bg-white h-[56px] max-w-[1200px] mx-auto border-b border-gray-200 px-10 grid items-center"
         style={{ gridTemplateColumns: "1fr 150px 150px 150px 150px" }}
