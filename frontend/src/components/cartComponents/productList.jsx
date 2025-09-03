@@ -16,7 +16,7 @@ function ProductList ({ cartItems, addToast, isAllChecked }) {
     const [isChecked, setIsChecked] = useState(cartItems.map(() => false));
 
     // Các hàm xử lí tăng, giảm số lượng; xóa sản phẩm rồi dùng dispatch(updateQuantityItem(id, quantity))
-    // Hàm xử lí blur
+    // Hàm xử lí input.onchange, xử lí input.onblur
     const handleQuantityClick = (e) => {
         const { action, id } = e.currentTarget.dataset;
         if (action === 'increase') {

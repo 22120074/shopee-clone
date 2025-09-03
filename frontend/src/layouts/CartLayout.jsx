@@ -15,7 +15,7 @@ function CartLayout() {
   const cartItems = useSelector((state) => state.cart.items);
   // Sử dụng useState để lưu isAllChecked
   const [isAllChecked, setIsAllChecked] = useState(false);
-  console.log(isAllChecked);
+  
   return (
     <div className="w-full bg-[#F5F5F5] h-screen pt-5">
       {/* Toast Queue để hiển thị từng thông báo */}
