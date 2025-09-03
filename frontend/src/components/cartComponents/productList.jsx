@@ -1,17 +1,20 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { updateQuantityItem, removeItem } from '../../features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
 import DetailProductDropDown from '../../components/cartComponents/detailProductDropDown'
 
-function ProductList ({ cartItems, addToast }) {
+function ProductList ({ cartItems, addToast, isAllChecked }) {
     const dispatch = useDispatch();
-
     // Dùng useState để lưu trạng thái dropdown cho từng sản phẩm
     const [openDropdown, setOpenDropdown] = useState(null);
-
     // Dùng useState để lưu trạng thái cho các input số lượng
     const [quantityInputs, setQuantityInputs] = useState(cartItems.map((item) => item.quantity.toString()));
-        
+    // Tạo ref để giữ timeout, mỗi popup một ref
+    const popupIncreaseTimeout = useRef(null);
+    const popupDecreaseTimeout = useRef(null);
+    // Dùng useState để lưu isChecked của từng item
+    const [isChecked, setIsChecked] = useState(cartItems.map(() => false));
+
     // Các hàm xử lí tăng, giảm số lượng; xóa sản phẩm rồi dùng dispatch(updateQuantityItem(id, quantity))
     // Hàm xử lí blur
     const handleQuantityClick = (e) => {
@@ -22,10 +25,6 @@ function ProductList ({ cartItems, addToast }) {
             quantityDecrease(id);
         }
     }
-
-    // Tạo ref để giữ timeout, mỗi popup một ref
-    const popupIncreaseTimeout = useRef(null);
-    const popupDecreaseTimeout = useRef(null);
 
     const quantityIncrease = (index) => {
         const stock = cartItems[index].stock.find(
@@ -136,6 +135,23 @@ function ProductList ({ cartItems, addToast }) {
         addToast('Sản phẩm đã được xóa khỏi giỏ hàng.', 'success', 'trash');
     };
 
+    // Hàm xử lí Check một CheckBox
+    const handleCheckboxChange = (index) => {
+        setIsChecked(prev => {
+            const updated = [...prev];
+            updated[index] = !updated[index];
+            return updated;
+        });
+    };
+
+    // Dùng useEffect để đồng bộ trạng thái checkbox với isAllChecked
+    useEffect(() => {
+        if (isAllChecked) {
+            setIsChecked(cartItems.map(() => true));
+        } else {
+            setIsChecked(cartItems.map(() => false));
+        }
+    }, [isAllChecked, cartItems]);
 
     return (
         cartItems.map((attribute, index) => (
@@ -146,8 +162,10 @@ function ProductList ({ cartItems, addToast }) {
                 <div className='flex items-center h-full gap-4 my-[36px]'>
                     {/* Checkbox */}
                     <input type="checkbox" className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
-                        checked:bg-[#FA5130] checked:border-[#FA5130]">
-                    </input>
+                        checked:bg-[#FA5130] checked:border-[#FA5130]"
+                        checked={isChecked[index]}
+                        onChange={() => handleCheckboxChange(index)}
+                    />
                     {/* Ảnh và tên sản phẩm */}
                     <div className='flex items-center h-full gap-2'>
                         {/* Ảnh sản phẩm */}
