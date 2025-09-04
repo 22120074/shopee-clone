@@ -34,7 +34,7 @@ function TrendingProducts() {
     return (
     <div className='w-full max-w-[1200px] relative'>
         <div className='h-[58px] text-[#ee4d2d] uppercase text-[18px] font-[400] bg-white 
-            flex items-center justify-center border-b-[4px] border-[#ee4d2d] sticky top-[120px]'
+            flex items-center justify-center border-b-[4px] border-[#ee4d2d] sticky top-[120px] z-30'
         >   
             Gợi Ý Hôm Nay
         </div>

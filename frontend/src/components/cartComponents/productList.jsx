@@ -3,7 +3,7 @@ import { updateQuantityItem, removeItem } from '../../features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
 import DetailProductDropDown from '../../components/cartComponents/detailProductDropDown'
 
-function ProductList ({ cartItems, addToast, isAllChecked }) {
+function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsChecked }) {
     const dispatch = useDispatch();
     // Dùng useState để lưu trạng thái dropdown cho từng sản phẩm
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -12,8 +12,6 @@ function ProductList ({ cartItems, addToast, isAllChecked }) {
     // Tạo ref để giữ timeout, mỗi popup một ref
     const popupIncreaseTimeout = useRef(null);
     const popupDecreaseTimeout = useRef(null);
-    // Dùng useState để lưu isChecked của từng item
-    const [isChecked, setIsChecked] = useState(cartItems.map(() => false));
 
     // Các hàm xử lí tăng, giảm số lượng; xóa sản phẩm rồi dùng dispatch(updateQuantityItem(id, quantity))
     // Hàm xử lí input.onchange, xử lí input.onblur
@@ -151,7 +149,7 @@ function ProductList ({ cartItems, addToast, isAllChecked }) {
         } else {
             setIsChecked(cartItems.map(() => false));
         }
-    }, [isAllChecked, cartItems]);
+    }, [isAllChecked, cartItems, setIsChecked]);
 
     return (
         cartItems.map((attribute, index) => (
@@ -208,9 +206,9 @@ function ProductList ({ cartItems, addToast, isAllChecked }) {
                 <div className='flex justify-center text-sm font-normal gap-2'>
                     { attribute.discount > 0 && (
                         <div className='relative text-[#929292] whitespace-nowrap'>
-                        <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                        { attribute.selectedAttributes.attribute.price.toLocaleString('vi-VN') }
-                        <div className='absolute top-[50%] right-0 w-full h-[1px] bg-black'></div>
+                            <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                            { attribute.selectedAttributes.attribute.price.toLocaleString('vi-VN') }
+                            <div className='absolute top-[50%] right-0 w-full h-[1px] bg-black'></div>
                         </div>
                     )}
                     <div className='whitespace-nowrap'>
