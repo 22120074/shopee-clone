@@ -1,7 +1,14 @@
 import PrimaryButton from "../Button";
+import { useDispatch } from "react-redux";
+import { clearAllItem } from "../../features/cart/cartSlice";
 // import { useEffect } from "react";
 
-function FooterCart({ cartItems, isCheckedAll, setIsAllChecked, isChecked, setCheckedItems, totalPrice = 0 }) {
+function FooterCart({ cartItems, isCheckedAll, setIsAllChecked, isChecked, totalPrice = 0 }) {
+    const dispatch = useDispatch();
+
+    const handleClearCart = () => {
+        dispatch(clearAllItem());
+    };
 
     return (
         <div className="sticky bottom-0 w-full h-20 bg-white shadow-[0_-10px_30px_-20px_rgba(0,0,0,0.3)] border-t mt-5
@@ -17,7 +24,7 @@ function FooterCart({ cartItems, isCheckedAll, setIsAllChecked, isChecked, setCh
                 <div>
                     Chọn tất cả
                 </div>
-                <button>
+                <button onClick={handleClearCart}>
                     Xóa
                 </button>
                 <button>

@@ -3,7 +3,7 @@ import { updateQuantityItem, removeItem } from '../../features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
 import DetailProductDropDown from '../../components/cartComponents/detailProductDropDown'
 
-function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsChecked }) {
+function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsChecked, setTotalPrice }) {
     const dispatch = useDispatch();
     // Dùng useState để lưu trạng thái dropdown cho từng sản phẩm
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -140,16 +140,24 @@ function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsCheck
             updated[index] = !updated[index];
             return updated;
         });
+        setTotalPrice(prevTotal => {
+            const itemPrice = cartItems[index].quantity * (cartItems[index].selectedAttributes.attribute.price * (100 - cartItems[index].discount) / 100);
+            return isChecked[index] ? prevTotal - itemPrice : prevTotal + itemPrice;
+        });
     };
 
     // Dùng useEffect để đồng bộ trạng thái checkbox với isAllChecked
     useEffect(() => {
         if (isAllChecked) {
             setIsChecked(cartItems.map(() => true));
+            setTotalPrice(cartItems.reduce((total, item) => {
+                return total + item.quantity * (item.selectedAttributes.attribute.price * (100 - item.discount) / 100);
+            }, 0));
         } else {
             setIsChecked(cartItems.map(() => false));
+            setTotalPrice(0);
         }
-    }, [isAllChecked, cartItems, setIsChecked]);
+    }, [isAllChecked, cartItems, setIsChecked, setTotalPrice]);
 
     return (
         cartItems.map((attribute, index) => (
