@@ -1,18 +1,41 @@
 import PrimaryButton from "../Button";
 import { useDispatch } from "react-redux";
 import { clearAllItem } from "../../features/cart/cartSlice";
-// import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function FooterCart({ cartItems, isCheckedAll, setIsAllChecked, isChecked, totalPrice = 0 }) {
     const dispatch = useDispatch();
+    // Sử dụng useRef để lưu isSticky
+    const [isSticky, setIsSticky] = useState(false);
+    const footerRef = useRef(null);
 
     const handleClearCart = () => {
         dispatch(clearAllItem());
     };
 
+    useEffect(() => {
+        const footerEl = footerRef.current;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsSticky(!entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
+        if (footerEl) {
+            observer.observe(footerEl);
+        }
+        return () => {
+            if (footerEl) {
+                observer.unobserve(footerEl);
+            }
+        };
+    }, []);
+
+
     return (
-        <div className="sticky bottom-0 w-full h-20 bg-white shadow-[0_-10px_30px_-20px_rgba(0,0,0,0.3)] border-t mt-5
-            flex items-center justify-between px-10 "
+        <>
+        <div className={`sticky bottom-0 w-full h-20 bg-white mt-5 flex items-center justify-between px-10 
+            ${isSticky ? 'shadow-[0_-10px_30px_-20px_rgba(0,0,0,0.3)] border-t' : 'border-b border-gray-200'}`}
         >
             <div className="flex items-center justify-center gap-10">
                 {/* Checkbox */}
@@ -44,6 +67,10 @@ function FooterCart({ cartItems, isCheckedAll, setIsAllChecked, isChecked, total
                 <PrimaryButton height="40px" width="200px" text={"Mua Hàng"} />
             </div>
         </div>
+        <div ref={footerRef} className="w-full h-0">
+
+        </div>
+        </>
     )
 }
 export default FooterCart;
