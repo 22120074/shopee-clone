@@ -221,7 +221,7 @@ function Header() {
                         </ul>
                     </div>
                     {/* Phần giỏ hàng */}
-                    <div className='navbar_cart relative z-50'
+                    <div className='navbar_cart relative'
                         onMouseEnter={() => setOpenCartDropdown("open")}
                         onMouseLeave={() => setOpenCartDropdown("close")}
                     >
@@ -232,7 +232,7 @@ function Header() {
                         </Link>
                         {/* Layout sản phẩm trong giỏ hàng */}
                         <div className={`cart_dropdown absolute bg-white shadow-lg rounded-sm
-                            w-[400px] z-[50] 
+                            w-[400px] z-40
                             ${items.length === 0 ? "h-[300px]" : "h-auto"}
                             ${openCartDropdown}`}
                         >
