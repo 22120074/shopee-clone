@@ -168,7 +168,7 @@ function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsCheck
                 <div className='flex items-center h-full gap-4 my-[36px]'>
                     {/* Checkbox */}
                     <input type="checkbox" className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
-                        checked:bg-[#FA5130] checked:border-[#FA5130]"
+                        checked:bg-primaryColor checked:border-primaryColor"
                         checked={isChecked[index]}
                         onChange={() => handleCheckboxChange(index)}
                     />
@@ -193,7 +193,7 @@ function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsCheck
                     </div>
                     {/* Phân loại sản phẩm */}
                     <div className='relative'>
-                        <div className='text-sm capitalize text-[#0000008a] font-medium flex gap-2'>
+                        <div className='text-sm capitalize text-moregrayTextColor font-medium flex gap-2'>
                             phân loại hàng: 
                             <button className='inline-block' onClick={() => setOpenDropdown(openDropdown === index ? null : index)}>
                                 <i className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
@@ -201,7 +201,7 @@ function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsCheck
                                 </i>
                             </button>
                         </div>
-                        <div className='text-sm capitalize text-[#0000008a] w-[140px] whitespace-normal'>
+                        <div className='text-sm capitalize text-grayTextColor w-[140px] whitespace-normal'>
                             {attribute.selectedAttributes.color}, {attribute.selectedAttributes.size}
                         </div>
                         {/* Phần dropdown */}
@@ -270,7 +270,7 @@ function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsCheck
                     </button>
                 </div>
                 {/* Số tiền */}
-                <div className='flex justify-center text-sm font-normal text-[#ee4d2d]'>
+                <div className='flex justify-center text-sm font-normal text-primaryTextColor'>
                     <i className="fa-solid fa-dong-sign text-[10px] relative top-[7px] right-[1px]"></i>
                     {(attribute.quantity * (attribute.selectedAttributes.attribute.price * (100 - 10) / 100)).toLocaleString('vi-VN')}
                 </div>

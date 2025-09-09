@@ -47,7 +47,7 @@ function CartLayout() {
         ) : (
           <div className='relative flex flex-col items-center justify-center h-auto w-full'>
             <img src={emptyCart} alt="Giỏ hàng trống" className="w-60 h-60 object-contain" />
-            <div className='text-base font-semibold text-[#929292] mb-5'>
+            <div className='text-base font-semibold text-grayTextColor mb-5'>
               Giỏ hàng của bạn đang trống
             </div>
             <PrimaryButton height="40px" width="200px" text={"Mua ngay"} onClick={() => navigate('/')} />

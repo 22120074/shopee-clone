@@ -12,12 +12,11 @@ function PrimaryButton({
         style={{
             height: height,
             width: width,
-            backgroundColor: "#FA5130",
             borderRadius: "3px",
             color: "white",
             fontSize: "16px",
         }}
-        className="flex items-center justify-center"
+        className="flex items-center justify-center bg-primaryColor"
         >
         {text}
     </button>

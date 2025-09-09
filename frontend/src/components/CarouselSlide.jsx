@@ -58,10 +58,10 @@ export default function CarouselSlider({ images, width = 800, height = 240 }) {
       {/* Phần hiện index */}
       <div className="slider_dot_wrapper">
         {images.map((_, idx) => (
-          <span className='slider_dot'
+          <span className={`slider_dot 
+            ${idx === currentIndex ? 'bg-primaryColor' : 'bg-[rgba(255,255,255,0.5)]'}`}
             key={idx}
             style={{
-              backgroundColor: idx === currentIndex ? '#FA5130' : 'rgba(255,255,255,0.5)',
               transition: 'background-color 0.3s'
             }}
             onClick={() => setCurrentIndex(idx)}

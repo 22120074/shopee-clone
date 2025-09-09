@@ -33,7 +33,7 @@ function ImagePreview({ images }) {
                         <div
                             key={index}
                             className={`w-[84px] h-[80px] cursor-pointer bg-center bg-cover bg-gray-200 border-2
-                                ${ hoverIndex === index ? "border-[#FA5130]" : "border-transparent"}`}
+                                ${ hoverIndex === index ? "border-primaryColor" : "border-transparent"}`}
                             style={{ backgroundImage: `url(${image.imageUrl})` }}
                             onMouseEnter={() => {
                                 setMainImage(image.imageUrl);

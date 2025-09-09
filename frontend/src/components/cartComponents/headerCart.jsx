@@ -5,7 +5,7 @@ function HeaderCart({ isAllChecked, setIsAllChecked }) {
         >
             <div className='flex items-center h-full gap-4'>
                 <input type="checkbox" className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
-                    checked:bg-[#FA5130] checked:border-[#FA5130]"
+                    checked:bg-primaryColor checked:border-primaryColor"
                     checked={isAllChecked}
                     onChange={(e) => setIsAllChecked(e.target.checked)}
                 />
@@ -13,10 +13,10 @@ function HeaderCart({ isAllChecked, setIsAllChecked }) {
                     Sản Phẩm
                 </div>
             </div>
-            <div className='flex justify-center capitalize text-[#888897]'>đơn giá</div>
-            <div className='flex justify-center capitalize text-[#888897]'>số lượng</div>
-            <div className='flex justify-center capitalize text-[#888897]'>số tiền</div>
-            <div className='flex justify-center capitalize text-[#888897]'>thao tác</div>
+            <div className='flex justify-center capitalize text-grayTextColor'>đơn giá</div>
+            <div className='flex justify-center capitalize text-grayTextColor'>số lượng</div>
+            <div className='flex justify-center capitalize text-grayTextColor'>số tiền</div>
+            <div className='flex justify-center capitalize text-grayTextColor'>thao tác</div>
         </div>
     );
 }

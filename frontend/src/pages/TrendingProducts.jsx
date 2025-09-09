@@ -33,8 +33,8 @@ function TrendingProducts() {
 
     return (
     <div className='w-full max-w-[1200px] relative'>
-        <div className='h-[58px] text-[#ee4d2d] uppercase text-[18px] font-[400] bg-white 
-            flex items-center justify-center border-b-[4px] border-[#ee4d2d] sticky top-[120px] z-30'
+        <div className='h-[58px] text-primaryTextColor uppercase text-[18px] font-[400] bg-white 
+            flex items-center justify-center border-b-[4px] border-primaryTextColor sticky top-[120px] z-[25]'
         >   
             Gợi Ý Hôm Nay
         </div>
@@ -44,7 +44,7 @@ function TrendingProducts() {
                 hover:translate-y-[-1px] transition-transform duration-300 ease-out 
                 hover:shadow-[0_0_4px_rgba(0,0,0,0.2)] z-10 hover:z-[20]'>
                     <Link to={`/product/${product.id}`} className='flex flex-col h-full w-full bg-white 
-                    border border-[#DFDFDF] hover:border-[#ee4d2d] pb-2'>
+                    border border-[#DFDFDF] hover:border-primaryTextColor pb-2'>
                         <div className='w-full h-[190px] bg-gray-200 bg-cover bg-no-repeat bg-center' 
                             style={{ backgroundImage: `url(${product.image.imageUrl})` }}
                             >
@@ -53,7 +53,7 @@ function TrendingProducts() {
                             <p className='text-[14px] leading-[18px] text-start mt-[10px] overflow-hidden 
                             h-[36px] line-clamp-2'>
                                 { product.favorite && 
-                                    <span className="inline-block text-white text-[11px] bg-[#EE4D2D] 
+                                    <span className="inline-block text-white text-[11px] bg-primaryTextColor 
                                         leading-[14px] px-1 rounded-[3px] mr-1 relative top-[-2px]">
                                         Yêu thích
                                     </span>
@@ -61,7 +61,7 @@ function TrendingProducts() {
                                 {product.name}
                             </p>
                             <div className='flex flex-row justify-between items-center'>
-                                <div className='text-[#EE4D2D] flex items-end gap-[2px] justify-start 
+                                <div className='text-primaryTextColor flex items-end gap-[2px] justify-start 
                                 font-semibold'>
                                     <i className="fa-solid fa-dong-sign text-[12px] relative top-[-4px]"></i>
                                     {/* Hiển thị Giá tiền nhỏ nhất then VND */}
@@ -73,7 +73,7 @@ function TrendingProducts() {
                             </div>
                         </div>
                     </Link>
-                    <div className='h-[35px] text-[15px] text-white bg-[#ee4d2d] border border-[#ee4d2d] 
+                    <div className='h-[35px] text-[15px] text-white bg-primaryTextColor border border-primaryTextColor 
                     rounded-b-[3px] absolute top-[100%] left-0 right-0 z-10 opacity-0 
                     transition-all duration-100 ease-in-out 
                     group-hover:opacity-100 group-hover:translate-y-0'>

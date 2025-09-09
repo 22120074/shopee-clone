@@ -40,7 +40,7 @@ function FooterCart({ cartItems, isCheckedAll, setIsAllChecked, isChecked, total
             <div className="flex items-center justify-center gap-10">
                 {/* Checkbox */}
                 <input type="checkbox" className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
-                    checked:bg-[#FA5130] checked:border-[#FA5130]"
+                    checked:bg-primaryColor checked:border-primaryColor"
                     checked={isCheckedAll}
                     onChange={(e) => setIsAllChecked(e.target.checked)}
                 />
@@ -59,7 +59,7 @@ function FooterCart({ cartItems, isCheckedAll, setIsAllChecked, isChecked, total
                     <div className="text-base">
                         Tổng cộng ({isChecked.filter(item => item).length} sản phẩm):
                     </div>
-                    <div className='flex justify-center text-2xl font-normal text-[#ee4d2d]'>
+                    <div className='flex justify-center text-2xl font-normal text-primaryTextColor'>
                         <i className="fa-solid fa-dong-sign text-[14px] relative top-[8px] right-[2px]"></i>
                         {totalPrice.toLocaleString('vi-VN')}
                     </div>

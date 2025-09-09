@@ -377,8 +377,8 @@ function ProductLayout() {
                                 {
                                     reducedAttributes.map((attribute, index) => (
                                         <div key={index} className={`relative flex items-center h-[40px] border p-2 gap-2
-                                            ${focusColor === attribute.nameEach ? 'border-[#FA5130] text-[#FA5130]' : 'border-[#e8e8e8] text-inherit'}
-                                            hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer select-none rounded-sm
+                                            ${focusColor === attribute.nameEach ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
+                                            hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
                                             ${!validAttribute.some(item => item.nameEach === attribute.nameEach) && focusSize
                                                 ? 'pointer-events-none opacity-50' : ''}
                                             ${!inStockProduct.includes(attribute.nameEach) ? 'pointer-events-none opacity-50' : ''}`}
@@ -397,7 +397,7 @@ function ProductLayout() {
                                             <span className='text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
                                             { focusColor === attribute.nameEach && 
                                                 <div className="absolute bottom-0 right-0 w-0 h-0 
-                                                    border-b-[14px] border-l-[14px] border-b-[#FA5130] border-l-transparent">
+                                                    border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
                                                     <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
                                                 </div>
                                             }
@@ -415,8 +415,8 @@ function ProductLayout() {
                                 {
                                     reducedSizes.map((attribute, index) => (
                                         <div key={index} className={`relative flex items-center h-[40px] border
-                                            ${focusSize === attribute.size ? 'border-[#FA5130] text-[#FA5130]' : 'border-[#e8e8e8] text-inherit'}
-                                            p-2 text-[15px] hover:border-[#FA5130] hover:text-[#FA5130] cursor-pointer select-none rounded-sm
+                                            ${focusSize === attribute.size ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
+                                            p-2 text-[15px] hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
                                             ${!validSize.some(item => item.size === attribute.size) && focusColor
                                                 ? 'pointer-events-none opacity-50' : ''}
                                             ${!inStockProduct.includes(attribute.size) ? 'pointer-events-none opacity-50' : ''}`}
@@ -426,7 +426,7 @@ function ProductLayout() {
                                             { attribute.size }
                                             { focusSize === attribute.size && 
                                                 <div className="absolute bottom-0 right-0 w-0 h-0 
-                                                    border-b-[14px] border-l-[14px] border-b-[#FA5130] border-l-transparent">
+                                                    border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
                                                     <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
                                                 </div>
                                             }
@@ -461,7 +461,7 @@ function ProductLayout() {
                                     [&::-webkit-inner-spin-button]:appearance-none
                                     focus:outline-none
                                     bg-transparent
-                                    ${focusAttribute ? 'text-[#FA5130]' : 'text-[#CCCCCC]'}`}
+                                    ${focusAttribute ? 'text-primaryColor' : 'text-[#CCCCCC]'}`}
                                 />
                                 <button className={`w-[40px] h-full flex items-center justify-center
                                     border-l border-[#CCCCCC] flex-1 text-[12px]
@@ -480,7 +480,7 @@ function ProductLayout() {
                         </div>
                         {/* Phần nút thêm vào giỏ hàng */}
                         <div className='w-full flex flex-row justify-start pl-6 mt-10 gap-4'>
-                            <button className='w-[200px] h-[48px] bg-[#FFEEE8] text-[#FA5130] rounded border border-[#FA5130]
+                            <button className='w-[200px] h-[48px] bg-[#FFEEE8] text-primaryColor rounded border border-primaryColor
                             text-[16px] flex items-center justify-center gap-1'
                                 onClick={handleAddToCart}
                                 disabled={!focusAttribute}
