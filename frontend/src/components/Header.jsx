@@ -64,7 +64,7 @@ function Header() {
         return () => clearTimeout(timer);
     }, [openCartDropdown]);
 
-    console.log(items)
+    // console.log(items)
 
     // Dùng useEffect để fix lỗi tự open dropdown khi từ /cart quay về trang chủ
     useEffect(() => {

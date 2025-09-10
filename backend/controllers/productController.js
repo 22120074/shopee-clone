@@ -1,4 +1,4 @@
-const { getAllProduct, getOneProduct } = require('../services/product.service');
+const { getAllProduct, getOneProduct, isLikedByUser, addLikeProduct, removeLikeProduct } = require('../services/product.service');
 
 // module.exports.getAllProduct = async (req, res) => {
 //     try {
@@ -30,6 +30,41 @@ module.exports.getAllProduct = async (req, res) => {
         res.status(200).json(products);
     } catch (error) {
         console.error('Lỗi lấy tất cả sản phẩm:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports.isLikedProduct = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { productID } = req.query;
+        const liked = await isLikedByUser(productID, userId);
+        res.status(200).json({ liked });
+    } catch (error) {
+        console.error('Lỗi kiểm tra lượt thích sản phẩm:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports.likeProduct = async (req, res) => {
+    try {
+        const { productID, userID } = req.body;
+        await addLikeProduct(productID, userID);
+        res.status(200).json({ message: 'Sản phẩm đã được thích' });
+
+    } catch (error) {
+        console.error('Lỗi thích sản phẩm:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports.unlikeProduct = async (req, res) => {
+    try {
+        const { productID, userID } = req.body;
+        await removeLikeProduct(productID, userID);
+        res.status(200).json({ message: 'Sản phẩm đã được bỏ thích' });
+    } catch (error) {
+        console.error('Lỗi bỏ thích sản phẩm:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

@@ -117,4 +117,22 @@ const getOneProduct = async (productID) => {
     };
 }
 
-module.exports = { getAllProduct, getOneProduct };
+const isLikedByUser = async (productID, userID) => {
+    const like = await Like.findOne({
+        where: { productId: productID, userId: userID },
+        raw: true
+    });
+    return !!like;
+}
+
+const addLikeProduct = async (productID, userID) => {
+    await Like.create({ productId: productID, userId: userID });
+}
+
+const removeLikeProduct = async (productID, userID) => {
+    await Like.destroy({
+        where: { productId: productID, userId: userID }
+    });
+}
+
+module.exports = { getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct };

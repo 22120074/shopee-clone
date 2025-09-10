@@ -17,3 +17,35 @@ export const getOneProduct = (productID) => {
         }
     );
 };
+
+export const isLikedProduct = (productID) => {
+  return axios.get(
+        `${process.env.REACT_APP_API_URL}/product/isLiked?productID=${productID}`,
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+    );
+};
+
+export const likeProduct = (productID, userID, token) => {
+  return axios.post(
+        `${process.env.REACT_APP_API_URL}/product/like`,
+        { productID, userID },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+    );
+};
+
+export const unlikeProduct = (productID, userID, token) => {
+  return axios.delete(
+        `${process.env.REACT_APP_API_URL}/product/unlike`,
+        {
+          data: { productID, userID },
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+    );
+}
