@@ -1,0 +1,18 @@
+function ToastQueue( {toasts} ) {
+    return (
+        <div className="fixed top-5 right-5 flex flex-col gap-3 w-[300px] h-auto z-10">
+            {toasts.map(t => (
+                <div key={t.id} className={`grid grid-cols-[1fr_auto] gap-6 items-center rounded-md text-black 
+                    bg-white border border-gray-300 py-4 px-6 shadow-md
+                    w-[300px] h-[80px] animate-slide-bounce`}
+                >
+                    <div className='flex items-center justify-center h-full text-sm break-words'>
+                        {t.message}
+                    </div>
+                    <i className="fa-solid fa-circle-check flex items-center justify-center h-full text-green-500 text-3xl"></i>
+                </div>
+            ))}
+        </div>
+    )
+}
+export default ToastQueue;

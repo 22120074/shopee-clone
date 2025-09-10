@@ -1,7 +1,7 @@
 import '../css/CartLayout.css'
 import HeaderCart from '../components/cartComponents/headerCart';
 import useToastQueue from '../hooks/useToastQueue';
-import ToastQueue from '../components/cartComponents/toastQueue';
+import ToastQueue from '../components/cartComponents/toastQueueCart';
 import ProductList from '../components/cartComponents/productList'
 import FooterCart from '../components/cartComponents/footerCart';
 import PrimaryButton from "../components/Button";
@@ -43,7 +43,6 @@ function CartLayout() {
             />
           </div>        
         </>
-
         ) : (
           <div className='relative flex flex-col items-center justify-center h-auto w-full'>
             <img src={emptyCart} alt="Giỏ hàng trống" className="w-60 h-60 object-contain" />

@@ -5,13 +5,12 @@ import { handelexpiredToken } from '../../services/auth.helper';
 import ImagePreview from '../ImagePreview';
 import { isLikedProduct, likeProduct, unlikeProduct } from '../../services/product.service';
 
-
-
-function LeftData({ product, user, likes, setLikes }) {
+function LeftData({ product, user }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // Sử dụng useState để lưu số lượng lượt thích
     const [liked, setLiked] = useState(false);
+    const [likes, setLikes] = useState(product?.likes || 0);
 
     // Hàm kiểm tra xem người dùng đã thích sản phẩm hay chưa
     const fetchisLiked = useCallback(async (productID) => {
@@ -23,6 +22,13 @@ function LeftData({ product, user, likes, setLikes }) {
             handelexpiredToken(error, navigate, dispatch);
         }
     },[navigate, dispatch]);
+
+    // Sử dụng useEffect để cập nhật số lượt thích khi product thay đổi
+    useEffect(() => {
+        if (product) {
+            setLikes(product.likes || 0);
+        }
+    }, [product]);
 
     // Sử dụng useEffect để gọi hàm fetchisLiked khi component được render hoặc khi product hoặc user thay đổi
     useEffect(() => {
