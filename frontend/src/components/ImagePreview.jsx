@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import ImageReveal from "./animations/ImageReveal";
 
 function ImagePreview({ images }) {
     const [mainImage, setMainImage] = useState(images[0].imageUrl);
@@ -19,10 +20,7 @@ function ImagePreview({ images }) {
 
     return (
         <div className="flex flex-col">
-            <div
-                className="w-[452px] h-[450px] mb-4 bg-center bg-no-repeat bg-cover bg-gray-200"
-                style={{ backgroundImage: `url(${mainImage})` }}
-            />
+            <ImageReveal mainImage={mainImage} width={450} height={450} gridSize={8} animationDuration={0.5} />
             <div className="relative overflow-hidden max-w-[452px]">
                 <ul className="h-[80px] flex flex-row self-start transition-transform duration-500 ease gap-2"
                     style={{
