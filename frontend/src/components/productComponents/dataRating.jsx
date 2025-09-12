@@ -44,8 +44,38 @@ function DataRatingProduct({ product, rating, numReviews }) {
 
                 </div>
             </div>
-            <div className="text-base mt-4 font-normal px-4">
-
+            <div className="flex flex-col gap-4 ">
+                { reviews.map((review) => (
+                    <div key={review.id} className="w-full h-auto flex pb-14 border-b border-gray-300">
+                        {/* Avatar */}
+                        <div className="w-20"></div>
+                        {/* Hiển thị thông tin bình luận */}
+                        <div className="flex flex-col flex-1 gap-3">
+                            <div className=""></div>
+                            <div className="">{review.comment}</div>
+                            <div className="flex gap-3">
+                                {review.Image_Ratings.length > 0 && (
+                                    <div className="flex gap-3">
+                                        {review.Image_Ratings.map((img, idx) => (
+                                        <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
+                                            className="w-[70px] h-[70px] rounded-sm"
+                                        />
+                                        ))}
+                                    </div>
+                                )}
+                                {review.Video_Ratings.length > 0 && (
+                                    <div className="flex gap-3">
+                                        {review.Video_Ratings.map((video, idx) => (
+                                        <video key={idx} controls className="w-[70px] h-[70px] rounded-sm"
+                                            src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
+                                        />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
