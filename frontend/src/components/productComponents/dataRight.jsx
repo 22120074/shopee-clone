@@ -5,12 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { addItem } from '../../features/cart/cartSlice';
 import { formatSold } from '../../utils/numberFormat';
 
-function DataRight({ product, user, addToast }) {
+function DataRight({ product, user, addToast, rating, numReviews }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    // Sử dụng useState để lưu rating, numReviews
-    const [rating, setRating] = useState(0);
-    const [numReviews, setNumReviews] = useState(0);
 
     // Sử dụng useState để giá trị số lượng sản phẩm
     const [value, setValue] = useState(1);
@@ -40,18 +37,8 @@ function DataRight({ product, user, addToast }) {
     // inStockProduct là mảng chứa tên và kích thước của các sản phẩm còn
     const [inStockProduct, setInStockProduct] = useState([]);
 
-    // 1. Sử dụng useEffect để tính rating và số lượng đánh giá
-    // 2. Sử dụng useEffect để xử lí data trong product.attribute
+    // 1. Sử dụng useEffect để xử lí data trong product.attribute
     useEffect(() => {
-        if (product?.rating?.length > 0) {
-            const total = product.rating.reduce((sum, item) => sum + item.rating, 0);
-            setRating(total / product.rating.length);
-            setNumReviews(product.rating.length);
-        } else {
-            setRating(0);
-            setNumReviews(0);
-        }
-
         if (product?.attributes) {
             const map = new Map();
             const sizeMap = new Map();
@@ -108,12 +95,12 @@ function DataRight({ product, user, addToast }) {
         }
     }, [focusColor, focusSize, product]);
 
-    // sử dụng useEffect để đặt giá trị ban đầu cho value khi focusAttribute thay đổi
+    // Sử dụng useEffect để đặt giá trị ban đầu cho value khi focusAttribute thay đổi
     useEffect(() => {
         setValue(1);
     }, [focusAttribute]);
 
-    // sử dụng useEffect để kiểm tra các mã hàng còn trong kho không?
+    // Sử dụng useEffect để kiểm tra các mã hàng còn trong kho không?
     useEffect(() => {
         const inStock = [];
         if (product?.stockCounts) {

@@ -7,12 +7,11 @@ import LeftData from '../components/productComponents/dataLeft';
 import RightData from '../components/productComponents/dataRight';
 import DataDetailProduct from '../components/productComponents/dataDetailProduct';
 import ToastQueue from '../components/productComponents/toastQueueProduct';
-
+import DataRatingProduct from '../components/productComponents/dataRating';
 
 function ProductLayout() {
     // Sử dụng useParams để lấy productName từ URL
     // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
-    // setProduct là hàm để cập nhật state product
     const { productName } = useParams();
     const [product, setProduct] = useState();
 
@@ -21,6 +20,10 @@ function ProductLayout() {
 
     // Sử dụng useToastQueue để hiển thị thông báo
     const { toasts, addToast } = useToastQueue(3, 1500);
+
+    // Sử dụng useState để lưu rating, numReviews
+    const [rating, setRating] = useState(0);
+    const [numReviews, setNumReviews] = useState(0);
 
     const fetchProducts = async (productName, setProduct) => {
         try {
@@ -38,6 +41,18 @@ function ProductLayout() {
             fetchProducts(productName, setProduct);
         }
     }, [productName]);
+
+    // 1. Sử dụng useEffect để tính rating và số lượng đánh giá
+    useEffect(() => {
+        if (product?.rating?.length > 0) {
+            const total = product.rating.reduce((sum, item) => sum + item.rating, 0);
+            setRating(total / product.rating.length);
+            setNumReviews(product.rating.length);
+        } else {
+            setRating(0);
+            setNumReviews(0);
+        }
+    }, [product]);
 
     return (
         <div className="w-full bg-[#F5F5F5] h-auto">
@@ -59,14 +74,15 @@ function ProductLayout() {
                     {/* Nữa bên trái chứa hình ảnh, chia sẻ, lượt thích */}
                     <LeftData product={product} user={user} />
                     {/* Nữa bên phải chứa thông tin đơn hàng */}
-                    <RightData product={product} user={user} addToast={addToast} />
+                    <RightData product={product} user={user} addToast={addToast} rating={rating} numReviews={numReviews} />
                 </div>
             }
             { product && 
                 <DataDetailProduct product={product} />
             }
-
-
+            { product && 
+                <DataRatingProduct product={product} rating={rating} numReviews={numReviews} />
+            }
             
         </div>
     );
