@@ -44,10 +44,10 @@ function ProductLayout() {
 
     // 1. Sử dụng useEffect để tính rating và số lượng đánh giá
     useEffect(() => {
-        if (product?.rating?.length > 0) {
-            const total = product.rating.reduce((sum, item) => sum + item.rating, 0);
-            setRating(total / product.rating.length);
-            setNumReviews(product.rating.length);
+        if (product?.ratings?.length > 0) {
+            const total = product.ratings.reduce((sum, item) => sum + item.rate, 0);
+            setRating(total / product.ratings.length);
+            setNumReviews(product.ratings.length);
         } else {
             setRating(0);
             setNumReviews(0);

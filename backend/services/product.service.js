@@ -10,6 +10,10 @@ const Detail = dbPostgre.Detail;
 const Rating = dbPostgre.Rating;
 const Stock = dbPostgre.Stock;
 
+const Video_Rating = dbPostgre.Video_Rating;
+const Image_Rating = dbPostgre.Image_Rating;
+
+// Service liên quan đến lấy thông tin sản phẩm
 const getAllProduct = async ( limit ) => {
     // Bước 1: lấy danh sách sản phẩm
     const products = await Product.findAll({
@@ -89,6 +93,7 @@ const getOneProduct = async (productID) => {
 
     const ratings = await Rating.findAll({
         where: { productId: product.id },
+        attributes: ['rate'],
         raw: true
     });
 
@@ -117,6 +122,7 @@ const getOneProduct = async (productID) => {
     };
 }
 
+// Service liên quan đến thích sản phẩm
 const isLikedByUser = async (productID, userID) => {
     const like = await Like.findOne({
         where: { productId: productID, userId: userID },
@@ -135,4 +141,29 @@ const removeLikeProduct = async (productID, userID) => {
     });
 }
 
-module.exports = { getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct };
+// Service liên quan đến đánh giá sản phẩm
+const getProductReviews = async (productID, limit = 6, page = 1) => {
+    const offset = (page - 1) * limit;
+
+    const reviews = await Rating.findAndCountAll({
+        where: { productId: productID },
+        attributes: ['id', 'rate', 'comment', 'createdAt'],
+        limit,
+        offset,
+        include: [
+            {
+            model: Image_Rating,
+            attributes: ['imageUrl']
+            },
+            {
+            model: Video_Rating,
+            attributes: ['videoUrl']
+            }
+        ],
+        order: [['createdAt', 'DESC']]
+    });
+
+    return reviews;
+};
+
+module.exports = { getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct, getProductReviews };

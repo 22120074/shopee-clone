@@ -13,10 +13,13 @@ module.exports = (sequelize) =>
       type: DataTypes.UUID,
       allowNull: false,
     },
+    attributeId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     rate: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     comment: DataTypes.TEXT,
-    image: DataTypes.STRING,
   });

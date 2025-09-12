@@ -8,6 +8,8 @@ module.exports = {
     extend: {
       colors: {
         primaryColor: '#FA5130',
+        primaryRatingColor: '#FFFBF8',
+        primaryBorderRating: '#FFC7B3',
         primaryTextColor: '#ee4d2d',
         grayTextColor: '#888888',
         moregrayTextColor: '#777777',

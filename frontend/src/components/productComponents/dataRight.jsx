@@ -167,8 +167,7 @@ function DataRight({ product, user, addToast, rating, numReviews }) {
                     {[1, 2, 3, 4, 5].map((i) => (
                         <i
                             key={i}
-                            className={`text-[12px] ${
-                                rating >= i ? 'fa-solid' : 'fa-regular'
+                            className={`text-[12px] ${ (rating <= i && rating > i - 1) || rating >= i ? 'fa-solid' : 'fa-regular'
                             } fa-star text-[#FFC107]`}
                         ></i>
                     ))}

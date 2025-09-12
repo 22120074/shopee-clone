@@ -1,4 +1,4 @@
-const { getAllProduct, getOneProduct, isLikedByUser, addLikeProduct, removeLikeProduct } = require('../services/product.service');
+const { getAllProduct, getOneProduct, isLikedByUser, addLikeProduct, removeLikeProduct, getProductReviews } = require('../services/product.service');
 
 // module.exports.getAllProduct = async (req, res) => {
 //     try {
@@ -65,6 +65,17 @@ module.exports.unlikeProduct = async (req, res) => {
         res.status(200).json({ message: 'Sản phẩm đã được bỏ thích' });
     } catch (error) {
         console.error('Lỗi bỏ thích sản phẩm:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports.getReviews = async (req, res) => {
+    try {
+        const { productID, limit, page } = req.query;
+        const reviews = await getProductReviews(productID, limit, page);
+        res.status(200).json(reviews);
+    } catch (error) {
+        console.error('Lỗi lấy đánh giá sản phẩm:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

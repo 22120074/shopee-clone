@@ -21,7 +21,11 @@ db.Detail = require('./detail.model')(sequelize);
 db.Stock = require('./stock.model')(sequelize);
 db.Sold = require('./sold.model')(sequelize);
 
-// Associations
+// Import liên quan đến Rating
+db.Image_Rating = require('./Rating/image.model')(sequelize);
+db.Video_Rating = require('./Rating/video.model')(sequelize);
+
+// Associations giữa các bảng chính
 db.Product.hasMany(db.Attribute, { foreignKey: 'productId' });
 db.Attribute.belongsTo(db.Product, { foreignKey: 'productId' });
 
@@ -45,5 +49,13 @@ db.Stock.belongsTo(db.Attribute, { foreignKey: 'attributeID' });
 
 db.Product.hasMany(db.Sold, { foreignKey: 'productId' });
 db.Sold.belongsTo(db.Product, { foreignKey: 'productId' });
+
+// Associations liên quan đến Rating
+db.Rating.hasMany(db.Image_Rating, { foreignKey: 'ratingId' });
+db.Image_Rating.belongsTo(db.Rating, { foreignKey: 'ratingId' });
+
+db.Rating.hasMany(db.Video_Rating, { foreignKey: 'ratingId' });
+db.Video_Rating.belongsTo(db.Rating, { foreignKey: 'ratingId' });
+
 
 module.exports = db;

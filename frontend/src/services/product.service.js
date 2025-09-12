@@ -49,3 +49,12 @@ export const unlikeProduct = (productID, userID, token) => {
         }
     );
 }
+
+export const getProductReviews = (productID, limit = 6, page = 1) => {
+  return axios.get(
+        `${process.env.REACT_APP_API_URL}/product/reviews?productID=${productID}&limit=${limit}&page=${page}`,
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+    );
+}
