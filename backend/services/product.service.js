@@ -152,12 +152,16 @@ const getProductReviews = async (productID, limit = 6, page = 1) => {
         offset,
         include: [
             {
-            model: Image_Rating,
-            attributes: ['imageUrl']
+                model: Image_Rating,
+                attributes: ['imageUrl']
             },
             {
-            model: Video_Rating,
-            attributes: ['videoUrl']
+                model: Video_Rating,
+                attributes: ['videoUrl', 'thumbnailUrl']
+            },
+            {
+                model: Attribute,
+                attributes: ['nameEach', 'size']
             }
         ],
         order: [['createdAt', 'DESC']]

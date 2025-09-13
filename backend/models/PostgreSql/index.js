@@ -57,5 +57,8 @@ db.Image_Rating.belongsTo(db.Rating, { foreignKey: 'ratingId' });
 db.Rating.hasMany(db.Video_Rating, { foreignKey: 'ratingId' });
 db.Video_Rating.belongsTo(db.Rating, { foreignKey: 'ratingId' });
 
+db.Rating.belongsTo(db.Attribute, { foreignKey: 'attributeId' });
+db.Attribute.hasMany(db.Rating, { foreignKey: 'attributeId' });
+
 
 module.exports = db;

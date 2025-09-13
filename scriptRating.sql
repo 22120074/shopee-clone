@@ -23,21 +23,23 @@ INSERT INTO "Ratings" (
 );
 
 INSERT INTO "Video_Ratings" (
-    id, "ratingId", "videoUrl", "createdAt", "updatedAt"
+    id, "ratingId", "videoUrl", "thumbnailUrl", "createdAt", "updatedAt"
 ) VALUES (
     uuid_generate_v4(),
     '63ec2b40-1dfa-4f84-981c-b4d7a832086d',
     '/videos/video_1.mp4',
+    '/images/video_1.jpg',
     NOW(),
     NOW()
 );
 
 INSERT INTO "Video_Ratings" (
-    id, "ratingId", "videoUrl", "createdAt", "updatedAt"
+    id, "ratingId", "videoUrl", "thumbnailUrl", "createdAt", "updatedAt"
 ) VALUES (
     uuid_generate_v4(),
     '63ec2b40-1dfa-4f84-981c-b4d7a832086d',
     '/videos/Floating.mp4',
+    '/images/Floating.jpg',
     NOW(),
     NOW()
 );

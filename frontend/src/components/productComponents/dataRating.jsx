@@ -19,7 +19,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
             fetchReviews(product.id, 6, 1);
         }
     }, [product]);
-    
+
     console.log(reviews);
 
     return (
@@ -57,20 +57,29 @@ function DataRatingProduct({ product, rating, numReviews }) {
                             <div className=""></div>
                             <div className="">{review.comment}</div>
                             <div className="flex gap-3">
+                                {review.Video_Ratings.length > 0 && (
+                                    <div className="flex gap-3">
+                                        {review.Video_Ratings.map((video, idx) => (
+                                            <div key={idx} className="relative w-[70px] h-[70px] rounded-sm">
+                                                <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
+                                                    className="w-[70px] h-[70px] rounded-sm"
+                                                />
+                                                <div className="absolute bottom-0 left-0 bg-moregrayTextColor bg-opacity-70 w-full h-4">
+
+                                                </div>
+                                            </div>
+
+                                            // <VideoHls key={idx} className={"w-[170px] h-[170px] rounded-sm"} 
+                                            //     src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
+                                            // />
+                                        ))}
+                                    </div>
+                                )}
                                 {review.Image_Ratings.length > 0 && (
                                     <div className="flex gap-3">
                                         {review.Image_Ratings.map((img, idx) => (
                                             <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
                                                 className="w-[70px] h-[70px] rounded-sm"
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-                                {review.Video_Ratings.length > 0 && (
-                                    <div className="flex gap-3">
-                                        {review.Video_Ratings.map((video, idx) => (
-                                            <VideoHls key={idx} className={"w-[170px] h-[170px] rounded-sm"} 
-                                                src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
                                             />
                                         ))}
                                     </div>

@@ -14,4 +14,5 @@ sequelize.define('Video_Rating', {
         allowNull: false,
     },
     videoUrl: DataTypes.STRING,
+    thumbnailUrl: DataTypes.STRING,
 });
