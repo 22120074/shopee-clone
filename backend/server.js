@@ -21,7 +21,6 @@ app.use(cors({
   credentials: true                 // cho phép gửi cookie
 }));
 
-
 // Test API
 app.get('/', (req, res) => {
   res.send('API is running...');

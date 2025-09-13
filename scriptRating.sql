@@ -32,6 +32,16 @@ INSERT INTO "Video_Ratings" (
     NOW()
 );
 
+INSERT INTO "Video_Ratings" (
+    id, "ratingId", "videoUrl", "createdAt", "updatedAt"
+) VALUES (
+    uuid_generate_v4(),
+    '63ec2b40-1dfa-4f84-981c-b4d7a832086d',
+    '/videos/Floating.mp4',
+    NOW(),
+    NOW()
+);
+
 INSERT INTO "Image_Ratings" (
     id, "ratingId", "imageUrl", "createdAt", "updatedAt"
 ) VALUES (

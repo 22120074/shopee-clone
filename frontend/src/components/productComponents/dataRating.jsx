@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import VideoHls from './../VideoHls';
 import { getProductReviews } from "../../services/product.service";
 
 function DataRatingProduct({ product, rating, numReviews }) {
@@ -18,7 +19,9 @@ function DataRatingProduct({ product, rating, numReviews }) {
             fetchReviews(product.id, 6, 1);
         }
     }, [product]);
+    
     console.log(reviews);
+
     return (
         <div className="max-w-[1200px] h-auto mx-auto bg-white mt-6 p-6 rounded-sm ">
             <h1 className="capitalize bg-gray-50 h-14 flex items-center px-4 rounded-sm text-xl">
@@ -57,18 +60,18 @@ function DataRatingProduct({ product, rating, numReviews }) {
                                 {review.Image_Ratings.length > 0 && (
                                     <div className="flex gap-3">
                                         {review.Image_Ratings.map((img, idx) => (
-                                        <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
-                                            className="w-[70px] h-[70px] rounded-sm"
-                                        />
+                                            <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
+                                                className="w-[70px] h-[70px] rounded-sm"
+                                            />
                                         ))}
                                     </div>
                                 )}
                                 {review.Video_Ratings.length > 0 && (
                                     <div className="flex gap-3">
                                         {review.Video_Ratings.map((video, idx) => (
-                                        <video key={idx} controls className="w-[70px] h-[70px] rounded-sm"
-                                            src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
-                                        />
+                                            <VideoHls key={idx} className={"w-[170px] h-[170px] rounded-sm"} 
+                                                src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
+                                            />
                                         ))}
                                     </div>
                                 )}
