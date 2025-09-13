@@ -3,7 +3,10 @@ import VideoHls from './../VideoHls';
 import { getProductReviews } from "../../services/product.service";
 
 function DataRatingProduct({ product, rating, numReviews }) {
+    // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index hiện tại
     const [reviews, setReviews] = useState([]);
+    const [showMedia, setShowMedia] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const fetchReviews = async (id, limit, page) => {
         try {
@@ -20,13 +23,92 @@ function DataRatingProduct({ product, rating, numReviews }) {
         }
     }, [product]);
 
+    const viewVideoandImages = (review) => {
+        const totalSlides = review.Video_Ratings.length + review.Image_Ratings.length;
+        const goNext = () => {
+            setCurrentIndex(i => (i + 1) % totalSlides);
+        };        
+        const goPrev = () => {
+            setCurrentIndex(i => (i - 1 + totalSlides) % totalSlides);
+        };    
+
+        return (        
+        <div className="fixed inset-0 z-30">
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-80 z-10" onClick={() => setShowMedia(null)} />
+            {/* Phần chứa Slider chỉ hiển thị phần giới hạn */}
+            <div className='relative flex items-center justify-start w-[800px] h-full m-auto overflow-hidden z-5'>
+                {/* Slider ảnh và video */}
+                <div className={`flex items-center justify-start h-auto max-h-[500px] transition-transform duration-500 ease-in-out z-20`}
+                    style={{ transform: `translateX(-${currentIndex * 800}px)`,
+                            width: `${(review.Video_Ratings.length + review.Image_Ratings.length) * 800}px`
+                }}>
+                    {review.Video_Ratings.map((video, idx) => (
+                        <div key={idx} className="w-[800px] h-auto flex items-center justify-center text-center" onClick={() => setShowMedia(null)}>
+                            <VideoHls className={"flex items-center justify-center w-auto max-w-[800px] h-auto max-h-[500px] rounded-sm"}
+                                src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                        </div>
+                    ))}
+                    {review.Image_Ratings.map((img, idx) => (
+                        <div key={idx} className="w-[800px] h-auto flex items-center justify-center text-center" onClick={() => setShowMedia(null)}>
+                            <img className="w-auto max-w-[800px] h-auto max-h-[500px] rounded-sm" alt="review"
+                                src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`}
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                        </div>
+                    ))}
+                </div>
+                {/* Phần hiển thị thumbnail bên dưới để chuyển index nhanh hơn */}
+                <div className="flex gap-3 absolute bottom-8 left-1/2 translate-x-[-50%] z-20">
+                    {review.Video_Ratings.length > 0 && (
+                        <div className="flex gap-3">
+                            {review.Video_Ratings.map((video, idx) => (
+                                <div key={idx} className="relative w-[50px] h-[50px] rounded-sm" onClick={() => setCurrentIndex(idx)}>
+                                    <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
+                                        className="w-[50px] h-[50px] rounded-sm"
+                                    />
+                                    <div className="absolute bottom-0 left-0 bg-moregrayTextColor bg-opacity-70 w-full h-4">
+                                        <i className="absolute text-xs fa-solid fa-video text-white top-1/2 left-0 transform translate-x-[4px] -translate-y-1/2"></i>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {review.Image_Ratings.length > 0 && (
+                        <div className="flex gap-3">
+                            {review.Image_Ratings.map((img, idx) => (
+                                <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
+                                    className="w-[50px] h-[50px] rounded-sm"
+                                    onClick={() => setCurrentIndex(review.Video_Ratings.length + idx)}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+            {/* Phần chuyển trang */}
+            <button className="absolute w-[50px] h-[50px] text-xl rounded-full top-1/2 translate-y-[-50%] bg-white border-none shadow-[0_0_8px_rgba(0,0,0,0.3)] 
+                text-black px-2 cursor-pointer left-[140px] z-20" onClick={goPrev}>
+                <i className="fa-solid fa-chevron-left pointer-events-none"></i>
+            </button>
+            <button className="absolute w-[50px] h-[50px] text-xl rounded-full top-1/2 translate-y-[-50%] bg-white border-none shadow-[0_0_8px_rgba(0,0,0,0.3)] 
+                text-black px-2 cursor-pointer right-[140px] z-20" onClick={goNext}>
+                <i className="fa-solid fa-chevron-right pointer-events-none"></i>
+            </button>
+        </div>
+    )};
+
     console.log(reviews);
 
     return (
         <div className="max-w-[1200px] h-auto mx-auto bg-white mt-6 p-6 rounded-sm ">
+            { showMedia && reviews.length > 0 && viewVideoandImages(showMedia) }
             <h1 className="capitalize bg-gray-50 h-14 flex items-center px-4 rounded-sm text-xl">
                 Đánh giá sản phẩm
             </h1>
+            {/* Phần hiển thị tổng quan đánh giá */}
             <div className="w-full h-32 flex px-6 bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
                 <div className='relative h-full flex flex-col gap-2 justify-center items-center'>
                     <div className='flex gap-1 items-end text-primaryColor text-4xl'>
@@ -47,6 +129,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
 
                 </div>
             </div>
+            {/* Phần hiển thị các đánh giá cụ thể */}
             <div className="flex flex-col gap-4 ">
                 { reviews.map((review) => (
                     <div key={review.id} className="w-full h-auto flex pb-14 border-b border-gray-300">
@@ -54,24 +137,26 @@ function DataRatingProduct({ product, rating, numReviews }) {
                         <div className="w-20"></div>
                         {/* Hiển thị thông tin bình luận */}
                         <div className="flex flex-col flex-1 gap-3">
+                            
                             <div className=""></div>
+                            {/* Phần nội dung bình luận */}
                             <div className="">{review.comment}</div>
+                            {/* Phần hiển thị video và hình ảnh */}
                             <div className="flex gap-3">
                                 {review.Video_Ratings.length > 0 && (
                                     <div className="flex gap-3">
                                         {review.Video_Ratings.map((video, idx) => (
-                                            <div key={idx} className="relative w-[70px] h-[70px] rounded-sm">
+                                            <div key={idx} className="relative w-[70px] h-[70px] rounded-sm"
+                                                onClick={() => {setShowMedia(review)
+                                                setCurrentIndex(idx)
+                                            }}>
                                                 <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
                                                     className="w-[70px] h-[70px] rounded-sm"
                                                 />
                                                 <div className="absolute bottom-0 left-0 bg-moregrayTextColor bg-opacity-70 w-full h-4">
-
+                                                    <i className="absolute text-xs fa-solid fa-video text-white top-1/2 left-0 transform translate-x-[4px] -translate-y-1/2"></i>
                                                 </div>
                                             </div>
-
-                                            // <VideoHls key={idx} className={"w-[170px] h-[170px] rounded-sm"} 
-                                            //     src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
-                                            // />
                                         ))}
                                     </div>
                                 )}
@@ -80,6 +165,9 @@ function DataRatingProduct({ product, rating, numReviews }) {
                                         {review.Image_Ratings.map((img, idx) => (
                                             <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
                                                 className="w-[70px] h-[70px] rounded-sm"
+                                                onClick={() => {setShowMedia(review)
+                                                    setCurrentIndex(review.Video_Ratings.length + idx)
+                                                }}
                                             />
                                         ))}
                                     </div>

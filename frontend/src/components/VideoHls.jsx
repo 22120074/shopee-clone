@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import Hls from "hls.js";
 
-export default function HlsPlayer({ myKey, src, className }) {
+export default function HlsPlayer({ myKey = null, src, className, onClick }) {
     const videoRef = useRef(null);
 
     useEffect(() => {
@@ -17,7 +17,6 @@ export default function HlsPlayer({ myKey, src, className }) {
 
             hls.loadSource(src);
             hls.attachMedia(video);
-            hls.startLoad(0);
             
             return () => hls.destroy();
         } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
@@ -28,5 +27,5 @@ export default function HlsPlayer({ myKey, src, className }) {
         }
     }, [src]);
 
-    return <video ref={videoRef} key={myKey} controls className={className} />;
+    return <video ref={videoRef} key={myKey} controls className={className} onClick={onClick} />;
 }
