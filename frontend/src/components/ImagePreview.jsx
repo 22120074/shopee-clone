@@ -20,7 +20,7 @@ function ImagePreview({ images }) {
 
     return (
         <div className="flex flex-col">
-            <ImageReveal mainImage={mainImage} width={450} height={450} gridSize={8} animationDuration={0.5} />
+            <ImageReveal mainImage={mainImage} width={450} height={450} gridSize={8} animationDuration={0.2} />
             <div className="relative overflow-hidden max-w-[452px]">
                 <ul className="h-[80px] flex flex-row self-start transition-transform duration-500 ease gap-2"
                     style={{

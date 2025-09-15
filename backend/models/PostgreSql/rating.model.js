@@ -9,6 +9,10 @@ module.exports = (sequelize) =>
       allowNull: false,
       primaryKey: true,
     },
+    dataUserId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     productId: {
       type: DataTypes.UUID,
       allowNull: false,

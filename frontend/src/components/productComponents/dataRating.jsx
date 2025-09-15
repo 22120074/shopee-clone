@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import VideoHls from './../VideoHls';
+import { Link } from "react-router-dom";
 import { getProductReviews } from "../../services/product.service";
+import { getUserRating } from "../../services/user.service";
+import { formatNumber, formatDate } from "../../utils/numberFormat";
+import VideoHls from './../VideoHls';
+import Pagination from "../Pagination";
 
 function DataRatingProduct({ product, rating, numReviews }) {
     // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index hiện tại
     const [reviews, setReviews] = useState([]);
+    const [dataUserList, setDataUserList] = useState([]);
     const [showMedia, setShowMedia] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     const fetchReviews = async (id, limit, page) => {
         try {
@@ -17,11 +23,35 @@ function DataRatingProduct({ product, rating, numReviews }) {
         }
     };
 
+    const fetchDataUserList = async (userIds) => {
+        try {
+            const response = await getUserRating({ data: userIds });
+            setDataUserList(response.data.ratings);
+        } catch (error) {
+            console.error("Lỗi khi lấy thông tin người dùng:", error);
+        }
+    };
+
+    // Sử dụng useEffect để để lấy các đánh giá
     useEffect(() => {
         if (product) {
             fetchReviews(product.id, 6, 1);
         }
     }, [product]);
+
+    // Sử dụng useEffect để lấy thông tin người dùng của các đánh giá
+    useEffect(() => {
+        if (reviews.length > 0) {
+            const userIds = reviews.map(review => review.dataUserId);
+            fetchDataUserList(userIds);
+        }
+    }, [reviews]);
+    
+    //  Sử dụng useEffct để tính index của review
+    useEffect(() => {
+        const pages = Math.ceil(numReviews / 6);
+        setTotalPages(pages);
+    }, [numReviews]);
 
     const viewVideoandImages = (review) => {
         const totalSlides = review.Video_Ratings.length + review.Image_Ratings.length;
@@ -100,12 +130,13 @@ function DataRatingProduct({ product, rating, numReviews }) {
         </div>
     )};
 
-    console.log(reviews);
+    console.log("data: ", reviews);
+    console.log("data user: ", dataUserList);
 
     return (
-        <div className="max-w-[1200px] h-auto mx-auto bg-white mt-6 p-6 rounded-sm ">
+        <div className="max-w-[1200px] w-full flex flex-col items-center justify-center h-auto mx-auto bg-white mt-6 p-6 rounded-sm ">
             { showMedia && reviews.length > 0 && viewVideoandImages(showMedia) }
-            <h1 className="capitalize bg-gray-50 h-14 flex items-center px-4 rounded-sm text-xl">
+            <h1 className="w-full capitalize bg-gray-50 h-14 flex items-center px-4 rounded-sm text-xl">
                 Đánh giá sản phẩm
             </h1>
             {/* Phần hiển thị tổng quan đánh giá */}
@@ -130,53 +161,76 @@ function DataRatingProduct({ product, rating, numReviews }) {
                 </div>
             </div>
             {/* Phần hiển thị các đánh giá cụ thể */}
-            <div className="flex flex-col gap-4 ">
-                { reviews.map((review) => (
-                    <div key={review.id} className="w-full h-auto flex pb-14 border-b border-gray-300">
-                        {/* Avatar */}
-                        <div className="w-20"></div>
-                        {/* Hiển thị thông tin bình luận */}
-                        <div className="flex flex-col flex-1 gap-3">
-                            
-                            <div className=""></div>
-                            {/* Phần nội dung bình luận */}
-                            <div className="">{review.comment}</div>
-                            {/* Phần hiển thị video và hình ảnh */}
-                            <div className="flex gap-3">
-                                {review.Video_Ratings.length > 0 && (
-                                    <div className="flex gap-3">
-                                        {review.Video_Ratings.map((video, idx) => (
-                                            <div key={idx} className="relative w-[70px] h-[70px] rounded-sm"
-                                                onClick={() => {setShowMedia(review)
-                                                setCurrentIndex(idx)
-                                            }}>
-                                                <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
-                                                    className="w-[70px] h-[70px] rounded-sm"
-                                                />
-                                                <div className="absolute bottom-0 left-0 bg-moregrayTextColor bg-opacity-70 w-full h-4">
-                                                    <i className="absolute text-xs fa-solid fa-video text-white top-1/2 left-0 transform translate-x-[4px] -translate-y-1/2"></i>
+            { reviews.length > 0 && dataUserList.length > 0 && (
+                <div className="flex flex-col gap-4 w-full">
+                    { reviews.map((review, idx) => (
+                        <div key={review.id} className="w-full h-auto grid grid-cols-[50px_1fr] pb-14 border-b border-gray-300 p-3">
+                            {/* Avatar */}
+                            <Link to="/user" className="flex items-start justify-center gap-2"> 
+                                <div className='w-[32px] h-[32px] rounded-full overflow-hidden'>
+                                    <img src={dataUserList[idx].avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                                </div>
+                            </Link>
+                            {/* Hiển thị thông tin bình luận */}
+                            <div className="flex flex-col flex-1 gap-3">
+                                {/* Phần tên, điểm, ngày giờ đánh giá */}
+                                <div className="flex flex-col items-start justify-start text-xs gap-2">
+                                    <div className="">{dataUserList[idx].name || formatNumber(dataUserList[idx].phone)}</div>
+                                    <div className='flex'>
+                                        {[1, 2, 3, 4, 5].map((i) => (
+                                            <i key={i}
+                                                className={`${(review.rate <= i && review.rate > i - 1) || review.rate >= i ? 'fa-solid' : 'fa-regular'} fa-star text-primaryColor`}
+                                            ></i>
+                                        ))}
+                                    </div>
+                                    <div className="flex items-center gap-2 text-gray-500">
+                                        <div className="text-gray-500">{formatDate(review.createdAt, 'yyyy-MM-dd HH:mm')}</div>
+                                        <div className="flex h-4 w-0 border border-gray-300"></div>
+                                        <div>Phân loại hàng: {review.Attribute.nameEach}, {review.Attribute.size}</div>
+                                    </div>
+                                </div>
+                                {/* Phần nội dung bình luận */}
+                                <div className="">{review.comment}</div>
+                                {/* Phần hiển thị video và hình ảnh */}
+                                <div className="flex gap-3">
+                                    {review.Video_Ratings.length > 0 && (
+                                        <div className="flex gap-3">
+                                            {review.Video_Ratings.map((video, idx) => (
+                                                <div key={idx} className="relative w-[70px] h-[70px] rounded-sm cursor-pointer"
+                                                    onClick={() => {setShowMedia(review)
+                                                    setCurrentIndex(idx)
+                                                }}>
+                                                    <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
+                                                        className="w-[70px] h-[70px] rounded-sm"
+                                                    />
+                                                    <div className="absolute bottom-0 left-0 bg-moregrayTextColor bg-opacity-70 w-full h-4">
+                                                        <i className="absolute text-xs fa-solid fa-video text-white top-1/2 left-0 transform translate-x-[4px] -translate-y-1/2"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                {review.Image_Ratings.length > 0 && (
-                                    <div className="flex gap-3">
-                                        {review.Image_Ratings.map((img, idx) => (
-                                            <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
-                                                className="w-[70px] h-[70px] rounded-sm"
-                                                onClick={() => {setShowMedia(review)
-                                                    setCurrentIndex(review.Video_Ratings.length + idx)
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
+                                            ))}
+                                        </div>
+                                    )}
+                                    {review.Image_Ratings.length > 0 && (
+                                        <div className="flex gap-3">
+                                            {review.Image_Ratings.map((img, idx) => (
+                                                <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
+                                                    className="w-[70px] h-[70px] rounded-sm cursor-pointer"
+                                                    onClick={() => {setShowMedia(review)
+                                                        setCurrentIndex(review.Video_Ratings.length + idx)
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
+            { reviews.length > 0 && dataUserList.length > 0 && (
+                <Pagination totalPages={totalPages} currentPage={0} onPageChange={console.log} />
+            )}
         </div>
     );
 }

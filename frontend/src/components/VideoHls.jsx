@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Hls from "hls.js";
 
 export default function HlsPlayer({ myKey = null, src, className, onClick }) {

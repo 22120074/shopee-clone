@@ -170,3 +170,17 @@ exports.refreshToken = (req, res) => {
     return res.status(401).json({ message: 'Refresh token không hợp lệ hoặc đã hết hạn' });
   }
 };
+
+exports.getUserListRating = async (req, res, next) => {
+  try {
+    const userList = req.query['data[]'];
+    // console.log('Received userList:', userList);
+    if (!userList || !Array.isArray(userList) || userList.length === 0) {
+      return res.status(400).json({ message: 'Dữ liệu không hợp lệ' });
+    }
+    const ratings = await DataUser.find({ _id: { $in: userList } });
+    return res.json({ ratings });
+  } catch (error) {
+    next(error);
+  }
+}

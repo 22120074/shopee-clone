@@ -147,7 +147,7 @@ const getProductReviews = async (productID, limit = 6, page = 1) => {
 
     const reviews = await Rating.findAndCountAll({
         where: { productId: productID },
-        attributes: ['id', 'rate', 'comment', 'createdAt'],
+        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
         limit,
         offset,
         include: [

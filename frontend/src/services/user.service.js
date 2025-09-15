@@ -35,4 +35,11 @@ export const refreshToken = () => {
   return axios.post(`${process.env.REACT_APP_API_URL}/auth/refresh`, {}, 
     { withCredentials: true }
   );
-}
+};
+
+export const getUserRating = (data) => {
+  return axios.get(`${process.env.REACT_APP_API_URL}/auth/data_list_rating`, {
+    params: data,
+    withCredentials: true,
+  });
+};
