@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addItem } from '../../features/cart/cartSlice';
-import { formatSold } from '../../utils/numberFormat';
+import { formatSold, formatRating } from '../../utils/numberFormat';
 
 function DataRight({ product, user, addToast, rating, numReviews }) {
     const navigate = useNavigate();
@@ -162,7 +162,7 @@ function DataRight({ product, user, addToast, rating, numReviews }) {
                 {/* Phần điểm đánh giá */}
                 <div className='relative flex gap-[2px] justify-start items-center text-[18px]'>
                     <div className='mr-1 underline underline-offset-[3px] decoration-1'>
-                        {rating}
+                        {formatRating(rating)}
                     </div>
                     {[1, 2, 3, 4, 5].map((i) => (
                         <i

@@ -179,7 +179,10 @@ exports.getUserListRating = async (req, res, next) => {
       return res.status(400).json({ message: 'Dữ liệu không hợp lệ' });
     }
     const ratings = await DataUser.find({ _id: { $in: userList } });
-    return res.json({ ratings });
+    const ratingsMap = new Map(ratings.map(r => [r._id.toString(), r]));
+    const result = userList.map(id => ratingsMap.get(id));
+
+    return res.json({ ratings: result });
   } catch (error) {
     next(error);
   }

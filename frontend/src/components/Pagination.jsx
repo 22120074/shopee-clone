@@ -6,14 +6,14 @@ function Pagination({ totalPages, currentPage, onPageChange }) {
             ${isActive ? 'border bg-primaryColor text-white' : 'border bg-white text-grayTextColor hover:bg-primaryColor'} rounded-sm`}
             onClick={() => onClick(page)}
         >
-            {page}
+            {page + 1}
         </button>
     );
 
     return (
         <div className="relative inline-flex justify-center items-center gap-3 my-6 px-20 w-auto h-auto">
             {Array.from({ length: totalPages }, (_, index) => (
-                <Button key={index} page={index + 1}
+                <Button key={index} page={index}
                     isActive={index === currentPage}
                     onClick={onPageChange}
                 />

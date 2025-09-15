@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { getProductReviews } from "../../services/product.service";
 import { getUserRating } from "../../services/user.service";
-import { formatNumber, formatDate } from "../../utils/numberFormat";
+import { formatNumber, formatDate, formatRating } from "../../utils/numberFormat";
 import VideoHls from './../VideoHls';
 import Pagination from "../Pagination";
 
 function DataRatingProduct({ product, rating, numReviews }) {
-    // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index hiện tại
+    const ratingRef = useRef(null);
+    // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index slide, index page, total pages
     const [reviews, setReviews] = useState([]);
     const [dataUserList, setDataUserList] = useState([]);
     const [showMedia, setShowMedia] = useState(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+    const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
     const fetchReviews = async (id, limit, page) => {
@@ -53,13 +55,19 @@ function DataRatingProduct({ product, rating, numReviews }) {
         setTotalPages(pages);
     }, [numReviews]);
 
+    const handlePageChange = (page) => {
+        fetchReviews(product.id, 6, page + 1);
+        setCurrentPageIndex(page);
+        ratingRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
+
     const viewVideoandImages = (review) => {
         const totalSlides = review.Video_Ratings.length + review.Image_Ratings.length;
         const goNext = () => {
-            setCurrentIndex(i => (i + 1) % totalSlides);
+            setCurrentSlideIndex(i => (i + 1) % totalSlides);
         };        
         const goPrev = () => {
-            setCurrentIndex(i => (i - 1 + totalSlides) % totalSlides);
+            setCurrentSlideIndex(i => (i - 1 + totalSlides) % totalSlides);
         };    
 
         return (        
@@ -70,19 +78,19 @@ function DataRatingProduct({ product, rating, numReviews }) {
             <div className='relative flex items-center justify-start w-[800px] h-full m-auto overflow-hidden z-5'>
                 {/* Slider ảnh và video */}
                 <div className={`flex items-center justify-start h-auto max-h-[500px] transition-transform duration-500 ease-in-out z-20`}
-                    style={{ transform: `translateX(-${currentIndex * 800}px)`,
+                    style={{ transform: `translateX(-${currentSlideIndex * 800}px)`,
                             width: `${(review.Video_Ratings.length + review.Image_Ratings.length) * 800}px`
                 }}>
-                    {review.Video_Ratings.map((video, idx) => (
-                        <div key={idx} className="w-[800px] h-auto flex items-center justify-center text-center" onClick={() => setShowMedia(null)}>
+                    {review.Video_Ratings.map((video, _) => (
+                        <div key={video.id} className="w-[800px] h-auto flex items-center justify-center text-center" onClick={() => setShowMedia(null)}>
                             <VideoHls className={"flex items-center justify-center w-auto max-w-[800px] h-auto max-h-[500px] rounded-sm"}
                                 src={`${process.env.REACT_APP_API_URL}${video.videoUrl}`}
                                 onClick={(e) => e.stopPropagation()}
                             />
                         </div>
                     ))}
-                    {review.Image_Ratings.map((img, idx) => (
-                        <div key={idx} className="w-[800px] h-auto flex items-center justify-center text-center" onClick={() => setShowMedia(null)}>
+                    {review.Image_Ratings.map((img, _) => (
+                        <div key={img.id} className="w-[800px] h-auto flex items-center justify-center text-center" onClick={() => setShowMedia(null)}>
                             <img className="w-auto max-w-[800px] h-auto max-h-[500px] rounded-sm" alt="review"
                                 src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`}
                                 onClick={(e) => e.stopPropagation()}
@@ -95,7 +103,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
                     {review.Video_Ratings.length > 0 && (
                         <div className="flex gap-3">
                             {review.Video_Ratings.map((video, idx) => (
-                                <div key={idx} className="relative w-[50px] h-[50px] rounded-sm" onClick={() => setCurrentIndex(idx)}>
+                                <div key={idx} className="relative w-[50px] h-[50px] rounded-sm" onClick={() => setCurrentSlideIndex(idx)}>
                                     <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
                                         className="w-[50px] h-[50px] rounded-sm"
                                     />
@@ -111,7 +119,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
                             {review.Image_Ratings.map((img, idx) => (
                                 <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
                                     className="w-[50px] h-[50px] rounded-sm"
-                                    onClick={() => setCurrentIndex(review.Video_Ratings.length + idx)}
+                                    onClick={() => setCurrentSlideIndex(review.Video_Ratings.length + idx)}
                                 />
                             ))}
                         </div>
@@ -134,7 +142,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
     console.log("data user: ", dataUserList);
 
     return (
-        <div className="max-w-[1200px] w-full flex flex-col items-center justify-center h-auto mx-auto bg-white mt-6 p-6 rounded-sm ">
+        <div ref={ratingRef} className="max-w-[1200px] w-full flex flex-col items-center justify-center h-auto mx-auto bg-white mt-6 p-6 rounded-sm ">
             { showMedia && reviews.length > 0 && viewVideoandImages(showMedia) }
             <h1 className="w-full capitalize bg-gray-50 h-14 flex items-center px-4 rounded-sm text-xl">
                 Đánh giá sản phẩm
@@ -143,7 +151,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
             <div className="w-full h-32 flex px-6 bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
                 <div className='relative h-full flex flex-col gap-2 justify-center items-center'>
                     <div className='flex gap-1 items-end text-primaryColor text-4xl'>
-                        {rating}
+                        {formatRating(rating)}
                         <div className='text-xl'>
                             trên 5
                         </div>
@@ -161,7 +169,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
                 </div>
             </div>
             {/* Phần hiển thị các đánh giá cụ thể */}
-            { reviews.length > 0 && dataUserList.length > 0 && (
+            { reviews.length > 0 && dataUserList.length > 0 && reviews.length === dataUserList.length && (
                 <div className="flex flex-col gap-4 w-full">
                     { reviews.map((review, idx) => (
                         <div key={review.id} className="w-full h-auto grid grid-cols-[50px_1fr] pb-14 border-b border-gray-300 p-3">
@@ -196,11 +204,11 @@ function DataRatingProduct({ product, rating, numReviews }) {
                                     {review.Video_Ratings.length > 0 && (
                                         <div className="flex gap-3">
                                             {review.Video_Ratings.map((video, idx) => (
-                                                <div key={idx} className="relative w-[70px] h-[70px] rounded-sm cursor-pointer"
+                                                <div key={video.id} className="relative w-[70px] h-[70px] rounded-sm cursor-pointer"
                                                     onClick={() => {setShowMedia(review)
-                                                    setCurrentIndex(idx)
+                                                    setCurrentSlideIndex(idx)
                                                 }}>
-                                                    <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
+                                                    <img key={video.thumbnailUrl} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
                                                         className="w-[70px] h-[70px] rounded-sm"
                                                     />
                                                     <div className="absolute bottom-0 left-0 bg-moregrayTextColor bg-opacity-70 w-full h-4">
@@ -213,10 +221,10 @@ function DataRatingProduct({ product, rating, numReviews }) {
                                     {review.Image_Ratings.length > 0 && (
                                         <div className="flex gap-3">
                                             {review.Image_Ratings.map((img, idx) => (
-                                                <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
+                                                <img key={img.id} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
                                                     className="w-[70px] h-[70px] rounded-sm cursor-pointer"
                                                     onClick={() => {setShowMedia(review)
-                                                        setCurrentIndex(review.Video_Ratings.length + idx)
+                                                        setCurrentSlideIndex(review.Video_Ratings.length + idx)
                                                     }}
                                                 />
                                             ))}
@@ -229,7 +237,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
                 </div>
             )}
             { reviews.length > 0 && dataUserList.length > 0 && (
-                <Pagination totalPages={totalPages} currentPage={0} onPageChange={console.log} />
+                <Pagination totalPages={totalPages} currentPage={currentPageIndex} onPageChange={handlePageChange} />
             )}
         </div>
     );

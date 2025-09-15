@@ -34,3 +34,7 @@ export const formatDate = (dateInput, format = 'dd/MM/yyyy') => {
         .replace('mm', minutes)
         .replace('ss', seconds);
 };
+
+export const formatRating = (ratingNumber) => {
+    return Math.floor(ratingNumber * 10) / 10;
+}
