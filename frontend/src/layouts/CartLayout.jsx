@@ -6,7 +6,6 @@ import ProductList from '../components/cartComponents/productList'
 import FooterCart from '../components/cartComponents/footerCart';
 import PrimaryButton from "../components/Button";
 import { useSelector } from 'react-redux';
-import '../assets/Animation.css'
 import emptyCart from '../assets/Empty-bro.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

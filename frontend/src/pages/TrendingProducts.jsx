@@ -1,7 +1,6 @@
 import '../css/home.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
-import "../assets/Animation.css"
 import { getAllProducts } from '../services/product.service';
 
 function TrendingProducts() {
