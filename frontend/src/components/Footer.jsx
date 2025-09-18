@@ -3,9 +3,9 @@ function Footer() {
   // const isHomePage = path === '/';
   return (
     <div className="">
-      <div className="h-[200px] bg-[#F5F5F5]"></div>
+      <div className="pt-6 bg-[#F5F5F5]"></div>
 
-      <footer className="bg-gray-800 text-white py-4 h-[700px]">
+      <footer className="bg-gray-800 text-white py-4 h-[200px]">
         <div className="container mx-auto text-center">
           <p className="text-sm">
             &copy; {new Date().getFullYear()} My Company. All rights reserved.

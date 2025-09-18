@@ -142,7 +142,7 @@ const removeLikeProduct = async (productID, userID) => {
 }
 
 // Service liên quan đến đánh giá sản phẩm
-const getProductReviews = async (productID, limit = 6, page = 1) => {
+const getAllProductReviews = async (productID, limit = 6, page = 1) => {
     const offset = (page - 1) * limit;
 
     const reviews = await Rating.findAndCountAll({
@@ -167,7 +167,123 @@ const getProductReviews = async (productID, limit = 6, page = 1) => {
         order: [['createdAt', 'DESC']]
     });
 
-    return reviews;
+    return {
+        reviews,
+        totalPages: Math.ceil(reviews.count / limit),
+        currentPage: page
+    };
 };
 
-module.exports = { getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct, getProductReviews };
+const getReviewsByRating = async (productID, limit = 6, page = 1, rating) => {
+    const reviews = await Rating.findAndCountAll({
+        where: { productId: productID, rate: rating },
+        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
+        include: [
+            {
+                model: Image_Rating,
+                attributes: ['imageUrl']
+            },
+            {
+                model: Video_Rating,
+                attributes: ['videoUrl', 'thumbnailUrl']
+            },
+            {
+                model: Attribute,
+                attributes: ['nameEach', 'size']
+            }
+        ],
+        order: [['createdAt', 'DESC']]
+    });
+
+    // Phân trang thủ công
+    const total = reviews.count;
+    const totalPages = Math.ceil(total / limit);
+    const safePage = Math.min(Math.max(parseInt(page), 1), totalPages || 1);
+    const safeOffset = (safePage - 1) * limit;
+    const pagedReviews = reviews.rows.slice(safeOffset, safeOffset + limit);
+
+    return {
+        rows: pagedReviews,
+        totalPages: totalPages,
+        currentPage: safePage
+    };
+};
+
+const getReviewsWithMedia = async (productID, limit = 6, page = 1) => {
+    const reviews = await Rating.findAll({
+        where: { productId: productID },
+        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
+        include: [
+            { model: Image_Rating, attributes: ['imageUrl'], required: false },
+            { model: Video_Rating, attributes: ['videoUrl', 'thumbnailUrl'], required: false },
+            { model: Attribute, attributes: ['nameEach', 'size'], required: false }
+        ],
+    });
+
+    // Lọc review có ít nhất 1 media
+    const filteredReviews = reviews.filter(
+        r => (r.Image_Ratings && r.Image_Ratings.length > 0) || (r.Video_Ratings && r.Video_Ratings.length > 0)
+    );
+
+    // Sắp xếp theo ngày tạo mới nhất
+    filteredReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // Phân trang thủ công
+    const total = filteredReviews.length;
+    const totalPages = Math.ceil(total / limit);
+    const safePage = Math.min(Math.max(parseInt(page), 1), totalPages || 1);
+    const safeOffset = (safePage - 1) * limit;
+    const pagedReviews = filteredReviews.slice(safeOffset, safeOffset + limit);
+
+    return {
+        rows: pagedReviews,
+        totalPages: totalPages,
+        currentPage: safePage
+    };
+};
+
+const getEachNumofTypeRating = async (productID) => {
+    const allCounts = await Rating.findAndCountAll({
+        where: { productId: productID },
+    });
+
+    const ratingEachCounts = await Rating.findAll({
+        where: { productId: productID },
+        attributes: [
+            'rate',
+            [Sequelize.fn('COUNT', Sequelize.col('rate')), 'count']
+        ],
+        group: ['rate'],
+        raw: true
+    });
+
+    const mediaCounts = await Rating.findAll({
+        where: { productId: productID },
+        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
+        include: [
+            { model: Image_Rating, attributes: ['imageUrl'], required: false },
+            { model: Video_Rating, attributes: ['videoUrl', 'thumbnailUrl'], required: false },
+            { model: Attribute, attributes: ['nameEach', 'size'], required: false }
+        ],
+    });
+
+    // Lọc review có ít nhất 1 media
+    const filteredReviews = mediaCounts.filter(
+        r => (r.Image_Ratings && r.Image_Ratings.length > 0) || (r.Video_Ratings && r.Video_Ratings.length > 0)
+    );
+
+    const result = {
+        all: allCounts,
+        withMedia: filteredReviews.length,
+        5: 0, 4: 0, 3: 0, 2: 0, 1: 0
+    };
+
+    ratingEachCounts.forEach(r => {
+        result[r.rate] = parseInt(r.count);
+    });
+
+    return result;
+};
+
+module.exports = { getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct,
+    getAllProductReviews, getReviewsByRating, getReviewsWithMedia, getEachNumofTypeRating };

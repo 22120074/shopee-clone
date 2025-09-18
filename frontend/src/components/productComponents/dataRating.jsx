@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { getProductReviews } from "../../services/product.service";
+import { getProductReviews, getEachNumofTypeRating } from "../../services/product.service";
 import { getUserRating } from "../../services/user.service";
 import { formatNumber, formatDate, formatRating } from "../../utils/numberFormat";
 import VideoHls from './../VideoHls';
+import NormalButton from "../../components/NormalButton";
 import ListRatingSkeleton from "../skeletons/listRatingSkeleton";
 import Pagination from "../Pagination";
 
-function DataRatingProduct({ product, rating, numReviews }) {
+function DataRatingProduct({ product, rating }) {
     const ratingRef = useRef(null);
     // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index slide, index page, total pages
     const [reviews, setReviews] = useState([]);
@@ -17,37 +18,80 @@ function DataRatingProduct({ product, rating, numReviews }) {
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [sortOption, setSortOption] = useState('all');
+    // 1: all
+    // 2: 5, 3: 4, 4: 3, 5: 2, 6: 1
+    // 7: hasImage, hasVideo 
+    const [eachNumReview, setEachNumReview] = useState({
+        all: 0,
+        withMedia: 0,
+        5: 0, 4: 0, 3: 0, 2: 0, 1: 0
+    });
 
-    const fetchReviews = async (id, limit, page) => {
+    const fetchReviews = async (id, limit, page, sortOption) => {
         try {
-            const response = await getProductReviews(id, limit, page);
-            setReviews(response.data.rows);
+            const response = await getProductReviews(id, limit, page, sortOption);
+            // console.log("fetchReviews", response.data);
+            if (sortOption === 'all') {
+                setReviews(response.data.reviews.rows);
+                setTotalPages(response.data.totalPages);
+                setCurrentPageIndex(response.data.currentPage - 1);
+            } else if (sortOption === 'image_video') {
+                setReviews(response.data.rows);
+                setTotalPages(response.data.totalPages);
+                setCurrentPageIndex(response.data.currentPage - 1);
+            } else {
+                setReviews(response.data.rows);
+                setTotalPages(response.data.totalPages);
+                setCurrentPageIndex(response.data.currentPage - 1);
+            }
         } catch (error) {
             console.error("Lỗi khi lấy đánh giá sản phẩm:", error);
+        }
+    };
+
+    const fetchEachNumReview = async (id) => {
+        try {
+            const response = await getEachNumofTypeRating(id);
+            console.log("fetchEachNumReview", response.data);
+            setEachNumReview({
+                all: response.data.all.count,
+                withMedia: response.data.withMedia,
+                5: response.data[5] ? response.data[5] : 0,
+                4: response.data[4] ? response.data[4] : 0,
+                3: response.data[3] ? response.data[3] : 0,
+                2: response.data[2] ? response.data[2] : 0,
+                1: response.data[1] ? response.data[1] : 0,
+            });
+        } catch (error) {
+            console.error("Lỗi khi lấy số lượng đánh giá theo loại:", error);
         }
     };
 
     const fetchDataUserList = async (userIds) => {
         try {
             const response = await getUserRating({ data: userIds });
+            console.log("userList response", response.data);
             setDataUserList(response.data.ratings);
         } catch (error) {
             console.error("Lỗi khi lấy thông tin người dùng:", error);
         }
     };
 
-    // Sử dụng useEffect để để lấy các đánh giá
+    // Sử dụng useEffect để để lấy các đánh giá, và số lượng đánh giá theo loại
     useEffect(() => {
         if (product) {
-            fetchReviews(product.id, 6, 1);
+            fetchReviews(product.id, 6, 1, sortOption);
+            fetchEachNumReview(product.id);
         }
-    }, [product]);
+    }, [product, sortOption]);
 
     // Sử dụng useEffect để lấy thông tin người dùng của các đánh giá
     useEffect(() => {
         setLoadingUserList(true);
         if (reviews.length > 0) {
             const userIds = reviews.map(review => review.dataUserId);
+            // console.log("userIds", userIds);
             fetchDataUserList(userIds);
         }
         const timer = setTimeout(() => {
@@ -56,15 +100,17 @@ function DataRatingProduct({ product, rating, numReviews }) {
         return () => clearTimeout(timer);
     }, [reviews]);
     
-    //  Sử dụng useEffct để tính index của review
-    useEffect(() => {
-        const pages = Math.ceil(numReviews / 6);
-        setTotalPages(pages);
-    }, [numReviews]);
-
+    // Hàm xử lý khi chuyển trang
     const handlePageChange = (page) => {
-        fetchReviews(product.id, 6, page + 1);
+        if (page < 0 || page >= totalPages) return;
+        fetchReviews(product.id, 6, page + 1, sortOption);
         setCurrentPageIndex(page);
+        ratingRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handleSort = (typeSort, page) => {
+        fetchReviews(product.id, 6, page, typeSort);
+        setSortOption(typeSort);
         ratingRef.current.scrollIntoView({ behavior: 'smooth' });
     };
 
@@ -145,7 +191,6 @@ function DataRatingProduct({ product, rating, numReviews }) {
         </div>
     )};
 
-    console.log("data: ", reviews);
     console.log("data user: ", dataUserList);
 
     return (
@@ -155,7 +200,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
             Đánh giá sản phẩm
         </h1>
         {/* Phần hiển thị tổng quan đánh giá */}
-        <div className="w-full h-32 flex px-6 bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
+        <div className="w-full h-32 flex px-10 bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
             <div className='relative h-full flex flex-col gap-2 justify-center items-center'>
                 <div className='flex gap-1 items-end text-primaryColor text-4xl'>
                     {formatRating(rating)}
@@ -171,13 +216,40 @@ function DataRatingProduct({ product, rating, numReviews }) {
                     ))}
                 </div>
             </div>
-            <div>
-
+            <div className="h-auto w-full flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-4">
+                <NormalButton typeSort={'all'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`Tất cả (${eachNumReview.all})`}
+                    pageIndex={currentPageIndex + 1}
+                    onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}  
+                />
+                <NormalButton typeSort={'5'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`5 sao (${eachNumReview[5]})`}
+                    pageIndex={currentPageIndex + 1}
+                    onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}  
+                />
+                <NormalButton typeSort={'4'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`4 sao (${eachNumReview[4]})`}
+                    pageIndex={currentPageIndex + 1}
+                    onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}  
+                />
+                <NormalButton typeSort={'3'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`3 sao (${eachNumReview[3]})`}
+                    pageIndex={currentPageIndex + 1}
+                    onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}  
+                />
+                <NormalButton typeSort={'2'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`2 sao (${eachNumReview[2]})`}
+                    pageIndex={currentPageIndex + 1}
+                    onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}  
+                />
+                <NormalButton typeSort={'1'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`1 sao (${eachNumReview[1]})`}
+                    pageIndex={currentPageIndex + 1}
+                    onClick={(ts) => handleSort(ts)}  
+                />
+                <NormalButton typeSort={'image_video'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`Hình ảnh/Video (${eachNumReview.withMedia})`}
+                    pageIndex={currentPageIndex + 1}
+                    onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}  
+                />
             </div>
         </div>
         {/* Phần hiển thị các đánh giá cụ thể */}
         { loadingUserList ? <ListRatingSkeleton /> : (
-            reviews.length > 0 && dataUserList.length > 0 && reviews.length === dataUserList.length && (
+            reviews.length > 0 && dataUserList.length > 0 && reviews.length === dataUserList.length ? (
                 <div className="flex flex-col gap-4 w-full mt-4">
                     { reviews.map((review, idx) => (
                         <div key={review.id} className="w-full h-auto grid grid-cols-[50px_1fr] pb-14 border-b border-gray-300 p-3">
@@ -206,10 +278,10 @@ function DataRatingProduct({ product, rating, numReviews }) {
                                     </div>
                                 </div>
                                 {/* Phần nội dung bình luận */}
-                                <div className="">{review.comment}</div>
+                                <div className="pr-12">{review.comment}</div>
                                 {/* Phần hiển thị video và hình ảnh */}
                                 <div className="flex gap-3">
-                                    {review.Video_Ratings.length > 0 && (
+                                    {review.Video_Ratings?.length > 0 && (
                                         <div className="flex gap-3">
                                             {review.Video_Ratings.map((video, idx) => (
                                                 <div key={video.id} className="relative w-[70px] h-[70px] rounded-sm cursor-pointer"
@@ -226,7 +298,7 @@ function DataRatingProduct({ product, rating, numReviews }) {
                                             ))}
                                         </div>
                                     )}
-                                    {review.Image_Ratings.length > 0 && (
+                                    {review.Image_Ratings?.length > 0 && (
                                         <div className="flex gap-3">
                                             {review.Image_Ratings.map((img, idx) => (
                                                 <img key={img.id} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
@@ -242,6 +314,10 @@ function DataRatingProduct({ product, rating, numReviews }) {
                             </div>
                         </div>
                     ))}
+                </div>
+            ) : (
+                <div className="w-full h-32 flex items-center justify-center text-grayTextColor ">
+                    Chưa có đánh giá nào
                 </div>
             )
         )}

@@ -70,7 +70,7 @@ function ProductLayout() {
             }
             {/* Hiển thị thông tin sản phẩm */}
             { product &&
-                <div className='max-w-[1200px] mx-auto p-4 flex bg-white rounded-sm gap-[36px]'>
+                <div className='max-w-[1200px] w-full mx-auto p-4 flex bg-white rounded-sm gap-[36px] h-auto'>
                     {/* Nữa bên trái chứa hình ảnh, chia sẻ, lượt thích */}
                     <LeftData product={product} user={user} />
                     {/* Nữa bên phải chứa thông tin đơn hàng */}

@@ -145,9 +145,9 @@ function DataRight({ product, user, addToast, rating, numReviews }) {
     };
     
     return (
-        <div className='w-full flex flex-col'>
+        <div className='w-full min-w-0 flex flex-col flex-1'>
             {/* Tên sản phẩm */}
-            <div className='text-[19px] leading-[23px] line-clamp-2'>
+            <div className='text-[19px] leading-[23px] line-clamp-2 w-full break-words'>
                 { product.favorite && 
                     <span className="inline-block text-white bg-[#EE4D2D] 
                         px-1 rounded-[3px] mr-1 relative top-[-2px] flex-1 
@@ -299,8 +299,8 @@ function DataRight({ product, user, addToast, rating, numReviews }) {
                 <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
                     Kích Thước
                 </h2>
-                <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start flex-1 max-w-[430px] 
-                    max-h-[130px] overflow-y-auto'>
+                <div className={`flex flex-row items-center justify-start flex-wrap gap-2 flex-1 max-w-[430px] 
+                    max-h-[${40*3 + 8*2}px] overflow-y-auto`}>
                     {
                         reducedSizes.map((attribute, index) => (
                             <div key={index} className={`relative flex items-center h-[40px] border

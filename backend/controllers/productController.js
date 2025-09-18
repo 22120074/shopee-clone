@@ -1,4 +1,5 @@
-const { getAllProduct, getOneProduct, isLikedByUser, addLikeProduct, removeLikeProduct, getProductReviews } = require('../services/product.service');
+const { getAllProduct, getOneProduct, isLikedByUser, addLikeProduct, removeLikeProduct, 
+    getAllProductReviews, getReviewsByRating, getReviewsWithMedia, getEachNumofTypeRating } = require('../services/product.service');
 
 // module.exports.getAllProduct = async (req, res) => {
 //     try {
@@ -71,11 +72,41 @@ module.exports.unlikeProduct = async (req, res) => {
 
 module.exports.getReviews = async (req, res) => {
     try {
-        const { productID, limit, page } = req.query;
-        const reviews = await getProductReviews(productID, limit, page);
+        const { productID, limit, page, typeSort } = req.query;
+        // console.log("type", typeSort);
+        let reviews;
+        switch (typeSort) {
+            case 'all':
+                reviews = await getAllProductReviews(productID, limit, page);
+                break;
+            case '5':
+            case '4':
+            case '3':
+            case '2':
+            case '1':            
+                reviews = await getReviewsByRating(productID, limit, page, parseInt(typeSort));
+                break;
+            case 'image_video':
+                reviews = await getReviewsWithMedia(productID, limit, page);
+                break;
+            default:
+                reviews = await getAllProductReviews(productID, limit, page);
+                break;
+        }
         res.status(200).json(reviews);
     } catch (error) {
         console.error('Lỗi lấy đánh giá sản phẩm:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports.getEachNumofTypeRating = async (req, res) => {
+    try {
+        const { productID } = req.query;
+        const ratings = await getEachNumofTypeRating(productID);
+        res.status(200).json(ratings);
+    } catch (error) {
+        console.error('Lỗi lấy số lượng đánh giá theo loại:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

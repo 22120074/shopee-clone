@@ -50,11 +50,20 @@ export const unlikeProduct = (productID, userID, token) => {
     );
 }
 
-export const getProductReviews = (productID, limit = 6, page = 1) => {
+export const getProductReviews = (productID, limit = 6, page = 1, typeSort) => {
   return axios.get(
-        `${process.env.REACT_APP_API_URL}/product/reviews?productID=${productID}&limit=${limit}&page=${page}`,
+        `${process.env.REACT_APP_API_URL}/product/reviews?productID=${productID}&limit=${limit}&page=${page}&typeSort=${typeSort}`,
         {
           headers: { 'Content-Type': 'application/json' }
         }
     );
 }
+
+export const getEachNumofTypeRating = (productID) => {
+  return axios.get(
+        `${process.env.REACT_APP_API_URL}/product/eachNumReviews?productID=${productID}`,
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+    );  
+};

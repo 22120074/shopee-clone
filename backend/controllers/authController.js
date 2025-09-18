@@ -173,7 +173,10 @@ exports.refreshToken = (req, res) => {
 
 exports.getUserListRating = async (req, res, next) => {
   try {
-    const userList = req.query['data[]'];
+    let userList = req.query['data[]'];
+    if (!Array.isArray(userList)) {
+      userList = [userList];
+    }
     // console.log('Received userList:', userList);
     if (!userList || !Array.isArray(userList) || userList.length === 0) {
       return res.status(400).json({ message: 'Dữ liệu không hợp lệ' });
