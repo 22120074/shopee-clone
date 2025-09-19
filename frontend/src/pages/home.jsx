@@ -86,7 +86,7 @@ function Home() {
       {/* Phần hiển thị ảnh quảng cáo và danh mục ở đầu trang home */}
       <div className="home-events-banner flex flex-col items-center w-full h-auto bg-white min-w-0 mt-3 lg:mt-8"> 
         {/* Phần hiển thị danh sách ảnh quảng cáo */}
-        <div className='home-events-banner_ads flex justify-center h-[120px] lg:h-[240px] mx-auto w-full max-w-[1200px]'>
+        <div className='home-events-banner_ads flex justify-center h-[120px] md:h-[200px] lg:h-[240px] mx-auto w-full max-w-[1200px]'>
           {/* Hiển thị ảnh quảng cáo 1 dạng Slide*/}
           <div className='w-[800px] h-full rounded-[3px] overflow-hidden'>
             <CarouselSlider images={images} width={'100%'} height={'100%'} />
@@ -112,31 +112,31 @@ function Home() {
         {/* Phần hiển thị danh mục quảng cáo */}
         <div className='home-events-banner_list flex items-start justify-between gap-[16px] w-full max-w-[1200px] min-w-0 h-auto px-2'>
           <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+            <div className='aspect-square w-[80%] md:h-[60px] md:w-[60px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
               style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-8a387d78a7ad954ec489d3ef9abd60b4_xhdpi)`, }}
             />
             <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Mã Giảm Giá</h3>
           </Link>
           <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+            <div className='aspect-square w-[80%] md:h-[60px] md:w-[60px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
               style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-f692e9b0be05d1a11cded7f9f72b5f0b_xhdpi)`, }}
             />
             <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Khách Hàng Thân Thiết</h3>
           </Link>
           <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+            <div className='aspect-square w-[80%] md:h-[60px] md:w-[60px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
               style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-5bf65d4dc0eb8f6b42074751e8b736a7_xhdpi)`, }}
             />
             <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Hàng Chọn Giá Hời</h3>
           </Link>
           <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+            <div className='aspect-square w-[80%] md:h-[60px] md:w-[60px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
               style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-c02353c969d19918c53deaa4ea15bdbe_xhdpi)`, }}
             />
             <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Shopee Style Voucher 30%</h3>
           </Link>
           <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+            <div className='aspect-square w-[80%] md:h-[60px] md:w-[60px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
               style={{ backgroundImage: `url(https://cf.shopee.vn/file/1d25d74d6900b85cfde8f967e613041d_xhdpi)`, }}
             />
             <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Săn Ngay 100.000 Xu</h3>
