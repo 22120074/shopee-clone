@@ -88,7 +88,6 @@ exports.login = async (req, res, next) => {
         secure: false,
         sameSite: 'Lax',
         // secure: process.env.NODE_ENV === 'production',
-
         maxAge: 15 * 60 * 1000 // 15 phút
       })
       .cookie('refresh_token', refreshToken, {
@@ -96,7 +95,6 @@ exports.login = async (req, res, next) => {
         secure: false,
         sameSite: 'Lax',
         // secure: process.env.NODE_ENV === 'production',
-
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
       })
       .json({ message: 'Đăng nhập thành công!' });
