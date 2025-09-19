@@ -1,11 +1,30 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from "react-router-dom";
 import '../css/CarouselSlide.css';
 
-export default function CarouselSlider({ images, width = 800, height = 240 }) {
+export default function CarouselSlider({ images, width, height }) {
   // Tạo chuỗi CSS background-image
   const [currentIndex, setCurrentIndex] = useState(0);
   const length = images.length;
+  const startX = useRef(0);
+
+  // Xử lý sự kiện chạm (touch) để chuyển slide
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX.current - endX;
+
+    if (diff > 50) {
+      // kéo sang trái nhiều → Next
+      setCurrentIndex(i => (i === length - 1 ? 0 : i + 1));
+    } else if (diff < -50) {
+      // kéo sang phải nhiều → Prev
+      setCurrentIndex(i => (i === 0 ? length - 1 : i - 1));
+    }
+  };
 
   // Chuyển sang ảnh trước
   const goPrev = () =>
@@ -27,8 +46,8 @@ export default function CarouselSlider({ images, width = 800, height = 240 }) {
   }, [currentIndex, length, goNext]);
 
   return (
-    <div className="home-events-banner_ads-content_1"
-        style={{ '--n': images.length, width: `${width}px`, height: `${height}px` }}
+    <div className={`home-events-banner_ads-content_1  `}
+        style={{ '--n': images.length, width: `${width}`, height: `${height}` }}
     >
       {/* Phần hiển thị ảnh quảng cáo */}
       <div
@@ -37,11 +56,13 @@ export default function CarouselSlider({ images, width = 800, height = 240 }) {
           width: `${length * 100}%`,
           transform: `translateX(-${(100 / length) * currentIndex}%)`
         }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {images.map((src, idx) => (
           <div
             key={idx}
-            className="slider-slide"
+            className="slider-slide bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${src})` }}
           >
             <Link to={src} className="block w-full h-full" />

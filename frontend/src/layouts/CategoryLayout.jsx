@@ -218,7 +218,7 @@ function CategoryLayout() {
 
     return (
         <div className="flex flex-col items-center bg-[#F5F5F5] w-full pt-8">
-            <CarouselSlider images={category ? category.images : []} width={1200} height={360} />
+            <CarouselSlider images={category ? category.images : []} width={'1200px'} height={'360px'} />
         </div>
     );
 };

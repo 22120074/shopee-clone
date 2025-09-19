@@ -12,10 +12,6 @@
 
 .slider-slide {
   flex: 0 0 calc(100% / var(--n)); /* var(--n) = số ảnh */
-  /* Nếu bạn không dùng CSS biến, có thể flex: 0 0 100%; track width = length*100% sẽ đảm bảo mỗi slide đúng 1 khung */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 @keyframes slideFadeIn {
@@ -45,8 +41,10 @@
 .banner_ads-content-button.left  { left: 0; }
 .banner_ads-content-button.right { right: 0; }
 
-.home-events-banner_ads-content_1:hover .banner_ads-content-button {
-  display: block;
+@media (min-width: 1024px) {
+  .home-events-banner_ads-content_1:hover .banner_ads-content-button {
+    display: block;
+  }
 }
 
 /* Phần hiển thị index của slider */

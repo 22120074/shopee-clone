@@ -1,10 +1,31 @@
 import '../css/home.css';
-import React, { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from "react-router-dom";
 import CarouselSlider from '../components/CarouselSlide';
 import TrendingProducts from './TrendingProducts';
+import useIsWindow from '../hooks/useIsWindow';
 
 function Home() {
+  const startX = useRef(0);
+  const isPhone = useIsWindow('(max-width: 768px)');  
+
+  // Xử lý sự kiện chạm (touch) để chuyển slide
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX.current - endX;
+
+    if (diff > 50) {
+      // kéo sang trái nhiều → Next
+      setCurrentIndexCate(i => (i === slideWidthCatePhone - 1 ? 0 : i + 1));
+    } else if (diff < -50) {
+      // kéo sang phải nhiều → Prev
+      setCurrentIndexCate(i => (i === 0 ? slideWidthCatePhone - 1 : i - 1));
+    }
+  };
 
   // Danh sách ảnh quảng cáo đầu trang home
   const images = [
@@ -45,7 +66,7 @@ function Home() {
     { name: 'Thời Trang Trẻ Em', image: 'https://down-vn.img.susercontent.com/file/4540f87aa3cbe99db739f9e8dd2cdaf0@resize_w640_nl.webp'},
     { name: 'Giặt Giũ & Chăm Sóc Nhà Cửa', image: 'https://down-vn.img.susercontent.com/file/cd8e0d2e6c14c4904058ae20821d0763@resize_w640_nl.webp'},
     { name: 'Voucher & Dịch Vụ', image: 'https://down-vn.img.susercontent.com/file/b0f78c3136d2d78d49af71dd1c3f38c1@resize_w640_nl.webp'}
- ];
+  ];
   const [categoriesIndex, setCurrentIndexCate] = useState(0);
   // Chuyển sang phía sau
   const goPrevCate = () =>
@@ -53,22 +74,25 @@ function Home() {
   // Chuyển sang phía trước
   const goNextCate = () =>
     setCurrentIndexCate(i => (i === slideCountCate - 1 ? 0 : i + 1));
-  const itemsPerSlideCate = 10;                                           // Số lượng mục hiển thị trên mỗi slide
+  const itemsPerSlideCate = isPhone ? 3 : 10;                             // Số lượng mục hiển thị trên mỗi slide
   const itemsPerLineCate = Math.ceil(categories.length / 2);              // Số lượng mục hiển thị trên mỗi dòng, đã bị che
-  const slideCountCate = Math.ceil(categories.length / itemsPerLineCate); // Tổng số slide cần thiết
+  const slideCountCate = Math.ceil(categories.length / itemsPerLineCate); // Tổng số slide cần thiết trên window
+  const slideWidthCatePhone = Math.ceil(itemsPerLineCate / itemsPerSlideCate); // Tổng số slide cần thiết trên mobile
+
+  console.log(categoriesIndex, slideWidthCatePhone);
 
   return (
     <div className="home_wrapper flex flex-col items-center bg-[#F5F5F5] w-full">
       {/* Phần hiển thị ảnh quảng cáo và danh mục ở đầu trang home */}
-      <div className="home-events-banner flex flex-col items-center w-full h-auto bg-white"> 
+      <div className="home-events-banner flex flex-col items-center w-full h-auto bg-white min-w-0 mt-3 lg:mt-8"> 
         {/* Phần hiển thị danh sách ảnh quảng cáo */}
-        <div className='home-events-banner_ads flex h-[240px] mx-auto w-full max-w-[1200px]'>
+        <div className='home-events-banner_ads flex justify-center h-[120px] lg:h-[240px] mx-auto w-full max-w-[1200px]'>
           {/* Hiển thị ảnh quảng cáo 1 dạng Slide*/}
-          <div className='w-[800px] h-[240px] rounded-[3px] overflow-hidden'>
-            <CarouselSlider images={images} width={800} height={240} />
+          <div className='w-[800px] h-full rounded-[3px] overflow-hidden'>
+            <CarouselSlider images={images} width={'100%'} height={'100%'} />
           </div>
           {/* Hiển thị ảnh quảng cáo 2 và 3 */}
-          <div className='home-events-banner_ads-wrapper_2 flex flex-col'>
+          <div className='home-events-banner_ads-wrapper_2 hidden lg:flex flex-col'>
             <div
               className="w-full h-[116px] bg-cover bg-left-center bg-no-repeat rounded-[3px]"
               style={{ backgroundImage: `url(https://cf.shopee.vn/file/sg-11134258-7rat8-ma85park5zj5bf_xhdpi)` }}
@@ -86,53 +110,42 @@ function Home() {
           </div>
         </div>
         {/* Phần hiển thị danh mục quảng cáo */}
-        <div className='home-events-banner_list flex flex-row items-start w-full max-w-[1200px]'>
-          <Link to='/' className='flex flex-col items-center flex-1 hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='h-[44px] w-[44px]' 
-              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-8a387d78a7ad954ec489d3ef9abd60b4_xhdpi)`,
-              backgroundSize: 'contain', 
-              backgroundRepeat: 'no-repeat' }}
+        <div className='home-events-banner_list flex items-start justify-between gap-[16px] w-full max-w-[1200px] min-w-0 h-auto px-2'>
+          <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
+            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-8a387d78a7ad954ec489d3ef9abd60b4_xhdpi)`, }}
             />
-            <h3 className='home-events-banner_list-text text-[14px] text-black text-center w-[85px]'>Mã Giảm Giá</h3>
+            <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Mã Giảm Giá</h3>
           </Link>
-          <Link to='/' className='flex flex-col items-center flex-1 hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='h-[44px] w-[44px]' 
-              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-f692e9b0be05d1a11cded7f9f72b5f0b_xhdpi)`,
-              backgroundSize: 'contain', 
-              backgroundRepeat: 'no-repeat' }}
+          <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
+            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-f692e9b0be05d1a11cded7f9f72b5f0b_xhdpi)`, }}
             />
-            <h3 className='home-events-banner_list-text text-[14px] text-black text-center w-[85px]'>Khách Hàng Thân Thiết</h3>
+            <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Khách Hàng Thân Thiết</h3>
           </Link>
-          <Link to='/' className='flex flex-col items-center flex-1 hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='h-[44px] w-[44px]' 
-              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-5bf65d4dc0eb8f6b42074751e8b736a7_xhdpi)`,
-              backgroundSize: 'contain', 
-              backgroundRepeat: 'no-repeat' }}
+          <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
+            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-5bf65d4dc0eb8f6b42074751e8b736a7_xhdpi)`, }}
             />
-            <h3 className='home-events-banner_list-text text-[14px] text-black text-center w-[85px]'>Hàng Chọn Giá Hời</h3>
+            <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Hàng Chọn Giá Hời</h3>
           </Link>
-
-          <Link to='/' className='flex flex-col items-center flex-1 hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='h-[44px] w-[44px]' 
-              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-c02353c969d19918c53deaa4ea15bdbe_xhdpi)`,
-              backgroundSize: 'contain', 
-              backgroundRepeat: 'no-repeat' }}
+          <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
+            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+              style={{ backgroundImage: `url(https://cf.shopee.vn/file/vn-50009109-c02353c969d19918c53deaa4ea15bdbe_xhdpi)`, }}
             />
-            <h3 className='home-events-banner_list-text text-[14px] text-black text-center w-[85px]'>Shopee Style Voucher 30%</h3>
+            <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Shopee Style Voucher 30%</h3>
           </Link>
-          <Link to='/' className='flex flex-col items-center flex-1 hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
-            <div className='h-[44px] w-[44px]' 
-              style={{ backgroundImage: `url(https://cf.shopee.vn/file/1d25d74d6900b85cfde8f967e613041d_xhdpi)`,
-              backgroundSize: 'contain', 
-              backgroundRepeat: 'no-repeat' }}
+          <Link to='/' className='w-[20%] lg:flex-1 h-full flex flex-col items-center justify-start hover:-translate-y-[2px] transition-transform duration-100 ease-out'>
+            <div className='aspect-square w-[80%] md:h-[80px] md:w-[80px] lg:h-[50px] lg:w-[50px] bg-contain bg-no-repeat' 
+              style={{ backgroundImage: `url(https://cf.shopee.vn/file/1d25d74d6900b85cfde8f967e613041d_xhdpi)`, }}
             />
-            <h3 className='home-events-banner_list-text text-[14px] text-black text-center w-[85px]'>Săn Ngay 100.000 Xu</h3>
+            <h3 className='home-events-banner_list-text text-xs text-black text-center w-auto max-w-[85px]'>Săn Ngay 100.000 Xu</h3>
           </Link>
         </div>
       </div>
       {/* Danh mục sản phẩm */}
       <div className='home-category flex flex-col items-center justify-center bg-white w-full max-w-[1200px] relative'>
-        <h2 className='home-category-title flex items-center justify-start h-16 w-full text-[16px] text-[#757575] uppercase'>
+        <h2 className='flex items-center justify-start h-16 w-full max-w-full text-[16px] text-[#757575] pl-4 font-normal uppercase'>
           Danh mục sản phẩm
         </h2>
         {/* Phần Slide chứa danh mục các sản phẩm */}
@@ -140,15 +153,27 @@ function Home() {
           <ul
             className="h-full flex flex-row self-start flex-wrap transition-transform duration-500 ease"
             style={{
-              width: `${itemsPerLineCate * 120}px`, // ví dụ: 10% của 1200px
-              transform: `translateX(-${categoriesIndex * (itemsPerLineCate - itemsPerSlideCate) * 120}px)`,
-            }}
+              width: isPhone
+                ? `${(itemsPerLineCate / itemsPerSlideCate) * 100}%` // mobile: mỗi li 33% nếu itemsPerSlideCate=3
+                : `${itemsPerLineCate * 120}px`, // desktop: width cố định
+              transform: isPhone
+                ? (categoriesIndex === (slideWidthCatePhone - 1) 
+                ? `translateX(-${((categoriesIndex * itemsPerSlideCate) - 1) * (100 / itemsPerLineCate)}%)` 
+                : `translateX(-${categoriesIndex * itemsPerSlideCate * (100 / itemsPerLineCate)}%)`)
+                : `translateX(-${categoriesIndex * (itemsPerLineCate - itemsPerSlideCate) * 120}px)`,
+            }}            
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {categories.map((cat, index) => (
-              <li key={index} className="w-[120px] h-[150px]">
+              <li key={index} className={`h-[150px]`}
+                style={{
+                  width: isPhone ? `${100 / itemsPerLineCate}%` : "120px",
+                }}
+              >
                 <Link to={`/category/${cat.name}`} className="home-category_list-item w-full h-full flex flex-col items-center border border-[#F2F2F2]">
                   <div
-                    className="w-[84px] h-[84px] bg-cover bg-center bg-no-repeat"
+                    className={`w-[70%] md:w-[84px] h-[84px] bg-cover bg-center bg-no-repeat`}
                     style={{ backgroundImage: `url(${cat.image})` }}
                   ></div>
                   <h3 className='text-[14px] text-black text-center'>{cat.name}</h3>
