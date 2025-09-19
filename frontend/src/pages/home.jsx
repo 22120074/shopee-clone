@@ -79,8 +79,6 @@ function Home() {
   const slideCountCate = Math.ceil(categories.length / itemsPerLineCate); // Tổng số slide cần thiết trên window
   const slideWidthCatePhone = Math.ceil(itemsPerLineCate / itemsPerSlideCate); // Tổng số slide cần thiết trên mobile
 
-  console.log(categoriesIndex, slideWidthCatePhone);
-
   return (
     <div className="home_wrapper flex flex-col items-center bg-[#F5F5F5] w-full">
       {/* Phần hiển thị ảnh quảng cáo và danh mục ở đầu trang home */}

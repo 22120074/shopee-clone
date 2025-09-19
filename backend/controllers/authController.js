@@ -52,6 +52,7 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { phone, password } = req.body;
+    
     if (!phone || !password) {
       return res.status(400).json({ message: 'Vui lòng nhập đủ số điện thoại và mật khẩu.' });
     }
@@ -83,14 +84,19 @@ exports.login = async (req, res, next) => {
     res
       .cookie('access_token', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        // Đổi để test trên điện thoại với localhost
+        secure: false,
         sameSite: 'Lax',
+        // secure: process.env.NODE_ENV === 'production',
+
         maxAge: 15 * 60 * 1000 // 15 phút
       })
       .cookie('refresh_token', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         sameSite: 'Lax',
+        // secure: process.env.NODE_ENV === 'production',
+
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
       })
       .json({ message: 'Đăng nhập thành công!' });
@@ -159,8 +165,10 @@ exports.refreshToken = (req, res) => {
     // Gửi access token mới vào cookie
     res.cookie('access_token', newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      // Đổi để test trên điện thoại với localhost
+      secure: false,
       sameSite: 'Lax',
+      // secure: process.env.NODE_ENV === 'production',
       maxAge: 1 * 60 * 1000 // 1 phút
     });
 

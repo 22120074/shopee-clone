@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getCurrentUser = () => {
   return axios.get(`${process.env.REACT_APP_API_URL}/auth/me`, {
-    withCredentials: true,
+    withCredentials: true
   });
 };
 

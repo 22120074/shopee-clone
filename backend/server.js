@@ -17,8 +17,8 @@ app.use(express.json());
 
 // 1. CORS: cho phép frontend (http://localhost:3000) gửi cookie
 app.use(cors({
-  origin: process.env.FRONTEND_URL, // ví dụ 'http://localhost:3000'
-  credentials: true                 // cho phép gửi cookie
+  origin: ['http://localhost:3000', 'http://192.168.137.1:3000'],
+  credentials: true
 }));
 
 // Test API
@@ -50,6 +50,6 @@ Promise.all([
 ])
 .then(() => {
   console.log('✅ All databases connected');
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
 })
 .catch(err => console.error('❌ Database connection failed:', err));

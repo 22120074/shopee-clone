@@ -77,11 +77,11 @@ function Header() {
 
     return (
         <header className={`${isSticky ? 'sticky top-0 z-[30]' : 'relative'} Web-header flex flex-col bg-primaryColor min-w-0 w-full
-                ${urlPath === "cart" ? 'lg:h-[140px]' : 'lg:h-[120px]'} h-auto `} 
+                ${urlPath === "cart" ? 'lg:h-[140px]' : 'lg:h-[120px]'} h-[56px]`} 
         >
             {/* Phần 1 của Navbar */}
             <div className={`navbar flex items-center justify-between pl-4 lg:pl-0 py-2 lg:py-0 w-full max-w-[1200px] mx-auto
-                ${urlPath === "cart" ? 'lg:h-[56px]' : 'lg:h-[32px] lg:mt-[2px]'} h-auto gap-6 lg:gap-0`} 
+                ${urlPath === "cart" ? 'lg:h-[56px]' : 'lg:h-[32px] lg:mt-[2px]'} h-full gap-6 lg:gap-0`} 
             >
                 {/* Hỗ trợ của web */}
                 <ul className="flex-row items-center hidden lg:flex">
