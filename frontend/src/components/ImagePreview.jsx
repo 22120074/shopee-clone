@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import ImageReveal from "./animations/ImageReveal";
 
-function ImagePreview({ images }) {
+function ImagePreview({ images, selectedImage }) {
     const [mainImage, setMainImage] = useState(images[0].imageUrl);
+    const [prevImage, setPrevImage] = useState(images[0].imageUrl);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [hoverIndex, setHoverIndex] = useState(0);
     const length = images.length;
@@ -16,7 +17,12 @@ function ImagePreview({ images }) {
     };
 
     useEffect(() => {
-    }, [hoverIndex]);
+        if (selectedImage) {
+            setMainImage(selectedImage);
+        } else {
+            setMainImage(prevImage);
+        }
+    }, [selectedImage, prevImage]);
 
     return (
         <div className="flex flex-col">
@@ -28,14 +34,14 @@ function ImagePreview({ images }) {
                         transform: `translateX(-${currentIndex * (84 + 8)}px)`,
                     }}>
                     {images.map((image, index) => (
-                        <div
-                            key={index}
+                        <div key={index}
                             className={`w-[84px] h-[80px] cursor-pointer bg-center bg-cover bg-gray-200 border-2
                                 ${ hoverIndex === index ? "border-primaryColor" : "border-transparent"}`}
                             style={{ backgroundImage: `url(${image.imageUrl})` }}
                             onMouseEnter={() => {
                                 setMainImage(image.imageUrl);
                                 setHoverIndex(index);
+                                setPrevImage(image.imageUrl);
                             }}
                         />
                     ))}

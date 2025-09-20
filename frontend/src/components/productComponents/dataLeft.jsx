@@ -5,7 +5,7 @@ import { handelexpiredToken } from '../../services/auth.helper';
 import ImagePreview from '../ImagePreview';
 import { isLikedProduct, likeProduct, unlikeProduct } from '../../services/product.service';
 
-function LeftData({ product, user }) {
+function LeftData({ product, user, selectedImage }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // Sử dụng useState để lưu số lượng lượt thích
@@ -59,7 +59,7 @@ function LeftData({ product, user }) {
     return (
         <div className=''>
             {/* Phần xem ảnh, thanh ảnh */}
-            <ImagePreview images={product.image} />
+            <ImagePreview images={product.image} selectedImage={selectedImage} />
             {/* Phần chia sẻ và lượt thích */}
             <div className='flex justify-between items-center mt-6 mb-2'>
                 <div className='relative flex text-[16px] flex-1 item-center justify-center gap-1'>

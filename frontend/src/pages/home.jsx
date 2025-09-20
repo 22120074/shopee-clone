@@ -8,6 +8,7 @@ import useIsWindow from '../hooks/useIsWindow';
 function Home() {
   const startX = useRef(0);
   const isPhone = useIsWindow('(max-width: 768px)');  
+  const isIPad = useIsWindow('(min-width: 769px) and (max-width: 1024px)');
 
   // Xử lý sự kiện chạm (touch) để chuyển slide
   const handleTouchStart = (e) => {
@@ -74,10 +75,10 @@ function Home() {
   // Chuyển sang phía trước
   const goNextCate = () =>
     setCurrentIndexCate(i => (i === slideCountCate - 1 ? 0 : i + 1));
-  const itemsPerSlideCate = isPhone ? 3 : 10;                             // Số lượng mục hiển thị trên mỗi slide
-  const itemsPerLineCate = Math.ceil(categories.length / 2);              // Số lượng mục hiển thị trên mỗi dòng, đã bị che
-  const slideCountCate = Math.ceil(categories.length / itemsPerLineCate); // Tổng số slide cần thiết trên window
-  const slideWidthCatePhone = Math.ceil(itemsPerLineCate / itemsPerSlideCate); // Tổng số slide cần thiết trên mobile
+  const itemsPerSlideCate = isPhone ? 3 : isIPad ? 5 : 10;                      // Số lượng mục hiển thị trên mỗi slide
+  const itemsPerLineCate = Math.ceil(categories.length / 2);                    // Số lượng mục hiển thị trên mỗi dòng, đã bị che
+  const slideCountCate = Math.ceil(categories.length / itemsPerLineCate);       // Tổng số slide cần thiết trên window
+  const slideWidthCatePhone = Math.ceil(itemsPerLineCate / itemsPerSlideCate);  // Tổng số slide cần thiết trên mobile
 
   return (
     <div className="home_wrapper flex flex-col items-center bg-[#F5F5F5] w-full">
@@ -151,10 +152,10 @@ function Home() {
           <ul
             className="h-full flex flex-row self-start flex-wrap transition-transform duration-500 ease"
             style={{
-              width: isPhone
-                ? `${(itemsPerLineCate / itemsPerSlideCate) * 100}%` // mobile: mỗi li 33% nếu itemsPerSlideCate=3
-                : `${itemsPerLineCate * 120}px`, // desktop: width cố định
-              transform: isPhone
+              width: isPhone || isIPad
+                ? `${(itemsPerLineCate / itemsPerSlideCate) * 100}%`  // mobile: mỗi li 33% nếu itemsPerSlideCate=3
+                : `${itemsPerLineCate * 120}px`,                      // desktop: width cố định
+              transform: isPhone || isIPad
                 ? (categoriesIndex === (slideWidthCatePhone - 1) 
                 ? `translateX(-${((categoriesIndex * itemsPerSlideCate) - 1) * (100 / itemsPerLineCate)}%)` 
                 : `translateX(-${categoriesIndex * itemsPerSlideCate * (100 / itemsPerLineCate)}%)`)
@@ -164,14 +165,12 @@ function Home() {
             onTouchEnd={handleTouchEnd}
           >
             {categories.map((cat, index) => (
-              <li key={index} className={`h-[150px]`}
-                style={{
-                  width: isPhone ? `${100 / itemsPerLineCate}%` : "120px",
+              <li key={index} className={`h-[150px]`} style={{
+                  width: isPhone || isIPad ? `${100 / itemsPerLineCate}%` : "120px",
                 }}
               >
                 <Link to={`/category/${cat.name}`} className="home-category_list-item w-full h-full flex flex-col items-center border border-[#F2F2F2]">
-                  <div
-                    className={`w-[70%] md:w-[84px] h-[84px] bg-cover bg-center bg-no-repeat`}
+                  <div className={`w-[70%] md:w-[84px] h-[84px] bg-cover bg-center bg-no-repeat`}
                     style={{ backgroundImage: `url(${cat.image})` }}
                   ></div>
                   <h3 className='text-[14px] text-black text-center'>{cat.name}</h3>

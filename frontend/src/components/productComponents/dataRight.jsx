@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { addItem } from '../../features/cart/cartSlice';
 import { formatSold, formatRating } from '../../utils/numberFormat';
 
-function DataRight({ product, user, addToast, rating, numReviews }) {
+function DataRight({ product, user, addToast, rating, numReviews, setSelectedImage }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -43,15 +43,17 @@ function DataRight({ product, user, addToast, rating, numReviews }) {
             const map = new Map();
             const sizeMap = new Map();
             product.attributes.forEach(attr => {
-                if (!map.has(attr.nameEach)) {
+                if (attr.nameEach && !map.has(attr.nameEach)) {
                     map.set(attr.nameEach, attr);
                 }
-                if (!sizeMap.has(attr.size)) {
+                if (attr.size && !sizeMap.has(attr.size)) {
                     sizeMap.set(attr.size, attr);
                 }
             });
             setReducedAttributes(Array.from(map.values()));
             setReducedSizes(Array.from(sizeMap.values()));
+            console.log('Reduced Attributes:', Array.from(map.values()));
+            console.log('Reduced Sizes:', Array.from(sizeMap.values()));
         }
     }, [product]);
 
@@ -257,73 +259,81 @@ function DataRight({ product, user, addToast, rating, numReviews }) {
                 }
             </div>
             {/* Phần màu sắc và size */}
-            <div className='w-full flex flex-row justify-start pl-6 mt-6'>
-                <h2 className='font-normal text-[#757575] capitalize w-[100px] pt-[8px]'>
-                    { product.attributeName }
-                </h2>
-                <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start w-[400px]
-                    max-h-[130px] overflow-y-auto'>
-                    {
-                        reducedAttributes.map((attribute, index) => (
-                            <div key={index} className={`relative flex items-center h-[40px] border p-2 gap-2
-                                ${focusColor === attribute.nameEach ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
-                                hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
-                                ${!validAttribute.some(item => item.nameEach === attribute.nameEach) && focusSize
-                                    ? 'pointer-events-none opacity-50' : ''}
-                                ${!inStockProduct.includes(attribute.nameEach) ? 'pointer-events-none opacity-50' : ''}`}
-                                onClick={() => setFocusColor(
-                                    focusColor === attribute.nameEach ? null : attribute.nameEach
-                                )}>
-                                <div className=''
-                                    style={{
-                                        width: '24px',
-                                        height: '24px',
-                                        backgroundImage: `url(${attribute.imageUrl})`,
-                                        backgroundSize: 'cover',
-                                        backgroundPosition: 'center'
-                                    }}>
+            { reducedAttributes.length > 0 && (
+                <div className='w-full flex flex-row justify-start pl-6 mt-6'>
+                    <h2 className='font-normal text-[#757575] capitalize w-[100px] pt-[8px]'>
+                        { product.attributeName }
+                    </h2>
+                    <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start w-[400px]
+                        max-h-[130px] overflow-y-auto'>
+                        {
+                            reducedAttributes.map((attribute, index) => (
+                                <div key={index} className={`relative flex items-center h-[40px] border p-2 gap-2
+                                    ${focusColor === attribute.nameEach ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
+                                    hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
+                                    ${!validAttribute.some(item => item.nameEach === attribute.nameEach) && focusSize
+                                        ? 'pointer-events-none opacity-50' : ''}
+                                    ${!inStockProduct.includes(attribute.nameEach) ? 'pointer-events-none opacity-50' : ''}`}
+                                    onClick={() => {setFocusColor(focusColor === attribute.nameEach ? null : attribute.nameEach);
+                                        setSelectedImage(focusColor === attribute.nameEach ? null : attribute.imageUrl)
+                                    }}
+                                    // Cơ chế Hover để xem trước ảnh sản phẩm giống ImagePreview.jsx
+                                    onMouseEnter={() => setSelectedImage(attribute.imageUrl)}
+                                    onMouseLeave={() => setSelectedImage(focusColor === attribute.nameEach ? attribute.imageUrl : null)}
+                                >    
+                                    <div className=''
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            backgroundImage: `url(${attribute.imageUrl})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center'
+                                        }}>
+                                    </div>
+                                    <span className='text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
+                                    { focusColor === attribute.nameEach && 
+                                        <div className="absolute bottom-0 right-0 w-0 h-0 
+                                            border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
+                                            <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
+                                        </div>
+                                    }
                                 </div>
-                                <span className='text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
-                                { focusColor === attribute.nameEach && 
-                                    <div className="absolute bottom-0 right-0 w-0 h-0 
-                                        border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
-                                        <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
-                                    </div>
-                                }
-                            </div>
-                        ))
-                    }
+                            ))
+                        }
+                    </div>
                 </div>
-            </div>
-            <div className='w-full flex flex-row justify-start pl-6 mt-6'>
-                <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
-                    Kích Thước
-                </h2>
-                <div className={`flex flex-row items-center justify-start flex-wrap gap-2 flex-1 max-w-[430px] 
-                    max-h-[${40*3 + 8*2}px] overflow-y-auto`}>
-                    {
-                        reducedSizes.map((attribute, index) => (
-                            <div key={index} className={`relative flex items-center h-[40px] border
-                                ${focusSize === attribute.size ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
-                                p-2 text-[15px] hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
-                                ${!validSize.some(item => item.size === attribute.size) && focusColor
-                                    ? 'pointer-events-none opacity-50' : ''}
-                                ${!inStockProduct.includes(attribute.size) ? 'pointer-events-none opacity-50' : ''}`}
-                                onClick={() => setFocusSize(
-                                    focusSize === attribute.size ? null : attribute.size
-                                )}>
-                                { attribute.size }
-                                { focusSize === attribute.size && 
-                                    <div className="absolute bottom-0 right-0 w-0 h-0 
-                                        border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
-                                        <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
-                                    </div>
-                                }
-                            </div>
-                        ))
-                    }
+            )}
+            { reducedSizes.length > 0 && (
+                <div className='w-full flex flex-row justify-start pl-6 mt-6'>
+                    <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
+                        Kích Thước
+                    </h2>
+                    <div className={`flex flex-row items-center justify-start flex-wrap gap-2 flex-1 max-w-[430px] 
+                        max-h-[${40*3 + 8*2}px] overflow-y-auto`}>
+                        {
+                            reducedSizes.map((attribute, index) => (
+                                <div key={index} className={`relative flex items-center h-[40px] border
+                                    ${focusSize === attribute.size ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
+                                    p-2 text-[15px] hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
+                                    ${!validSize.some(item => item.size === attribute.size) && focusColor
+                                        ? 'pointer-events-none opacity-50' : ''}
+                                    ${!inStockProduct.includes(attribute.size) ? 'pointer-events-none opacity-50' : ''}`}
+                                    onClick={() => setFocusSize(
+                                        focusSize === attribute.size ? null : attribute.size
+                                    )}>
+                                    { attribute.size }
+                                    { focusSize === attribute.size && 
+                                        <div className="absolute bottom-0 right-0 w-0 h-0 
+                                            border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
+                                            <i className="fa-solid fa-check text-white text-[9px] absolute right-[0px] top-[5px]"></i>
+                                        </div>
+                                    }
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
-            </div>
+            )}
             {/* Phần điều chỉnh số lượng */}
             <div className='w-full flex flex-row justify-start pl-6 mt-6'>
                 <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>

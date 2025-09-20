@@ -25,6 +25,8 @@ function ProductLayout() {
     const [rating, setRating] = useState(0);
     const [numReviews, setNumReviews] = useState(0);
 
+    const [selectedImage, setSelectedImage] = useState(null);
+
     const fetchProducts = async (productName, setProduct) => {
         try {
             const product = await getOneProduct(productName);
@@ -72,9 +74,11 @@ function ProductLayout() {
             { product &&
                 <div className='max-w-[1200px] w-full mx-auto p-4 flex bg-white rounded-sm gap-[36px] h-auto'>
                     {/* Nữa bên trái chứa hình ảnh, chia sẻ, lượt thích */}
-                    <LeftData product={product} user={user} />
+                    <LeftData product={product} user={user} selectedImage={selectedImage} />
                     {/* Nữa bên phải chứa thông tin đơn hàng */}
-                    <RightData product={product} user={user} addToast={addToast} rating={rating} numReviews={numReviews} />
+                    <RightData product={product} user={user} addToast={addToast} rating={rating} numReviews={numReviews} 
+                        setSelectedImage={setSelectedImage} 
+                    />
                 </div>
             }
             { product && 
