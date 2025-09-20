@@ -14,7 +14,6 @@ function Pagination({ totalPages, currentPage, onPageChange }) {
             setExtLeft(currentPage - 3);
         else
             setExtLeft(-1);
-        // console.log('extLeft:', extLeft, 'extRight:', extRight);
     }, [currentPage, totalPages, extLeft, extRight]);
 
     const Button = ({ page, isActive, onClick, isHidden }) => (

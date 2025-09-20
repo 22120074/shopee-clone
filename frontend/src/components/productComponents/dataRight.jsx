@@ -52,8 +52,8 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             });
             setReducedAttributes(Array.from(map.values()));
             setReducedSizes(Array.from(sizeMap.values()));
-            console.log('Reduced Attributes:', Array.from(map.values()));
-            console.log('Reduced Sizes:', Array.from(sizeMap.values()));
+            // console.log('Reduced Attributes:', Array.from(map.values()));
+            // console.log('Reduced Sizes:', Array.from(sizeMap.values()));
         }
     }, [product]);
 
@@ -84,7 +84,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
     // 2. sử dụng useEffect để tìm validAttribute và validSize dựa trên focusColor và focusSize, 
     // áp dụng để vô hiệu hóa việc chọn sản phẩm không có trong kho
     useEffect(() => {
-        const found = product?.attributes.find(attr => attr.nameEach === focusColor && (attr.size === focusSize || !focusSize));
+        const found = product?.attributes.find(attr => attr.nameEach === focusColor && (attr.size === focusSize || (focusSize === null && reducedSizes.length === 0)));
         setFocusAttribute(found);
 
         if (focusSize) {
@@ -95,7 +95,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             const validSizes = product?.attributes.filter(attr => attr.nameEach === focusColor);
             setValidSize(validSizes);
         }
-    }, [focusColor, focusSize, product]);
+    }, [focusColor, focusSize, product, reducedSizes]);
 
     // Sử dụng useEffect để đặt giá trị ban đầu cho value khi focusAttribute thay đổi
     useEffect(() => {
@@ -221,7 +221,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             </div>
             {/* Phần giá bán */}
             <div className='w-full h-[64px] flex items-center justify-start bg-[#FAFAFA] gap-4 pl-6'>
-                { focusColor && (focusSize || !focusSize) && focusAttribute ? (
+                { focusColor && (focusSize || (focusSize === null && reducedSizes.length === 0)) && focusAttribute ? (
                     <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
                         <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
                         { (focusAttribute.price * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }

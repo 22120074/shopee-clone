@@ -107,17 +107,12 @@ exports.getMe = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // console.log('Lấy thông tin người dùng:', userId);
-    // console.log('Payload từ middleware:', req.user);
-
     // Tìm thông tin người dùng chi tiết từ collection dataUser dựa theo userId
     const userData = await DataUser.findOne({ userId });
 
     if (!userData) {
       return res.status(404).json({ message: 'Không tìm thấy dữ liệu người dùng' });
     }
-
-    // console.log(userData);
 
     // Trả về toàn bộ dữ liệu trong document dataUser
     res.json({ dataUser: userData });
@@ -183,7 +178,6 @@ exports.getUserListRating = async (req, res, next) => {
     if (!Array.isArray(userList)) {
       userList = [userList];
     }
-    // console.log('Received userList:', userList);
     if (!userList || !Array.isArray(userList) || userList.length === 0) {
       return res.status(400).json({ message: 'Dữ liệu không hợp lệ' });
     }

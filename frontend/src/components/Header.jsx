@@ -65,8 +65,6 @@ function Header() {
         return () => clearTimeout(timer);
     }, [openCartDropdown]);
 
-    // console.log(items)
-
     // Dùng useEffect để fix lỗi tự open dropdown khi từ /cart quay về trang chủ
     useEffect(() => {
         // Mỗi khi đổi trang thì đóng dropdown
@@ -177,7 +175,7 @@ function Header() {
             </div>
             {/* Phần 2 của Navbar */}  
             { urlPath === "cart" ? (
-                <div className='bg-white w-full h-full border-b border-gray-200'>
+                <div className='hidden lg:block bg-white w-full h-full border-b border-gray-200'>
                     <div className='flex items-center justify-between h-full mx-auto max-w-[1200px]'>
                         {/* Phần Logo */}
                         <div className='flex h-full w-auto items-center '>

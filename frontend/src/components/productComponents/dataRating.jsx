@@ -31,7 +31,6 @@ function DataRatingProduct({ product, rating }) {
     const fetchReviews = async (id, limit, page, sortOption) => {
         try {
             const response = await getProductReviews(id, limit, page, sortOption);
-            // console.log("fetchReviews", response.data);
             if (sortOption === 'all') {
                 setReviews(response.data.reviews.rows);
                 setTotalPages(response.data.totalPages);

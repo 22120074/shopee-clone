@@ -15,7 +15,6 @@ const { getAllProduct, getOneProduct, isLikedByUser, addLikeProduct, removeLikeP
 module.exports.getProduct = async (req, res) => {
     try {
         const { productID } = req.query;
-        // console.log('Product ID:', productID);
         const product = await getOneProduct(productID);
         res.status(200).json(product);
     } catch (error) {
@@ -73,7 +72,6 @@ module.exports.unlikeProduct = async (req, res) => {
 module.exports.getReviews = async (req, res) => {
     try {
         const { productID, limit, page, typeSort } = req.query;
-        // console.log("type", typeSort);
         let reviews;
         switch (typeSort) {
             case 'all':
