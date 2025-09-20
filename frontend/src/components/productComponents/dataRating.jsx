@@ -53,7 +53,6 @@ function DataRatingProduct({ product, rating }) {
     const fetchEachNumReview = async (id) => {
         try {
             const response = await getEachNumofTypeRating(id);
-            console.log("fetchEachNumReview", response.data);
             setEachNumReview({
                 all: response.data.all.count,
                 withMedia: response.data.withMedia,
@@ -71,7 +70,6 @@ function DataRatingProduct({ product, rating }) {
     const fetchDataUserList = async (userIds) => {
         try {
             const response = await getUserRating({ data: userIds });
-            console.log("userList response", response.data);
             setDataUserList(response.data.ratings);
         } catch (error) {
             console.error("Lỗi khi lấy thông tin người dùng:", error);
@@ -190,9 +188,7 @@ function DataRatingProduct({ product, rating }) {
             </button>
         </div>
     )};
-
-    console.log("data user: ", dataUserList);
-
+    
     return (
     <div ref={ratingRef} className="max-w-[1200px] w-full flex flex-col items-center justify-center h-auto mx-auto bg-white mt-6 p-6 rounded-sm ">
         { showMedia && reviews.length > 0 && viewVideoandImages(showMedia) }

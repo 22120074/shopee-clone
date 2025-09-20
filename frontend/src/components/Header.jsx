@@ -267,7 +267,7 @@ function Header() {
                                                         style={{
                                                             width: '36px',
                                                             height: '36px',
-                                                            backgroundImage: `url(${item.selectedAttributes.attribute.imageUrl})`,
+                                                            backgroundImage: `url(${item.selectedAttributes.attribute.imageUrl || item.imageUrl})`,
                                                             backgroundSize: 'cover',
                                                             backgroundPosition: 'center'
                                                         }}>

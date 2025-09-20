@@ -84,7 +84,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
     // 2. sử dụng useEffect để tìm validAttribute và validSize dựa trên focusColor và focusSize, 
     // áp dụng để vô hiệu hóa việc chọn sản phẩm không có trong kho
     useEffect(() => {
-        const found = product?.attributes.find(attr => attr.nameEach === focusColor && attr.size === focusSize);
+        const found = product?.attributes.find(attr => attr.nameEach === focusColor && (attr.size === focusSize || !focusSize));
         setFocusAttribute(found);
 
         if (focusSize) {
@@ -131,6 +131,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             const item = {
                 id: product.id,
                 name: product.name,
+                imageUrl: product.image[0].imageUrl,
                 attributes: product.attributes,
                 stock: product.stockCounts,
                 discount: product.discount,
@@ -220,7 +221,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             </div>
             {/* Phần giá bán */}
             <div className='w-full h-[64px] flex items-center justify-start bg-[#FAFAFA] gap-4 pl-6'>
-                { focusColor && focusSize && focusAttribute ? (
+                { focusColor && (focusSize || !focusSize) && focusAttribute ? (
                     <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
                         <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
                         { (focusAttribute.price * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
@@ -280,16 +281,18 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                                     // Cơ chế Hover để xem trước ảnh sản phẩm giống ImagePreview.jsx
                                     onMouseEnter={() => setSelectedImage(attribute.imageUrl)}
                                     onMouseLeave={() => setSelectedImage(focusColor === attribute.nameEach ? attribute.imageUrl : null)}
-                                >    
-                                    <div className=''
-                                        style={{
-                                            width: '24px',
-                                            height: '24px',
-                                            backgroundImage: `url(${attribute.imageUrl})`,
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center'
-                                        }}>
-                                    </div>
+                                >   
+                                    { attribute.imageUrl !== '' &&
+                                        <div className=''
+                                            style={{
+                                                width: '24px',
+                                                height: '24px',
+                                                backgroundImage: `url(${attribute.imageUrl})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center'
+                                            }}>
+                                        </div>
+                                    }
                                     <span className='text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
                                     { focusColor === attribute.nameEach && 
                                         <div className="absolute bottom-0 right-0 w-0 h-0 

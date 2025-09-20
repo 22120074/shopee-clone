@@ -136,3 +136,63 @@ INSERT INTO "Stocks" (
   (SELECT id FROM "Attributes" WHERE "productId" = 'f487c7a1-8de5-4ec7-9ea5-378e89aa0b33' AND "nameEach" = 'Black Pink Gra Pro' AND size = ''),
   NOW(), NOW()
 );
+
+-- -------------------------------------------------------------------------------------------------
+INSERT INTO "Products" (
+  id, name, favorite, discount, "attributeName", "fromStore", category, "createdAt", "updatedAt"
+) VALUES (
+  uuid_generate_v4(),
+  '(CHUCHAN) Tóp mỡ da giòn rim nước mắm, nhà làm chuẩn vị',
+  false,
+  5,
+  'Đóng gói',
+  'CHUCHAN Shop',
+  'Bách Hóa Online',
+  NOW(),
+  NOW()
+);
+
+INSERT INTO "ImageProducts" (id, "productId", "imageUrl", "createdAt", "updatedAt") VALUES
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 
+'https://down-vn.img.susercontent.com/file/vn-11134258-820l4-men1dm4813ied5', Now(), Now()),
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-m01nzll7qtn36a@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-m01nzll7qtbhf0@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-m01nzll869kde5@resize_w900_nl.webp', Now(), Now()),
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 
+'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-m01nzll8lq4v33@resize_w900_nl.webp', Now(), Now());
+
+INSERT INTO "Attributes" (id, "productId", "nameEach", "size", "price", "imageUrl", "createdAt", "updatedAt") VALUES
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 'Túi 50gr', '', 
+25000,
+'', 
+Now(), Now()),
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 'Hủ 100gr', '', 
+40000,
+'', 
+Now(), Now()),
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 'Túi 250gr kèm ớt rim', '', 
+1377000,
+'', 
+Now(), Now()),
+(uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 'Túi 250gr kèm sốt tắc', '', 
+1377000,
+'', 
+Now(), Now());
+
+
+INSERT INTO "Details" (
+  id, "productId", "material", "origin", "shipFrom", description, "createdAt", "updatedAt"
+) VALUES (
+  uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 'Bánh tráng', 'Việt Nam', 'Hồ Chí Minh', 'Đây là sản phẩm mẫu', NOW(), NOW()
+);
+
+INSERT INTO "Stocks" (
+  id, "productId", "attributeID", "createdAt", "updatedAt"
+) VALUES (
+  uuid_generate_v4(), 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00', 
+  (SELECT id FROM "Attributes" WHERE "productId" = 'cf2d4ee1-0c03-41f2-bc31-acc235d32b00' AND "nameEach" = 'Túi 50gr' AND size = ''),
+  NOW(), NOW()
+);

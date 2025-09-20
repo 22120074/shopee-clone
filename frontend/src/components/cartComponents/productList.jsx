@@ -179,7 +179,7 @@ function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsCheck
                         style={{
                             width: '80px',
                             height: '80px',
-                            backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl})`,
+                            backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center'
                         }}>
@@ -202,7 +202,9 @@ function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsCheck
                             </button>
                         </div>
                         <div className='text-sm capitalize text-grayTextColor w-[140px] whitespace-normal'>
-                            {attribute.selectedAttributes.color}, {attribute.selectedAttributes.size}
+                            {attribute.selectedAttributes.color}
+                            { attribute.selectedAttributes.size !== null ? ', ' : '' }
+                            {attribute.selectedAttributes.size}
                         </div>
                         {/* Phần dropdown */}
                         <DetailProductDropDown openDropdown={openDropdown} index={index} />
