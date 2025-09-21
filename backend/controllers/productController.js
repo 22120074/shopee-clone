@@ -81,7 +81,7 @@ module.exports.getReviews = async (req, res) => {
             case '4':
             case '3':
             case '2':
-            case '1':            
+            case '1':
                 reviews = await getReviewsByRating(productID, limit, page, parseInt(typeSort));
                 break;
             case 'image_video':

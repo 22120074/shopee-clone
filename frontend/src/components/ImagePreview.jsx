@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ImageReveal from "./animations/ImageReveal";
 
-function ImagePreview({ images, selectedImage }) {
+function ImagePreview({ images, selectedImage, isPhone }) {
     const [mainImage, setMainImage] = useState(images[0].imageUrl);
     const [prevImage, setPrevImage] = useState(images[0].imageUrl);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,18 +26,21 @@ function ImagePreview({ images, selectedImage }) {
 
     return (
         <div className="flex flex-col">
-            <ImageReveal mainImage={mainImage} width={450} height={450} gridSize={8} animationDuration={0.2} />
-            <div className="relative overflow-hidden max-w-[452px]">
-                <ul className="h-[80px] flex flex-row self-start transition-transform duration-500 ease gap-2"
+            <ImageReveal mainImage={mainImage} width={450} height={450} gridSize={8} animationDuration={0.2} isPhone={isPhone} />
+            <div className="relative overflow-hidden w-full max-w-[452px]">
+                <ul className="h-[80px] flex flex-row self-start transition-transform duration-500 ease md:gap-2"
                     style={{
-                        width: `${length * 84 + (length - 1) * 8}px`,
-                        transform: `translateX(-${currentIndex * (84 + 8)}px)`,
+                        width: isPhone ? `${(length / 4) * 100}%` : `${length * 84 + (length - 1) * 8}px`,
+                        transform: isPhone ? `translateX(-${currentIndex * (100 / length)}%)` : `translateX(-${currentIndex * (84 + 8)}px)`,
                     }}>
                     {images.map((image, index) => (
                         <div key={index}
-                            className={`w-[84px] h-[80px] cursor-pointer bg-center bg-cover bg-gray-200 border-2
+                            className={`h-[80px] cursor-pointer bg-center bg-cover bg-gray-200 border-2
                                 ${ hoverIndex === index ? "border-primaryColor" : "border-transparent"}`}
-                            style={{ backgroundImage: `url(${image.imageUrl})` }}
+                            style={{ 
+                                backgroundImage: `url(${image.imageUrl})`, 
+                                width: isPhone ? `${100 / length}%` : '84px',
+                            }}
                             onMouseEnter={() => {
                                 setMainImage(image.imageUrl);
                                 setHoverIndex(index);

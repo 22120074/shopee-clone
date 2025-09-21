@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getOneProduct } from '../services/product.service';
 import useToastQueue from '../hooks/useToastQueue';
+import useIsWindow from '../hooks/useIsWindow';
 import LeftData from '../components/productComponents/dataLeft';
 import RightData from '../components/productComponents/dataRight';
 import DataDetailProduct from '../components/productComponents/dataDetailProduct';
@@ -10,6 +11,8 @@ import ToastQueue from '../components/productComponents/toastQueueProduct';
 import DataRatingProduct from '../components/productComponents/dataRating';
 
 function ProductLayout() {
+    const isPhone = useIsWindow('(max-width: 768px)');  
+
     // Sử dụng useParams để lấy productName từ URL
     // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
     const { productName } = useParams();
@@ -57,38 +60,40 @@ function ProductLayout() {
     }, [product]);
 
     return (
-        <div className="w-full bg-[#F5F5F5] h-auto">
-            {/* Toast Queue để hiển thị thông báo thành công*/}
-            <ToastQueue toasts={toasts} />
-            { product &&
-                // Đường dẫn category 
-                <div className='max-w-[1200px] mx-auto flex gap-2 h-[56px] text-[13px] text-black tracking-widest items-center overflow-hidden'>
-                    <Link to="/" className='text-[12px] font-normal text-blue-600' >Shopee</Link> 
-                    <i className="fa-solid fa-chevron-right text-[10px] translate-y-[1px] text-[#696969]"></i>
-                    <Link to={`/category/${product.category}`} className='text-[12px] font-normal text-blue-600'>{product.category}</Link>
-                    <i className="fa-solid fa-chevron-right text-[10px] translate-y-[1px] text-[#696969]"></i>
-                    <div className='text-[13px] font-medium text-[#313131]'>{product.name}</div>
-                </div>
-            }
-            {/* Hiển thị thông tin sản phẩm */}
-            { product &&
-                <div className='max-w-[1200px] w-full mx-auto p-4 flex bg-white rounded-sm gap-[36px] h-auto'>
-                    {/* Nữa bên trái chứa hình ảnh, chia sẻ, lượt thích */}
-                    <LeftData product={product} user={user} selectedImage={selectedImage} />
-                    {/* Nữa bên phải chứa thông tin đơn hàng */}
-                    <RightData product={product} user={user} addToast={addToast} rating={rating} numReviews={numReviews} 
-                        setSelectedImage={setSelectedImage} 
-                    />
-                </div>
-            }
-            { product && 
-                <DataDetailProduct product={product} />
-            }
-            { product && 
-                <DataRatingProduct product={product} rating={rating} numReviews={numReviews} />
-            }
-            
-        </div>
+    <div className="w-full bg-[#F5F5F5] h-auto">
+        {/* Toast Queue để hiển thị thông báo thành công*/}
+        <ToastQueue toasts={toasts} />
+        { product && !isPhone &&
+            // Đường dẫn category 
+            <div className='max-w-[1200px] mx-auto flex gap-2 h-[56px] text-xs text-black tracking-widest items-center overflow-hidden'>
+                <Link to="/" className='font-normal text-blue-600 whitespace-nowrap' >Shopee</Link> 
+                <i className="fa-solid fa-chevron-right text-[10px] translate-y-[1px] text-[#696969]"></i>
+                <Link to={`/category/${product.category}`} className='font-normal text-blue-600 whitespace-nowrap'>{product.category}</Link>
+                <i className="fa-solid fa-chevron-right text-[10px] translate-y-[1px] text-[#696969]"></i>
+                <div className='font-medium text-[#313131] whitespace-nowrap overflow-hidden overflow-ellipsis'>{product.name}</div>
+            </div>
+        }
+        {/* Hiển thị thông tin sản phẩm */}
+        { product &&
+            <div className={`max-w-[1200px] w-full mx-auto p-2 md:p-4 flex bg-white rounded-sm gap-3 md:gap-[36px] h-auto 
+                ${isPhone ? 'flex-col' : ''}`}
+            >
+                {/* Nữa bên trái chứa hình ảnh, chia sẻ, lượt thích */}
+                <LeftData product={product} user={user} selectedImage={selectedImage} isPhone={isPhone} />
+                {/* Nữa bên phải chứa thông tin đơn hàng */}
+                <RightData product={product} user={user} addToast={addToast} rating={rating} numReviews={numReviews} 
+                    setSelectedImage={setSelectedImage} isPhone={isPhone}
+                />
+            </div>
+        }
+        { product && 
+            <DataDetailProduct product={product} />
+        }
+        { product && 
+            <DataRatingProduct product={product} rating={rating} numReviews={numReviews} />
+        }
+        
+    </div>
     );
 };
 export default ProductLayout;

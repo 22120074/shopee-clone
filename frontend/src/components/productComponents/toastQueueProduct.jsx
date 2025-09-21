@@ -9,7 +9,15 @@ function ToastQueue( {toasts} ) {
                     <div className='flex items-center justify-center h-full text-sm break-words'>
                         {t.message}
                     </div>
-                    <i className="fa-solid fa-circle-check flex items-center justify-center h-full text-green-500 text-3xl"></i>
+                    {  t.icon === 'check' && (
+                        <i className="fa-solid fa-circle-check flex items-center justify-center h-full text-green-500 text-3xl"></i>
+                    )}
+                    {  t.icon === 'warning' && (
+                        <i className="fa-solid fa-triangle-exclamation flex items-center justify-center h-full text-yellow-500 text-3xl"></i>
+                    )}
+                    {  t.icon === 'trash' && (
+                        <i className="fa-solid fa-trash-can flex items-center justify-center h-full text-gray-500 text-3xl"></i>
+                    )}
                 </div>
             ))}
         </div>

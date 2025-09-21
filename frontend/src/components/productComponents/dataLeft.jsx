@@ -5,7 +5,7 @@ import { handelexpiredToken } from '../../services/auth.helper';
 import ImagePreview from '../ImagePreview';
 import { isLikedProduct, likeProduct, unlikeProduct } from '../../services/product.service';
 
-function LeftData({ product, user, selectedImage }) {
+function LeftData({ product, user, selectedImage, isPhone }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // Sử dụng useState để lưu số lượng lượt thích
@@ -59,15 +59,15 @@ function LeftData({ product, user, selectedImage }) {
     return (
         <div className=''>
             {/* Phần xem ảnh, thanh ảnh */}
-            <ImagePreview images={product.image} selectedImage={selectedImage} />
+            <ImagePreview images={product.image} selectedImage={selectedImage} isPhone={isPhone} />
             {/* Phần chia sẻ và lượt thích */}
             <div className='flex justify-between items-center mt-6 mb-2'>
-                <div className='relative flex text-[16px] flex-1 item-center justify-center gap-1'>
+                <div className='relative flex text-lg flex-1 items-center justify-center gap-1'>
                     Chia sẻ:
-                    <i className="fa-brands fa-facebook-messenger text-[#00B2FF] text-[24px]"></i>
-                    <i className="fa-brands fa-facebook text-[#1877F2] text-[24px]"></i>
-                    <i className="fa-brands fa-twitter text-[#1DA1F2] text-[24px]"></i>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 102 102" id="instagram">
+                    <i className="fa-brands fa-facebook-messenger text-[#00B2FF] md:text-2xl"></i>
+                    <i className="fa-brands fa-facebook text-[#1877F2] md:text-2xl"></i>
+                    <i className="fa-brands fa-twitter text-[#1DA1F2] md:text-2xl"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" className= 'w-[18px] h-[18px] md:w-[24px] md:h-[24px]' viewBox="0 0 102 102" id="instagram">
                         <defs>
                             <radialGradient id="a" cx="6.601" cy="99.766" r="129.502" gradientUnits="userSpaceOnUse">
                             <stop offset=".09" stopColor="#fa8f21"></stop>
@@ -83,24 +83,23 @@ function LeftData({ product, user, selectedImage }) {
                         <path fill="#fff" d="M461.114,477.413a12.631,12.631,0,1,1,12.629,12.632,12.631,12.631,0,0,1-12.629-12.632m-6.829,0a19.458,19.458,0,1,0,19.458-19.458,19.457,19.457,0,0,0-19.458,19.458m35.139-20.229a4.547,4.547,0,1,0,4.549-4.545h0a4.549,4.549,0,0,0-4.547,4.545m-30.99,51.074a20.943,20.943,0,0,1-7.037-1.3,12.547,12.547,0,0,1-7.193-7.19,20.923,20.923,0,0,1-1.3-7.037c-.184-3.994-.22-5.194-.22-15.313s.04-11.316.22-15.314a21.082,21.082,0,0,1,1.3-7.037,12.54,12.54,0,0,1,7.193-7.193,20.924,20.924,0,0,1,7.037-1.3c3.994-.184,5.194-.22,15.309-.22s11.316.039,15.314.221a21.082,21.082,0,0,1,7.037,1.3,12.541,12.541,0,0,1,7.193,7.193,20.926,20.926,0,0,1,1.3,7.037c.184,4,.22,5.194.22,15.314s-.037,11.316-.22,15.314a21.023,21.023,0,0,1-1.3,7.037,12.547,12.547,0,0,1-7.193,7.19,20.925,20.925,0,0,1-7.037,1.3c-3.994.184-5.194.22-15.314.22s-11.316-.037-15.309-.22m-.314-68.509a27.786,27.786,0,0,0-9.2,1.76,19.373,19.373,0,0,0-11.083,11.083,27.794,27.794,0,0,0-1.76,9.2c-.187,4.04-.229,5.332-.229,15.623s.043,11.582.229,15.623a27.793,27.793,0,0,0,1.76,9.2,19.374,19.374,0,0,0,11.083,11.083,27.813,27.813,0,0,0,9.2,1.76c4.042.184,5.332.229,15.623.229s11.582-.043,15.623-.229a27.8,27.8,0,0,0,9.2-1.76,19.374,19.374,0,0,0,11.083-11.083,27.716,27.716,0,0,0,1.76-9.2c.184-4.043.226-5.332.226-15.623s-.043-11.582-.226-15.623a27.786,27.786,0,0,0-1.76-9.2,19.379,19.379,0,0,0-11.08-11.083,27.748,27.748,0,0,0-9.2-1.76c-4.041-.185-5.332-.229-15.621-.229s-11.583.043-15.626.229" transform="translate(-422.637 -426.196)"></path>
                     </svg>
                     {/* Thẻ div để hiện thanh dọc ngăn cách */}
-                    <div
-                        style={{
-                        content: '""',
-                        position: 'absolute',
-                        top: 'calc(50% - 12px)',
-                        right: 'calc(0px - 14px)',
-                        height: '24px',
-                        border: '1px solid #E8E8E8',
+                    <div style={{
+                            content: '""',
+                            position: 'absolute',
+                            top: !isPhone ? 'calc(50% - 12px)' : 'calc(50% - 9px)',
+                            right: 'calc(0px - 14px)',
+                            height: !isPhone ? '24px' : '18px',
+                            border: '1px solid #E8E8E8',
                         }}
                     ></div>
                 </div>
-                <div className='flex text-[16px] flex-1 item-center justify-center gap-2'
+                <div className='flex text-[16px] flex-1 items-center justify-center gap-2'
                     onClick={handleLike}
                 >
                     {liked ? (
-                        <i className="fa-solid fa-heart text-[#FF3D00] text-[24px]"></i>
+                        <i className="fa-solid fa-heart text-[#FF3D00] text-xl md:text-2xl"></i>
                     ) : (
-                        <i className="fa-regular fa-heart text-[#FF3D00] text-[24px]"></i>
+                        <i className="fa-regular fa-heart text-[#FF3D00] text-xl md:text-2xl"></i>
                     )}
                     Đã thích ({likes})
                 </div>

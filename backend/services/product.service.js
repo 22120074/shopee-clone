@@ -175,9 +175,20 @@ const getAllProductReviews = async (productID, limit = 6, page = 1) => {
 };
 
 const getReviewsByRating = async (productID, limit = 6, page = 1, rating) => {
+    const offset = (page - 1) * limit;
+    if (page == 0) {
+        return {
+            rows: [],
+            totalPages: 0,
+            currentPage: 0
+        };
+    }
+    
     const reviews = await Rating.findAndCountAll({
         where: { productId: productID, rate: rating },
         attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
+        limit,
+        offset,
         include: [
             {
                 model: Image_Rating,
@@ -195,17 +206,10 @@ const getReviewsByRating = async (productID, limit = 6, page = 1, rating) => {
         order: [['createdAt', 'DESC']]
     });
 
-    // Phân trang thủ công
-    const total = reviews.count;
-    const totalPages = Math.ceil(total / limit);
-    const safePage = Math.min(Math.max(parseInt(page), 1), totalPages || 1);
-    const safeOffset = (safePage - 1) * limit;
-    const pagedReviews = reviews.rows.slice(safeOffset, safeOffset + limit);
-
     return {
-        rows: pagedReviews,
-        totalPages: totalPages,
-        currentPage: safePage
+        rows: reviews.rows,
+        totalPages: Math.ceil(reviews.count / limit),
+        currentPage: page
     };
 };
 

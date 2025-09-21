@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { addItem } from '../../features/cart/cartSlice';
 import { formatSold, formatRating } from '../../utils/numberFormat';
 
-function DataRight({ product, user, addToast, rating, numReviews, setSelectedImage }) {
+function DataRight({ product, user, addToast, rating, numReviews, setSelectedImage, isPhone }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -144,6 +144,8 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             };
             addToast('Thêm vào giỏ hàng thành công', 'success', 'check');
             dispatch(addItem(item));
+        } else {
+            addToast('Vui lòng chọn đầy đủ thuộc tính', 'error', 'warning');
         }
     };
     
@@ -161,9 +163,9 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                 {product.name}
             </div>
             {/* Phần đánh giá */}
-            <div className='flex flex-row items-center my-3'>
+            <div className='w-full md:w-auto flex flex-row items-center justify-center md:justify-start my-3'>
                 {/* Phần điểm đánh giá */}
-                <div className='relative flex gap-[2px] justify-start items-center text-[18px]'>
+                <div className='relative flex gap-[2px] justify-start items-center text-lg'>
                     <div className='mr-1 underline underline-offset-[3px] decoration-1'>
                         {formatRating(rating)}
                     </div>
@@ -187,7 +189,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                     ></span>
                 </div>
                 {/* Phần số lượng đánh giá và bán */}
-                <div className='relative flex items-center gap-[2px] justify-start text-[18px]'>
+                <div className='relative flex items-center gap-[2px] justify-start text-lg'>
                     <div className='mr-1 underline underline-offset-[3px] decoration-1'>
                         {numReviews}
                     </div>
@@ -204,7 +206,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                         }}
                     ></span>
                 </div>
-                <div className='flex items-center gap-[2px] justify-start text-[18px]'>
+                <div className='flex items-center gap-[2px] justify-start text-lg'>
                     <div className='mr-1 text-[14px] text-[#767676] font-medium'>Đã Bán</div>
                     <div className=''>
                         {formatSold(product.soldCount)}
@@ -220,14 +222,14 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                 </div>
             </div>
             {/* Phần giá bán */}
-            <div className='w-full h-[64px] flex items-center justify-start bg-[#FAFAFA] gap-4 pl-6'>
+            <div className='w-full h-14 md:h-[64px] flex items-center justify-center md:justify-start bg-[#FAFAFA] gap-4 md:pl-6'>
                 { focusColor && (focusSize || (focusSize === null && reducedSizes.length === 0)) && focusAttribute ? (
-                    <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
+                    <div className='text-2xl md:text-[30px] font-medium text-[#ee4d2d] flex items-center'>
                         <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
                         { (focusAttribute.price * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
                     </div>
                 ) : (
-                    <div className='text-[30px] font-medium text-[#ee4d2d] flex items-center'>
+                    <div className='text-2xl md:text-[30px] font-medium text-[#ee4d2d] flex items-center'>
                         <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
                         { (minPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
                         <i className="fa-solid fa-minus text-[18px] mx-3"></i>
@@ -236,13 +238,13 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                     </div>
                 )}
                 { focusAttribute && product.discount ? (
-                    <div className='relative text-[18px] text-[#929292] whitespace-nowrap'>
+                    <div className='hidden md:block relative text-[18px] text-[#929292] whitespace-nowrap'>
                         <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                         { focusAttribute.price.toLocaleString('vi-VN') }
                         <div className='absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]'></div>
                     </div>
                 ) : (
-                    <div className='relative text-[18px] text-[#929292] whitespace-nowrap'>
+                    <div className='hidden md:block relative text-[18px] text-[#929292] whitespace-nowrap'>
                         <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                         { minPrice.toLocaleString('vi-VN') }
                         <i className="fa-solid fa-minus text-[10px] mx-1"></i>
@@ -252,7 +254,6 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                     </div>
                 )}
                 { product.discount &&
-                    
                     <div className='text-[12px] text-[#ee4d2d] font-bold bg-[#feeeea] w-[34px] h-[18px]
                         flex items-center justify-center rounded-sm'>
                         -{ product.discount }%
@@ -262,14 +263,14 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             {/* Phần màu sắc và size */}
             { reducedAttributes.length > 0 && (
                 <div className='w-full flex flex-row justify-start pl-6 mt-6'>
-                    <h2 className='font-normal text-[#757575] capitalize w-[100px] pt-[8px]'>
+                    <h2 className='font-normal text-[#757575] capitalize w-[100px] pt-[8px] flex-shrink-0'>
                         { product.attributeName }
                     </h2>
                     <div className='flex flex-row items-center justify-start flex-wrap gap-2 item-start w-[400px]
                         max-h-[130px] overflow-y-auto'>
                         {
                             reducedAttributes.map((attribute, index) => (
-                                <div key={index} className={`relative flex items-center h-[40px] border p-2 gap-2
+                                <div key={index} className={`relative flex items-center h-[32px] md:h-10 border p-2 gap-2
                                     ${focusColor === attribute.nameEach ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
                                     hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
                                     ${!validAttribute.some(item => item.nameEach === attribute.nameEach) && focusSize
@@ -283,7 +284,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                                     onMouseLeave={() => setSelectedImage(focusColor === attribute.nameEach ? attribute.imageUrl : null)}
                                 >   
                                     { attribute.imageUrl !== '' &&
-                                        <div className=''
+                                        <div className='hidden md:block'
                                             style={{
                                                 width: '24px',
                                                 height: '24px',
@@ -293,7 +294,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                                             }}>
                                         </div>
                                     }
-                                    <span className='text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
+                                    <span className='text-sm md:text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
                                     { focusColor === attribute.nameEach && 
                                         <div className="absolute bottom-0 right-0 w-0 h-0 
                                             border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
@@ -315,9 +316,9 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                         max-h-[${40*3 + 8*2}px] overflow-y-auto`}>
                         {
                             reducedSizes.map((attribute, index) => (
-                                <div key={index} className={`relative flex items-center h-[40px] border
+                                <div key={index} className={`relative flex items-center h-[32px] md:h-10 border
                                     ${focusSize === attribute.size ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
-                                    p-2 text-[15px] hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
+                                    p-2 text-sm md:text-[15px] hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
                                     ${!validSize.some(item => item.size === attribute.size) && focusColor
                                         ? 'pointer-events-none opacity-50' : ''}
                                     ${!inStockProduct.includes(attribute.size) ? 'pointer-events-none opacity-50' : ''}`}
@@ -338,12 +339,12 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                 </div>
             )}
             {/* Phần điều chỉnh số lượng */}
-            <div className='w-full flex flex-row justify-start pl-6 mt-6'>
+            <div className='relative w-full flex flex-row justify-start pl-6 mt-6'>
                 <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
                     Số lượng
                 </h2>
-                <div className='flex items-center h-[40px] border border-[#CCCCCC] text-[15px] text-inherit'>
-                    <button className={`w-[40px] h-full flex items-center justify-center
+                <div className='flex items-center h-9 md:h-10 border border-[#CCCCCC] text-sm md:text-[15px] text-inherit'>
+                    <button className={`w-8 md:w-10 h-full flex items-center justify-center
                         border-r border-[#CCCCCC] flex-1 text-[12px]
                         ${ value === 1 || !focusAttribute ? 'text-[#CCCCCC]' : ''}`}
                         disabled={!focusAttribute}
@@ -358,14 +359,14 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                         disabled={!focusAttribute}
                         onChange={handleQuantityChange}
                         onBlur={handleBlur}
-                        className={`flex-1 h-full text-center [appearance:textfield] max-w-[80px]
+                        className={`flex-1 h-full text-center [appearance:textfield] max-w-[60px] md:max-w-[80px]
                         [&::-webkit-outer-spin-button]:appearance-none 
                         [&::-webkit-inner-spin-button]:appearance-none
                         focus:outline-none
                         bg-transparent
                         ${focusAttribute ? 'text-primaryColor' : 'text-[#CCCCCC]'}`}
                     />
-                    <button className={`w-[40px] h-full flex items-center justify-center
+                    <button className={`w-8 md:w-10 h-full flex items-center justify-center
                         border-l border-[#CCCCCC] flex-1 text-[12px]
                         ${focusAttribute ? '' : 'text-[#CCCCCC]'}`}
                         onClick={quantityIncrease}
@@ -376,21 +377,21 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                 </div>
                 { focusAttribute &&
                     <p className='text-[#757575] text-sm pt-[8px] flex-shrink-0 ml-4'>
-                        {stock} sản phẩm có sẵn
+                        {stock} {isPhone ? 'có sẵn' : 'sản phẩm có sẵn' }
                     </p>                            
                 }
             </div>
             {/* Phần nút thêm vào giỏ hàng */}
-            <div className='w-full flex flex-row justify-start pl-6 mt-10 gap-4'>
-                <button className='w-[200px] h-[48px] bg-[#FFEEE8] text-primaryColor rounded border border-primaryColor
+            <div className='w-full flex flex-row justify-evenly md:justify-start pl-0 md:pl-6 mt-8 md:mt-10 gap-4'>
+                <button className='w-[170px] md:w-[200px] h-[40px] md:h-[48px] bg-[#FFEEE8] text-primaryColor rounded border border-primaryColor
                 text-[16px] flex items-center justify-center gap-1'
                     onClick={handleAddToCart}
-                    disabled={!focusAttribute}
+                    // disabled={!focusAttribute}
                 >
                     <i className="fa-solid fa-cart-shopping" style={{ transform: 'translateY(1px)' }}></i>
                     Thêm vào giỏ hàng
                 </button>
-                <PrimaryButton height='48px' width='180px' text="Mua Ngay" />
+                <PrimaryButton height={isPhone ? '40px' : '48px'} width={isPhone ? '170px' : '200px'} text="Mua Ngay" />
             </div>
         </div>
     )

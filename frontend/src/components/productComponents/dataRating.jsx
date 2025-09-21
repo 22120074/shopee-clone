@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 import { Link } from "react-router-dom";
 import { getProductReviews, getEachNumofTypeRating } from "../../services/product.service";
 import { getUserRating } from "../../services/user.service";
@@ -10,7 +10,8 @@ import Pagination from "../Pagination";
 
 function DataRatingProduct({ product, rating }) {
     const ratingRef = useRef(null);
-    // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index slide, index page, total pages
+    // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index slide, index page, total pages, sort option, 
+    // số lượng đánh giá theo loại, trạng thái dropdown thông tin người dùng, label đã chọn trong dropdown
     const [reviews, setReviews] = useState([]);
     const [dataUserList, setDataUserList] = useState([]);
     const [loadingUserList, setLoadingUserList] = useState(true);
@@ -27,10 +28,16 @@ function DataRatingProduct({ product, rating }) {
         withMedia: 0,
         5: 0, 4: 0, 3: 0, 2: 0, 1: 0
     });
+    const [isOpenDropPhone, setIsOpenDropPhone] = useState(false);
+    const [selected, setSelected] = useState("Tất cả");
+
+    // useEffect(() => {
+    //     console.log("1: ", currentPageIndex);
+    // }, [currentPageIndex]);
 
     const fetchReviews = async (id, limit, page, sortOption) => {
         try {
-            const response = await getProductReviews(id, limit, page, sortOption);
+            let response = await getProductReviews(id, limit, page, sortOption);
             if (sortOption === 'all') {
                 setReviews(response.data.reviews.rows);
                 setTotalPages(response.data.totalPages);
@@ -40,9 +47,18 @@ function DataRatingProduct({ product, rating }) {
                 setTotalPages(response.data.totalPages);
                 setCurrentPageIndex(response.data.currentPage - 1);
             } else {
+                if (response.data.rows.length === 0 && page > 1) {
+                    response = await getProductReviews(id, limit, Math.ceil(eachNumReview[parseInt(sortOption)] / limit), sortOption);
+                    if (response.data.currentPage !== 0) {
+                        setCurrentPageIndex(parseInt(response.data.currentPage - 1));
+                    } else {
+                        setCurrentPageIndex(parseInt(response.data.currentPage));
+                    }
+                } else {
+                    setCurrentPageIndex(response.data.currentPage - 1);
+                }
                 setReviews(response.data.rows);
                 setTotalPages(response.data.totalPages);
-                setCurrentPageIndex(response.data.currentPage - 1);
             }
         } catch (error) {
             console.error("Lỗi khi lấy đánh giá sản phẩm:", error);
@@ -77,8 +93,8 @@ function DataRatingProduct({ product, rating }) {
 
     // Sử dụng useEffect để để lấy các đánh giá, và số lượng đánh giá theo loại
     useEffect(() => {
-        if (product) {
-            fetchReviews(product.id, 6, 1, sortOption);
+        if (product && sortOption === 'all') {
+            fetchReviews(product.id, 6, currentPageIndex + 1, sortOption);
             fetchEachNumReview(product.id);
         }
     }, [product, sortOption]);
@@ -101,7 +117,6 @@ function DataRatingProduct({ product, rating }) {
     const handlePageChange = (page) => {
         if (page < 0 || page >= totalPages) return;
         fetchReviews(product.id, 6, page + 1, sortOption);
-        setCurrentPageIndex(page);
         ratingRef.current.scrollIntoView({ behavior: 'smooth' });
     };
 
@@ -153,8 +168,8 @@ function DataRatingProduct({ product, rating }) {
                     {review.Video_Ratings.length > 0 && (
                         <div className="flex gap-3">
                             {review.Video_Ratings.map((video, idx) => (
-                                <div key={idx} className="relative w-[50px] h-[50px] rounded-sm" onClick={() => setCurrentSlideIndex(idx)}>
-                                    <img key={idx} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
+                                <div key={video.id} className="relative w-[50px] h-[50px] rounded-sm" onClick={() => setCurrentSlideIndex(idx)}>
+                                    <img key={video.id} src={`${process.env.REACT_APP_API_URL}${video.thumbnailUrl}`} alt="thumbnail"
                                         className="w-[50px] h-[50px] rounded-sm"
                                     />
                                     <div className="absolute bottom-0 left-0 bg-moregrayTextColor bg-opacity-70 w-full h-4">
@@ -167,7 +182,7 @@ function DataRatingProduct({ product, rating }) {
                     {review.Image_Ratings.length > 0 && (
                         <div className="flex gap-3">
                             {review.Image_Ratings.map((img, idx) => (
-                                <img key={idx} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
+                                <img key={img.id} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
                                     className="w-[50px] h-[50px] rounded-sm"
                                     onClick={() => setCurrentSlideIndex(review.Video_Ratings.length + idx)}
                                 />
@@ -195,7 +210,7 @@ function DataRatingProduct({ product, rating }) {
             Đánh giá sản phẩm
         </h1>
         {/* Phần hiển thị tổng quan đánh giá */}
-        <div className="w-full h-32 flex px-10 bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
+        <div className="w-full h-32 flex px-10 items-center justify-between bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
             <div className='relative h-full flex flex-col gap-2 justify-center items-center'>
                 <div className='flex gap-1 items-end text-primaryColor text-4xl'>
                     {formatRating(rating)}
@@ -211,7 +226,96 @@ function DataRatingProduct({ product, rating }) {
                     ))}
                 </div>
             </div>
-            <div className="h-auto w-full flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-4">
+            <div className="relative inline-block md:hidden w-auto">
+                <button type="button" onClick={() => setIsOpenDropPhone(!isOpenDropPhone)}
+                    className="w-32 h-10 flex items-center justify-between px-3 py-2 border border-gray-400 rounded bg-white text-sm"
+                >
+                    {selected}
+                    <i className="fa-solid fa-chevron-down ml-2 text-gray-600"></i>
+                </button>
+                {isOpenDropPhone && (
+                <ul className="absolute left-0 top-full mt-1 w-full border border-gray-400 bg-white rounded shadow-md z-10 max-h-60 overflow-y-auto">
+                    <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
+                            sortOption === "all" ? "bg-indigo-100" : ""
+                        }`}
+                        onClick={() => {
+                            setSelected(`Tất cả (${eachNumReview.all})`);
+                            handleSort('all', currentPageIndex + 1);
+                            setIsOpenDropPhone(false);
+                        }}
+                    >
+                        Tất cả ({eachNumReview.all})
+                    </li>
+                    <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
+                            sortOption === "5" ? "bg-indigo-100" : ""
+                        }`}
+                        onClick={() => {
+                            setSelected(`5 sao (${eachNumReview[5]})`);
+                            handleSort('5', currentPageIndex + 1);
+                            setIsOpenDropPhone(false);
+                        }}
+                    >
+                        5 sao ({eachNumReview[5]})
+                    </li>
+                    <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
+                            sortOption === "4" ? "bg-indigo-100" : ""
+                        }`}
+                        onClick={() => {
+                            setSelected(`4 sao (${eachNumReview[4]})`);
+                            handleSort('4', currentPageIndex + 1);
+                            setIsOpenDropPhone(false);
+                        }}
+                    >
+                        4 sao ({eachNumReview[4]})
+                    </li>
+                    <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
+                            sortOption === "3" ? "bg-indigo-100" : ""
+                        }`}
+                        onClick={() => {
+                            setSelected(`3 sao (${eachNumReview[3]})`);
+                            handleSort('3', currentPageIndex + 1);
+                            setIsOpenDropPhone(false);
+                        }}
+                    >
+                        3 sao ({eachNumReview[3]})
+                    </li>
+                    <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
+                            sortOption === "2" ? "bg-indigo-100" : ""
+                        }`}
+                        onClick={() => {
+                            setSelected(`2 sao (${eachNumReview[2]})`);
+                            handleSort('2', currentPageIndex + 1);
+                            setIsOpenDropPhone(false);
+                        }}
+                    >
+                        2 sao ({eachNumReview[2]})
+                    </li>
+                    <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
+                            sortOption === "1" ? "bg-indigo-100" : ""
+                        }`}
+                        onClick={() => {
+                            setSelected(`1 sao (${eachNumReview[1]})`);
+                            handleSort('1', currentPageIndex + 1);
+                            setIsOpenDropPhone(false);
+                        }}
+                    >
+                        1 sao ({eachNumReview[1]})
+                    </li>
+                    <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
+                            sortOption === "image_video" ? "bg-indigo-100" : ""
+                        }`}
+                        onClick={() => {
+                            setSelected(`Hình ảnh/Video (${eachNumReview.withMedia})`);
+                            handleSort('image_video', currentPageIndex + 1);
+                            setIsOpenDropPhone(false);
+                        }}
+                    >
+                        Hình ảnh/Video ({eachNumReview.withMedia})
+                    </li>
+                </ul>
+                )}
+            </div>
+            <div className="h-auto w-full hidden md:flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-4">
                 <NormalButton typeSort={'all'} sortOption={sortOption} min_width={"100px"} height={"32px"} text={`Tất cả (${eachNumReview.all})`}
                     pageIndex={currentPageIndex + 1}
                     onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}  
@@ -279,7 +383,7 @@ function DataRatingProduct({ product, rating }) {
                                     {review.Video_Ratings?.length > 0 && (
                                         <div className="flex gap-3">
                                             {review.Video_Ratings.map((video, idx) => (
-                                                <div key={video.id} className="relative w-[70px] h-[70px] rounded-sm cursor-pointer"
+                                                <div key={video.videoUrl} className="relative w-[70px] h-[70px] rounded-sm cursor-pointer"
                                                     onClick={() => {setShowMedia(review)
                                                     setCurrentSlideIndex(idx)
                                                 }}>
@@ -296,7 +400,7 @@ function DataRatingProduct({ product, rating }) {
                                     {review.Image_Ratings?.length > 0 && (
                                         <div className="flex gap-3">
                                             {review.Image_Ratings.map((img, idx) => (
-                                                <img key={img.id} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
+                                                <img key={img.imageUrl} src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`} alt="review"
                                                     className="w-[70px] h-[70px] rounded-sm cursor-pointer"
                                                     onClick={() => {setShowMedia(review)
                                                         setCurrentSlideIndex(review.Video_Ratings.length + idx)

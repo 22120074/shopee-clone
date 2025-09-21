@@ -1,7 +1,7 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { gsap } from 'gsap';
 
-function ImageReveal({ mainImage, width, height, gridSize = 10, pixelColor = '#ffffff', animationDuration = 0.5, className = 'mb-4' }) {
+function ImageReveal({ mainImage, width, height, gridSize = 10, pixelColor = '#ffffff', animationDuration = 0.5, className = 'mb-4', isPhone }) {
     const containerRef = useRef(null);
     const pixelsRef = useRef(null);
     const mainRef = useRef(null);
@@ -88,7 +88,10 @@ function ImageReveal({ mainImage, width, height, gridSize = 10, pixelColor = '#f
 
     return (
         <div ref={containerRef} className={`relative ${className} `} 
-            style={{ width: `${width}px`, height: `${height}px` }}
+            style={{ 
+                width: isPhone ? '100%' : `${width}px`, 
+                height: isPhone ? '350px' : `${height}px` 
+            }}
         >
             {/* Hiển thị ảnh chính */}
             <div className={`absolute top-0 left-0 w-full h-full bg-center bg-no-repeat bg-cover bg-gray-200`}
