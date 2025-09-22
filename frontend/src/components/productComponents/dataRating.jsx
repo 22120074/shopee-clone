@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, use } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { getProductReviews, getEachNumofTypeRating } from "../../services/product.service";
 import { getUserRating } from "../../services/user.service";
@@ -8,7 +8,7 @@ import NormalButton from "../../components/NormalButton";
 import ListRatingSkeleton from "../skeletons/listRatingSkeleton";
 import Pagination from "../Pagination";
 
-function DataRatingProduct({ product, rating }) {
+function DataRatingProduct({ product, rating, isPhone }) {
     const ratingRef = useRef(null);
     // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index slide, index page, total pages, sort option, 
     // số lượng đánh giá theo loại, trạng thái dropdown thông tin người dùng, label đã chọn trong dropdown
@@ -35,7 +35,7 @@ function DataRatingProduct({ product, rating }) {
     //     console.log("1: ", currentPageIndex);
     // }, [currentPageIndex]);
 
-    const fetchReviews = async (id, limit, page, sortOption) => {
+    const fetchReviews = useCallback( async (id, limit, page, sortOption) => {
         try {
             let response = await getProductReviews(id, limit, page, sortOption);
             if (sortOption === 'all') {
@@ -63,7 +63,7 @@ function DataRatingProduct({ product, rating }) {
         } catch (error) {
             console.error("Lỗi khi lấy đánh giá sản phẩm:", error);
         }
-    };
+    }, [eachNumReview]);
 
     const fetchEachNumReview = async (id) => {
         try {
@@ -93,11 +93,16 @@ function DataRatingProduct({ product, rating }) {
 
     // Sử dụng useEffect để để lấy các đánh giá, và số lượng đánh giá theo loại
     useEffect(() => {
-        if (product && sortOption === 'all') {
-            fetchReviews(product.id, 6, currentPageIndex + 1, sortOption);
+        if (product) {
             fetchEachNumReview(product.id);
         }
-    }, [product, sortOption]);
+    }, [product]);
+
+    useEffect(() => {
+        if (product && sortOption === 'all' && currentPageIndex === 0) {
+            fetchReviews(product.id, 6, 1, sortOption);
+        }
+    }, [product, sortOption, currentPageIndex, fetchReviews]);
 
     // Sử dụng useEffect để lấy thông tin người dùng của các đánh giá
     useEffect(() => {
@@ -228,13 +233,17 @@ function DataRatingProduct({ product, rating }) {
             </div>
             <div className="relative inline-block md:hidden w-auto">
                 <button type="button" onClick={() => setIsOpenDropPhone(!isOpenDropPhone)}
-                    className="w-32 h-10 flex items-center justify-between px-3 py-2 border border-gray-400 rounded bg-white text-sm"
+                    className="relative w-40 h-10 flex items-center justify-start p-2 border border-gray-400 rounded bg-white text-sm"
                 >
                     {selected}
-                    <i className="fa-solid fa-chevron-down ml-2 text-gray-600"></i>
+                    <i className={`absolute right-2 top-1/2 transform -translate-y-1/2 fa-solid fa-chevron-down ml-2 text-gray-600 transition-transform duration-300 
+                        ${isOpenDropPhone ? "rotate-180" : ""}`}>                               
+                    </i>
                 </button>
                 {isOpenDropPhone && (
-                <ul className="absolute left-0 top-full mt-1 w-full border border-gray-400 bg-white rounded shadow-md z-10 max-h-60 overflow-y-auto">
+                <ul className={`absolute left-0 top-full mt-1 w-full border border-gray-400 bg-white rounded shadow-md z-10
+                    ${isOpenDropPhone ? "animate-fade-in" : "animate-dropdownOut"} origin-top`}
+                >
                     <li className={`px-3 py-2 cursor-pointer text-sm hover:bg-indigo-500 hover:text-white ${
                             sortOption === "all" ? "bg-indigo-100" : ""
                         }`}
@@ -421,7 +430,7 @@ function DataRatingProduct({ product, rating }) {
             )
         )}
         { reviews.length > 0 && dataUserList.length > 0 && (
-            <Pagination totalPages={totalPages} currentPage={currentPageIndex} onPageChange={handlePageChange} />
+            <Pagination totalPages={totalPages} currentPage={currentPageIndex} onPageChange={handlePageChange} isPhone={isPhone} />
         )}
     </div>
     );

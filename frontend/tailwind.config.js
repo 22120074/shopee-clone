@@ -22,8 +22,11 @@ module.exports = {
       keyframes: {
         fadeOut: {
           '0%': { opacity: '1' },
-          '80%': { opacity: '1' },
           '100%': { opacity: '0' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
         slideInBounce: {
           '0%': { transform: 'translateX(120%)', opacity: '0' },
@@ -40,12 +43,23 @@ module.exports = {
           '0%': { backgroundPosition: '200% 0' },
           '100%': { backgroundPosition: '-200% 0' },
         },
+        dropdownIn: {
+          '0%': { opacity: '0', transform: 'scale(0.4)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        dropdownOut: {
+          '0%': { opacity: '1', transform: 'scale(1)' },
+          '100%': { opacity: '0', transform: 'scale(0.4)' },
+        },
       },
       animation: {
-        'fade-out': 'fadeOut 2s forwards',
+        'fade-out': 'fadeOut 0.3s linear forwards',
+        'fade-in': 'fadeIn 0.3s linear forwards',
         'slide-bounce': 'slideInBounce 1.5s cubic-bezier(0, 0, 0, 1) forwards',
         flip: 'flip 0.5s forwards',
         shimmer: 'shimmer 2.5s linear infinite',
+        dropdownIn: 'dropdownIn 0.2s ease-out forwards',
+        dropdownOut: 'dropdownOut 0.2s ease-in forwards',
       },
     },
   },

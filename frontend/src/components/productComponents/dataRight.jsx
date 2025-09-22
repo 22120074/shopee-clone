@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { addItem } from '../../features/cart/cartSlice';
 import { formatSold, formatRating } from '../../utils/numberFormat';
 
-function DataRight({ product, user, addToast, rating, numReviews, setSelectedImage, isPhone }) {
+function DataRight({ product, user, addToast, rating, numReviews, setSelectedImage, isPhone, isIPad }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -224,27 +224,27 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             {/* Phần giá bán */}
             <div className='w-full h-14 md:h-[64px] flex items-center justify-center md:justify-start bg-[#FAFAFA] gap-4 md:pl-6'>
                 { focusColor && (focusSize || (focusSize === null && reducedSizes.length === 0)) && focusAttribute ? (
-                    <div className='text-2xl md:text-[30px] font-medium text-[#ee4d2d] flex items-center'>
-                        <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                    <div className='text-2xl md:text-xl lg:text-[30px] font-medium text-[#ee4d2d] flex items-center'>
+                        <i className="fa-solid fa-dong-sign text-[14px] lg:text-[18px] relative top-[-2px]"></i>
                         { (focusAttribute.price * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
                     </div>
                 ) : (
-                    <div className='text-2xl md:text-[30px] font-medium text-[#ee4d2d] flex items-center'>
-                        <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                    <div className='text-2xl md:text-xl lg:text-[30px] font-medium text-[#ee4d2d] flex items-center'>
+                        <i className="fa-solid fa-dong-sign text-[14px] lg:text-[18px] relative top-[-2px]"></i>
                         { (minPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
                         <i className="fa-solid fa-minus text-[18px] mx-3"></i>
-                        <i className="fa-solid fa-dong-sign text-[18px] relative top-[-2px]"></i>
+                        <i className="fa-solid fa-dong-sign text-[14px] lg:text-[18px] relative top-[-2px]"></i>
                         { (maxPrice * ( 100 - product.discount ) / 100).toLocaleString('vi-VN') }
                     </div>
                 )}
                 { focusAttribute && product.discount ? (
-                    <div className='hidden md:block relative text-[18px] text-[#929292] whitespace-nowrap'>
+                    <div className='hidden lg:block relative text-[18px] text-[#929292] whitespace-nowrap'>
                         <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                         { focusAttribute.price.toLocaleString('vi-VN') }
                         <div className='absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]'></div>
                     </div>
                 ) : (
-                    <div className='hidden md:block relative text-[18px] text-[#929292] whitespace-nowrap'>
+                    <div className='hidden lg:block relative text-[18px] text-[#929292] whitespace-nowrap'>
                         <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                         { minPrice.toLocaleString('vi-VN') }
                         <i className="fa-solid fa-minus text-[10px] mx-1"></i>
@@ -270,7 +270,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                         max-h-[130px] overflow-y-auto'>
                         {
                             reducedAttributes.map((attribute, index) => (
-                                <div key={index} className={`relative flex items-center h-[32px] md:h-10 border p-2 gap-2
+                                <div key={index} className={`relative flex items-center h-[32px] md:h-9 lg:h-10 border p-2 gap-2
                                     ${focusColor === attribute.nameEach ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
                                     hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
                                     ${!validAttribute.some(item => item.nameEach === attribute.nameEach) && focusSize
@@ -286,15 +286,15 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                                     { attribute.imageUrl !== '' &&
                                         <div className='hidden md:block'
                                             style={{
-                                                width: '24px',
-                                                height: '24px',
+                                                width: !isIPad ? '24px' : '20px',
+                                                height: !isIPad ? '24px' : '20px',
                                                 backgroundImage: `url(${attribute.imageUrl})`,
                                                 backgroundSize: 'cover',
                                                 backgroundPosition: 'center'
                                             }}>
                                         </div>
                                     }
-                                    <span className='text-sm md:text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
+                                    <span className='text-sm lg:text-[15px] text-inherit'>{reducedAttributes[index]?.nameEach}</span>
                                     { focusColor === attribute.nameEach && 
                                         <div className="absolute bottom-0 right-0 w-0 h-0 
                                             border-b-[14px] border-l-[14px] border-b-primaryColor border-l-transparent">
@@ -316,9 +316,9 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                         max-h-[${40*3 + 8*2}px] overflow-y-auto`}>
                         {
                             reducedSizes.map((attribute, index) => (
-                                <div key={index} className={`relative flex items-center h-[32px] md:h-10 border
+                                <div key={index} className={`relative flex items-center h-[32px] md:h-9 lg:h-10 border
                                     ${focusSize === attribute.size ? 'border-primaryColor text-primaryColor' : 'border-[#e8e8e8] text-inherit'}
-                                    p-2 text-sm md:text-[15px] hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
+                                    p-2 text-sm lg:text-[15px] hover:border-primaryColor hover:text-primaryColor cursor-pointer select-none rounded-sm
                                     ${!validSize.some(item => item.size === attribute.size) && focusColor
                                         ? 'pointer-events-none opacity-50' : ''}
                                     ${!inStockProduct.includes(attribute.size) ? 'pointer-events-none opacity-50' : ''}`}
@@ -343,8 +343,8 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                 <h2 className='font-normal text-[#757575] capitalize pt-[8px] w-[100px] flex-shrink-0'>
                     Số lượng
                 </h2>
-                <div className='flex items-center h-9 md:h-10 border border-[#CCCCCC] text-sm md:text-[15px] text-inherit'>
-                    <button className={`w-8 md:w-10 h-full flex items-center justify-center
+                <div className='flex items-center h-9 lg:h-10 border border-[#CCCCCC] text-sm md:text-[15px] text-inherit'>
+                    <button className={`w-8 lg:w-10 h-full flex items-center justify-center
                         border-r border-[#CCCCCC] flex-1 text-[12px]
                         ${ value === 1 || !focusAttribute ? 'text-[#CCCCCC]' : ''}`}
                         disabled={!focusAttribute}
@@ -359,14 +359,14 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                         disabled={!focusAttribute}
                         onChange={handleQuantityChange}
                         onBlur={handleBlur}
-                        className={`flex-1 h-full text-center [appearance:textfield] max-w-[60px] md:max-w-[80px]
+                        className={`flex-1 h-full text-center [appearance:textfield] max-w-[60px] lg:max-w-[80px]
                         [&::-webkit-outer-spin-button]:appearance-none 
                         [&::-webkit-inner-spin-button]:appearance-none
                         focus:outline-none
                         bg-transparent
                         ${focusAttribute ? 'text-primaryColor' : 'text-[#CCCCCC]'}`}
                     />
-                    <button className={`w-8 md:w-10 h-full flex items-center justify-center
+                    <button className={`w-8 lg:w-10 h-full flex items-center justify-center
                         border-l border-[#CCCCCC] flex-1 text-[12px]
                         ${focusAttribute ? '' : 'text-[#CCCCCC]'}`}
                         onClick={quantityIncrease}
@@ -383,7 +383,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
             </div>
             {/* Phần nút thêm vào giỏ hàng */}
             <div className='w-full flex flex-row justify-evenly md:justify-start pl-0 md:pl-6 mt-8 md:mt-10 gap-4'>
-                <button className='w-[170px] md:w-[200px] h-[40px] md:h-[48px] bg-[#FFEEE8] text-primaryColor rounded border border-primaryColor
+                <button className='w-[170px] md:w-[180px] lg:w-[200px] h-[40px] md:h-[48px] bg-[#FFEEE8] text-primaryColor rounded border border-primaryColor
                 text-[16px] flex items-center justify-center gap-1'
                     onClick={handleAddToCart}
                     // disabled={!focusAttribute}
@@ -391,7 +391,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
                     <i className="fa-solid fa-cart-shopping" style={{ transform: 'translateY(1px)' }}></i>
                     Thêm vào giỏ hàng
                 </button>
-                <PrimaryButton height={isPhone ? '40px' : '48px'} width={isPhone ? '170px' : '200px'} text="Mua Ngay" />
+                <PrimaryButton height={isPhone ? '40px' : '48px'} width={isPhone ? '170px' : (isIPad ? '180px' : '200px')} text="Mua Ngay" />
             </div>
         </div>
     )

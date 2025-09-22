@@ -11,7 +11,9 @@ import ToastQueue from '../components/productComponents/toastQueueProduct';
 import DataRatingProduct from '../components/productComponents/dataRating';
 
 function ProductLayout() {
-    const isPhone = useIsWindow('(max-width: 768px)');  
+    const isPhone = useIsWindow('(max-width: 768px)');
+    const isIPad = useIsWindow('(min-width: 769px) and (max-width: 1024px)');
+
 
     // Sử dụng useParams để lấy productName từ URL
     // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
@@ -65,7 +67,7 @@ function ProductLayout() {
         <ToastQueue toasts={toasts} />
         { product && !isPhone &&
             // Đường dẫn category 
-            <div className='max-w-[1200px] mx-auto flex gap-2 h-[56px] text-xs text-black tracking-widest items-center overflow-hidden'>
+            <div className='max-w-[1200px] mx-auto md:px-6 lg:px-0 flex gap-2 h-[56px] text-xs text-black tracking-widest items-center overflow-hidden'>
                 <Link to="/" className='font-normal text-blue-600 whitespace-nowrap' >Shopee</Link> 
                 <i className="fa-solid fa-chevron-right text-[10px] translate-y-[1px] text-[#696969]"></i>
                 <Link to={`/category/${product.category}`} className='font-normal text-blue-600 whitespace-nowrap'>{product.category}</Link>
@@ -75,14 +77,14 @@ function ProductLayout() {
         }
         {/* Hiển thị thông tin sản phẩm */}
         { product &&
-            <div className={`max-w-[1200px] w-full mx-auto p-2 md:p-4 flex bg-white rounded-sm gap-3 md:gap-[36px] h-auto 
+            <div className={`max-w-[1200px] w-full mx-auto p-2 md:p-4 flex bg-white rounded-sm gap-3 md:gap-6 lg:gap-[36px] h-auto 
                 ${isPhone ? 'flex-col' : ''}`}
             >
                 {/* Nữa bên trái chứa hình ảnh, chia sẻ, lượt thích */}
-                <LeftData product={product} user={user} selectedImage={selectedImage} isPhone={isPhone} />
+                <LeftData product={product} user={user} selectedImage={selectedImage} isPhone={isPhone} isIPad={isIPad} />
                 {/* Nữa bên phải chứa thông tin đơn hàng */}
                 <RightData product={product} user={user} addToast={addToast} rating={rating} numReviews={numReviews} 
-                    setSelectedImage={setSelectedImage} isPhone={isPhone}
+                    setSelectedImage={setSelectedImage} isPhone={isPhone} isIPad={isIPad}
                 />
             </div>
         }
@@ -90,7 +92,7 @@ function ProductLayout() {
             <DataDetailProduct product={product} />
         }
         { product && 
-            <DataRatingProduct product={product} rating={rating} numReviews={numReviews} />
+            <DataRatingProduct product={product} rating={rating} numReviews={numReviews} isPhone={isPhone} />
         }
         
     </div>

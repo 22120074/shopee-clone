@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ImageReveal from "./animations/ImageReveal";
 
-function ImagePreview({ images, selectedImage, isPhone }) {
+function ImagePreview({ images, selectedImage, isPhone, isIPad }) {
     const [mainImage, setMainImage] = useState(images[0].imageUrl);
     const [prevImage, setPrevImage] = useState(images[0].imageUrl);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,12 +26,12 @@ function ImagePreview({ images, selectedImage, isPhone }) {
 
     return (
         <div className="flex flex-col">
-            <ImageReveal mainImage={mainImage} width={450} height={450} gridSize={8} animationDuration={0.2} isPhone={isPhone} />
+            <ImageReveal mainImage={mainImage} width={450} height={450} gridSize={8} animationDuration={0.2} isPhone={isPhone} isIPad={isIPad} />
             <div className="relative overflow-hidden w-full max-w-[452px]">
                 <ul className="h-[80px] flex flex-row self-start transition-transform duration-500 ease md:gap-2"
                     style={{
-                        width: isPhone ? `${(length / 4) * 100}%` : `${length * 84 + (length - 1) * 8}px`,
-                        transform: isPhone ? `translateX(-${currentIndex * (100 / length)}%)` : `translateX(-${currentIndex * (84 + 8)}px)`,
+                        width: isPhone || isIPad ? `${(length / 4) * 100}%` : `${length * 84 + (length - 1) * 8}px`,
+                        transform: isPhone || isIPad ? `translateX(-${currentIndex * (100 / length)}%)` : `translateX(-${currentIndex * (84 + 8)}px)`,
                     }}>
                     {images.map((image, index) => (
                         <div key={index}
@@ -39,7 +39,7 @@ function ImagePreview({ images, selectedImage, isPhone }) {
                                 ${ hoverIndex === index ? "border-primaryColor" : "border-transparent"}`}
                             style={{ 
                                 backgroundImage: `url(${image.imageUrl})`, 
-                                width: isPhone ? `${100 / length}%` : '84px',
+                                width: isPhone || isIPad ? `${100 / length}%` : '84px',
                             }}
                             onMouseEnter={() => {
                                 setMainImage(image.imageUrl);
