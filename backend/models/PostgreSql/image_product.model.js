@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid'); // Not used in this model, can be removed
+const { DataTypes } = require("sequelize");
+const { v4: uuidv4 } = require("uuid"); // Not used in this model, can be removed
 
 module.exports = (sequelize) =>
-  sequelize.define('ImageProduct', {
+  sequelize.define("ImageProduct", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4, // Automatically generate UUID
