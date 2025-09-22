@@ -11,7 +11,7 @@ function Footer() {
             &copy; {new Date().getFullYear()} My Company. All rights reserved.
           </p>
         </div>
-      </footer>  
+      </footer>
     </div>
   );
 }

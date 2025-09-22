@@ -1,46 +1,45 @@
-import '../css/auth.css';
-import { useState } from 'react';
-import PrimaryButton from '../components/Button';
-import { FcGoogle } from 'react-icons/fc'; // Icon Google đầy đủ màu
-import { FaFacebook } from 'react-icons/fa'; // Icon Facebook đầy đủ màu
+import "../css/auth.css";
+import { useState } from "react";
+import PrimaryButton from "../components/Button";
+import { FcGoogle } from "react-icons/fc"; // Icon Google đầy đủ màu
+import { FaFacebook } from "react-icons/fa"; // Icon Facebook đầy đủ màu
 import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { login } from '../features/auth/authSlice';
-import { loadItem } from '../features/cart/cartSlice';
-import { login as loginService } from '../services/user.service';
-import { getCurrentUser, refreshToken } from '../services/user.service';
-import { getCart } from '../services/cart.service';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../features/auth/authSlice";
+import { loadItem } from "../features/cart/cartSlice";
+import { login as loginService } from "../services/user.service";
+import { getCurrentUser, refreshToken } from "../services/user.service";
+import { getCart } from "../services/cart.service";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
-  const [serverError, setServerError] = useState('');
-
+  const [serverError, setServerError] = useState("");
 
   const [formData, setFormData] = useState({
-    phone: '',
-    password: ''
+    phone: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({
-    phone: '',
-    password: '',
+    phone: "",
+    password: "",
   });
 
   // Hàm xử lý post của form
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
-      [name]: ''
+      [name]: "",
     }));
   };
 
@@ -49,25 +48,28 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setServerError('');
+    setServerError("");
 
     try {
       setLoading(true);
       // Gọi API đăng nhập
-      await loginService({ phone: formData.phone, password: formData.password });
-      // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng 
+      await loginService({
+        phone: formData.phone,
+        password: formData.password,
+      });
+      // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng
       const currentUser = await getCurrentUser();
       // Nếu không có lỗi, cập nhật state auth
       if (currentUser) {
         dispatch(login(currentUser.data.dataUser));
         const cart = await getCart(currentUser.data.dataUser.userId);
-        if(cart) {
+        if (cart) {
           dispatch(loadItem(cart.data));
         }
       }
       // Chuyển hướng về trang chủ
       setLoading(false);
-      navigate('/');
+      navigate("/");
     } catch (err) {
       setLoading(false);
       if (err.response?.status === 401) {
@@ -78,28 +80,28 @@ function Login() {
           const refreshedUser = await getCurrentUser();
           dispatch(login(refreshedUser.data.dataUser));
           return; // Không navigate về login nữa
-
         } catch (refreshErr) {
           // Refresh thất bại → quay về login
-          navigate('/login');
+          navigate("/login");
           return;
         }
       }
       // Lỗi khác 401
-      console.error('Lỗi khi lấy user:', err);
-      const msg = err.response?.data?.message || 'Lỗi kết nối. Vui lòng thử lại.';
+      console.error("Lỗi khi lấy user:", err);
+      const msg =
+        err.response?.data?.message || "Lỗi kết nối. Vui lòng thử lại.";
       setServerError(msg);
     }
   };
 
   return (
-    <div className='auth_container'>
+    <div className="auth_container">
       {/* Phần tiêu đề */}
-      <div className='self-start mb-4' style={{ fontSize: "20px"}}>
+      <div className="self-start mb-4" style={{ fontSize: "20px" }}>
         Đăng nhập
       </div>
       {/* Phần form */}
-      <form onSubmit={handleSubmit} className='auth_form' >
+      <form onSubmit={handleSubmit} className="auth_form">
         {/* Input số điện thoại */}
         <input
           type="text"
@@ -109,9 +111,9 @@ function Login() {
           placeholder="Số điện thoại"
           className="border border-gray-300 px-4 py-2 mb-4 w-full rounded"
           required
-        />     
+        />
         {/* Input mật khẩu */}
-        <div className='relative w-full'>
+        <div className="relative w-full">
           <input
             type="password"
             name="password"
@@ -123,27 +125,48 @@ function Login() {
           />
           {/* Hiển thị lỗi nếu có */}
           {serverError && (
-            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: 'calc(39px)', left: '0' }}>
+            <p
+              className="absolute text-red-500 text-xs mt-1 left-0"
+              style={{ top: "calc(39px)", left: "0" }}
+            >
               Lỗi tài khoản hoặc mật khẩu
             </p>
           )}
         </div>
 
-        <PrimaryButton height='40px' width='340px' text="Đăng nhập" type='submit' />
-        <span className='block text-left w-full'><Link to="/" className='text-xs' style={{ color: "#0055AA" }}>Quên mật khẩu</Link></span>
+        <PrimaryButton
+          height="40px"
+          width="340px"
+          text="Đăng nhập"
+          type="submit"
+        />
+        <span className="block text-left w-full">
+          <Link to="/" className="text-xs" style={{ color: "#0055AA" }}>
+            Quên mật khẩu
+          </Link>
+        </span>
       </form>
       {/* Phần đường kẻ ngăn cách */}
-      <div className='flex items-center justify-center w-full' style={{ margin: '32px 0'}}>
-        <div className='line'></div>
-        <div style={{ font: '12px', color: '#DBDBDB', padding: '0 16px'}}>Hoặc</div>
-        <div className='line'></div>
+      <div
+        className="flex items-center justify-center w-full"
+        style={{ margin: "32px 0" }}
+      >
+        <div className="line"></div>
+        <div style={{ font: "12px", color: "#DBDBDB", padding: "0 16px" }}>
+          Hoặc
+        </div>
+        <div className="line"></div>
       </div>
       {/* Phần đăng nhập bằng tài khoản khác */}
-      <div className='flex items-center justify-between w-full' style={{ gap: '16px'}}>
-        <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center" 
-            style={{ backgroundColor: 'white', color: 'black', height: '40px'}}
+      <div
+        className="flex items-center justify-between w-full"
+        style={{ gap: "16px" }}
+      >
+        <button
+          className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center"
+          style={{ backgroundColor: "white", color: "black", height: "40px" }}
         >
-          <FaFacebook className="w-5 h-5 mr-2" style={{ color: '#1877F2' }} />
+          <FaFacebook className="w-5 h-5 mr-2" style={{ color: "#1877F2" }} />
           <span>Facebook</span>
         </button>
         <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center">
@@ -152,9 +175,12 @@ function Login() {
         </button>
       </div>
       {/* Phần chưa có tài khoản */}
-      <div className='text-sm text-[#BDBDBD]' style={{ marginTop: '16px'}}>
+      <div className="text-sm text-[#BDBDBD]" style={{ marginTop: "16px" }}>
         Bạn mới biết đến Shopee?
-        <Link to="/register" className="text-[#FA5130] font-semibold"> Đăng ký</Link>
+        <Link to="/register" className="text-[#FA5130] font-semibold">
+          {" "}
+          Đăng ký
+        </Link>
       </div>
     </div>
   );

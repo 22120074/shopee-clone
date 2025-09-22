@@ -1,5 +1,5 @@
-import { login } from '../features/auth/authSlice';
-import { getCurrentUser, refreshToken } from './user.service';
+import { login } from "../features/auth/authSlice";
+import { getCurrentUser, refreshToken } from "./user.service";
 
 export const handelexpiredToken = async (error, navigate, dispatch) => {
     if (error.response && error.response.status === 401) {
@@ -9,7 +9,7 @@ export const handelexpiredToken = async (error, navigate, dispatch) => {
             dispatch(login(refreshedUser.data.dataUser));
             return; // Không navigate về login nữa
         } catch (refreshErr) {
-            navigate('/login');
-        }       
+            navigate("/login");
+        }
     }
-}
+};

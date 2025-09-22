@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import '../css/CarouselSlide.css';
+import "../css/CarouselSlide.css";
 
 export default function CarouselSlider({ images, width, height }) {
   // Tạo chuỗi CSS background-image
@@ -19,20 +19,19 @@ export default function CarouselSlider({ images, width, height }) {
 
     if (diff > 50) {
       // kéo sang trái nhiều → Next
-      setCurrentIndex(i => (i === length - 1 ? 0 : i + 1));
+      setCurrentIndex((i) => (i === length - 1 ? 0 : i + 1));
     } else if (diff < -50) {
       // kéo sang phải nhiều → Prev
-      setCurrentIndex(i => (i === 0 ? length - 1 : i - 1));
+      setCurrentIndex((i) => (i === 0 ? length - 1 : i - 1));
     }
   };
 
   // Chuyển sang ảnh trước
-  const goPrev = () =>
-    setCurrentIndex(i => (i === 0 ? length - 1 : i - 1));
+  const goPrev = () => setCurrentIndex((i) => (i === 0 ? length - 1 : i - 1));
 
   // Chuyển sang ảnh kế tiếp
   const goNext = useCallback(() => {
-    setCurrentIndex(i => (i === length - 1 ? 0 : i + 1));
+    setCurrentIndex((i) => (i === length - 1 ? 0 : i + 1));
   }, [length]);
 
   // Tự động chuyển slide mỗi 7 giây
@@ -46,15 +45,16 @@ export default function CarouselSlider({ images, width, height }) {
   }, [currentIndex, length, goNext]);
 
   return (
-    <div className={`home-events-banner_ads-content_1  `}
-        style={{ '--n': images.length, width: `${width}`, height: `${height}` }}
+    <div
+      className={`home-events-banner_ads-content_1  `}
+      style={{ "--n": images.length, width: `${width}`, height: `${height}` }}
     >
       {/* Phần hiển thị ảnh quảng cáo */}
       <div
         className="slider-track"
         style={{
           width: `${length * 100}%`,
-          transform: `translateX(-${(100 / length) * currentIndex}%)`
+          transform: `translateX(-${(100 / length) * currentIndex}%)`,
         }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -79,11 +79,16 @@ export default function CarouselSlider({ images, width, height }) {
       {/* Phần hiện index */}
       <div className="slider_dot_wrapper">
         {images.map((_, idx) => (
-          <span className={`slider_dot 
-            ${idx === currentIndex ? 'bg-primaryColor' : 'bg-[rgba(255,255,255,0.5)]'}`}
+          <span
+            className={`slider_dot 
+            ${
+              idx === currentIndex
+                ? "bg-primaryColor"
+                : "bg-[rgba(255,255,255,0.5)]"
+            }`}
             key={idx}
             style={{
-              transition: 'background-color 0.3s'
+              transition: "background-color 0.3s",
             }}
             onClick={() => setCurrentIndex(idx)}
           ></span>
