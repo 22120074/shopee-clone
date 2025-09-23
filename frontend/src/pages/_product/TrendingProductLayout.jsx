@@ -1,5 +1,5 @@
 
-function TrendingProductLayout() {
+function TrendingProductPage() {
 
     return (
         <div className="flex flex-col items-center bg-[#F5F5F5] w-full pt-8">
@@ -7,4 +7,4 @@ function TrendingProductLayout() {
         </div>
     );
 };
-export default TrendingProductLayout;
+export default TrendingProductPage;

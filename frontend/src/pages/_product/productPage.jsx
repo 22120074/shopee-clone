@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { getOneProduct } from '../services/product.service';
-import { createOrupdateCart } from '../services/cart.service';
-import useToastQueue from '../hooks/useToastQueue';
-import useIsWindow from '../hooks/useIsWindow';
-import LeftData from '../components/productComponents/dataLeft';
-import RightData from '../components/productComponents/dataRight';
-import DataDetailProduct from '../components/productComponents/dataDetailProduct';
-import ToastQueue from '../components/productComponents/toastQueueProduct';
-import DataRatingProduct from '../components/productComponents/dataRating';
+import { getOneProduct } from '../../services/product.service';
+import { createOrupdateCart } from '../../services/cart.service';
+import useToastQueue from '../../hooks/useToastQueue';
+import useIsWindow from '../../hooks/useIsWindow';
+import LeftData from '../../components/productComponents/dataLeft';
+import RightData from '../../components/productComponents/dataRight';
+import DataDetailProduct from '../../components/productComponents/dataDetailProduct';
+import ToastQueue from '../../components/productComponents/toastQueueProduct';
+import DataRatingProduct from '../../components/productComponents/dataRating';
 
-function ProductLayout() {
+function ProductPage() {
     const isPhone = useIsWindow('(max-width: 768px)');
     const isIPad = useIsWindow('(min-width: 769px) and (max-width: 1024px)');
 
@@ -75,7 +75,7 @@ function ProductLayout() {
                 totalPrice: totalPrice,
             });
         };
-        if (user && user.userId) {
+        if (user?.userId) {
             syncCart();
         }
     }, [items, user?.userId, totalQuantity, totalPrice]);
@@ -117,4 +117,4 @@ function ProductLayout() {
     </div>
     );
 };
-export default ProductLayout;
+export default ProductPage;
