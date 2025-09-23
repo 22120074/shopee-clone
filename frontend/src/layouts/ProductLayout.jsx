@@ -14,7 +14,6 @@ function ProductLayout() {
     const isPhone = useIsWindow('(max-width: 768px)');
     const isIPad = useIsWindow('(min-width: 769px) and (max-width: 1024px)');
 
-
     // Sử dụng useParams để lấy productName từ URL
     // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
     const { productName } = useParams();

@@ -1,6 +1,6 @@
 function ToastQueue( {toasts} ) {
     return (
-        <div className="fixed top-5 right-5 flex flex-col gap-3 w-[400px] h-auto z-10">
+        <div className="hidden md:flex fixed top-5 right-5 flex-col gap-3 w-[400px] h-auto z-10">
             {toasts.map(t => (
                 <div key={t.id} className={`grid grid-cols-[1fr_auto] gap-6 items-center rounded-md text-black 
                     bg-white border border-gray-300 py-4 px-6 shadow-md
