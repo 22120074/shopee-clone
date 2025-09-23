@@ -1,10 +1,10 @@
 // src/routes/index.jsx
 import { Route } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import CategoryLayout from "../layouts/CategoryLayout";
+import CategoryPage from "../pages/_catagory/categoryPage";
 import ProductLayout from "../layouts/productLayout";
 import TrendingProductLayout from "../layouts/TrendingProductLayout";
-import CartLayout from "../layouts/cartLayout";
+import CartPage from "../pages/_cart/cartPage";
 import Home from "../pages/home";
 
 export const mainRoutes = (
@@ -15,7 +15,7 @@ export const mainRoutes = (
     </Route>
     {/* Danh mục sản phẩm */}
     <Route element={<MainLayout />}>
-      <Route path="/category/:categoryName" element={<CategoryLayout />} />
+      <Route path="/category/:categoryName" element={<CategoryPage />} />
     </Route>
     <Route element={<MainLayout />}>
       <Route path="/product/TrendingProduct" element={<TrendingProductLayout />} />
@@ -23,7 +23,7 @@ export const mainRoutes = (
     </Route>
     {/* Giỏ hàng */}
     <Route element={<MainLayout />}>
-      <Route path="/cart" element={<CartLayout />} />
+      <Route path="/cart" element={<CartPage />} />
     </Route>
   </>
 );

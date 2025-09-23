@@ -1,8 +1,8 @@
 // src/routes/index.jsx
 import { Route } from "react-router-dom";
-import AuthPage from "../pages/_authPage/authPage";
-import Login from "../pages/_authPage/login";
-import Register from "../pages/_authPage/register";
+import AuthPage from "../pages/_auth/authPage";
+import Login from "../pages/_auth/login";
+import Register from "../pages/_auth/register";
 
 export const authRoutes = (
   <>

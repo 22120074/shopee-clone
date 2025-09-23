@@ -1,20 +1,20 @@
-import "../css/CartLayout.css";
-import HeaderCart from "../components/cartComponents/headerCart";
-import useToastQueue from "../hooks/useToastQueue";
-import ToastQueue from "../components/cartComponents/toastQueueCart";
-import ProductList from "../components/cartComponents/productList";
-import FooterCart from "../components/cartComponents/footerCart";
-import PrimaryButton from "../components/Button";
-import useIsWindow from "../hooks/useIsWindow";
+import "../../css/CartLayout.css";
+import HeaderCart from "../../components/cartComponents/headerCart";
+import useToastQueue from "../../hooks/useToastQueue";
+import ToastQueue from "../../components/cartComponents/toastQueueCart";
+import ProductList from "../../components/cartComponents/productList";
+import FooterCart from "../../components/cartComponents/footerCart";
+import PrimaryButton from "../../components/Button";
+import useIsWindow from "../../hooks/useIsWindow";
 import { useSelector } from "react-redux";
-import emptyCart from "../assets/Empty-bro.svg";
+import emptyCart from "../../assets/Empty-bro.svg";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loadItem } from "../features/cart/cartSlice";
-import { createOrupdateCart, getCart } from "../services/cart.service";
+import { loadItem } from "../../features/cart/cartSlice";
+import { createOrupdateCart, getCart } from "../../services/cart.service";
 
-function CartLayout() {
+function CartPage() {
   const dispatch = useDispatch();
 
   const isPhone = useIsWindow("(max-width: 768px)");
@@ -41,7 +41,7 @@ function CartLayout() {
   const totalPriceCart = useSelector((state) => state.cart.totalPrice);
 
   const fetchCart = useCallback(async () => {
-    if (user && user.userId) {
+    if (user?.userId) {
       const cart = await getCart(user.userId);
       if (cart) {
         dispatch(loadItem(cart.data));
@@ -62,7 +62,7 @@ function CartLayout() {
         totalPrice: totalPriceCart,
       });
     };
-    if (user && user.userId) {
+    if (user?.userId) {
       syncCart();
     }
   }, [items, user?.userId, totalQuantity, totalPriceCart]);
@@ -124,4 +124,4 @@ function CartLayout() {
   );
 }
 
-export default CartLayout;
+export default CartPage;

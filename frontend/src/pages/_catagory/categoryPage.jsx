@@ -1,7 +1,7 @@
-import CarouselSlider from "../components/CarouselSlide";
+import CarouselSlider from "../../components/CarouselSlide";
 import { useParams } from "react-router-dom";
 
-function CategoryLayout() {
+function CategoryPage() {
     const { categoryName } = useParams();
 
     // Ảnh quảng cáo của danh mục
@@ -222,4 +222,4 @@ function CategoryLayout() {
         </div>
     );
 };
-export default CategoryLayout;
+export default CategoryPage;
