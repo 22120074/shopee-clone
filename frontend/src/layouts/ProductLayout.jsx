@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getOneProduct } from '../services/product.service';
+import { createOrupdateCart } from '../services/cart.service';
 import useToastQueue from '../hooks/useToastQueue';
 import useIsWindow from '../hooks/useIsWindow';
 import LeftData from '../components/productComponents/dataLeft';
@@ -21,6 +22,11 @@ function ProductLayout() {
 
     // sử dụng useSelector để lấy thông tin người dùng
     const user = useSelector((state) => state.auth.currentUser);
+
+    // Lấy thông tin giỏ hàng từ Redux store
+    const items = useSelector((state) => state.cart.items);
+    const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+    const totalPrice = useSelector((state) => state.cart.totalPrice);
 
     // Sử dụng useToastQueue để hiển thị thông báo
     const { toasts, addToast } = useToastQueue(3, 1500);
@@ -59,6 +65,20 @@ function ProductLayout() {
             setNumReviews(0);
         }
     }, [product]);
+
+    useEffect(() => {
+        const syncCart = async () => {
+            await createOrupdateCart({
+                userId: user.userId,
+                items: items,
+                totalQuantity: totalQuantity,
+                totalPrice: totalPrice,
+            });
+        };
+        if (user && user.userId) {
+            syncCart();
+        }
+    }, [items, user?.userId, totalQuantity, totalPrice]);
 
     return (
     <div className="w-full bg-[#F5F5F5] h-auto">

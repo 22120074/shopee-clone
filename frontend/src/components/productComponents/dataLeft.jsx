@@ -40,7 +40,7 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
     // Hàm xử lý khi người dùng nhấn nút thích
     const handleLike = async () => {
         if (!user) {
-            navigate('/login');
+            navigate('/auth/login');
             return;
         }
         // Giả sử mỗi lần nhấn like sẽ tăng 1 lượt thích

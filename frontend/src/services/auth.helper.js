@@ -9,7 +9,7 @@ export const handelexpiredToken = async (error, navigate, dispatch) => {
             dispatch(login(refreshedUser.data.dataUser));
             return; // Không navigate về login nữa
         } catch (refreshErr) {
-            navigate("/login");
+            navigate("/auth/login");
         }
     }
 };

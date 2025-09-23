@@ -128,10 +128,10 @@ function Header() {
                             {!user ? (
                                 <>
                                     <li className="li_borderleft pr-[9px] relative">
-                                        <Link to="/register">Đăng Kí</Link>
+                                        <Link to="/auth/register">Đăng Kí</Link>
                                     </li>
                                     <li className="pl-2">
-                                        <Link to="/login">Đăng Nhập</Link>
+                                        <Link to="/auth/login">Đăng Nhập</Link>
                                     </li>
                                 </>
                             ) : (

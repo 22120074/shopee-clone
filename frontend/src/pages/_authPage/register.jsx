@@ -1,11 +1,11 @@
-import "../css/auth.css";
-import React, { useState } from "react";
-import PrimaryButton from "../components/Button";
+import "../../css/auth.css";
+import { useState } from "react";
+import PrimaryButton from "../../components/Button";
 import { FcGoogle } from "react-icons/fc"; // Icon Google đầy đủ màu
 import { FaFacebook } from "react-icons/fa"; // Icon Facebook
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { register } from "../services/user.service"; // Import hàm đăng ký từ service
+import { register } from "../../services/user.service"; // Import hàm đăng ký từ service
 
 function Register() {
   const navigate = useNavigate();
@@ -91,7 +91,7 @@ function Register() {
       setLoading(false);
       setSuccessMsg(response.data.message || "Đăng ký thành công!");
       // 5. Chuyển hướng (ví dụ về trang Login sau 1.5s)
-      setTimeout(() => navigate("/login"), 1500);
+      setTimeout(() => navigate("/auth/login"), 1500);
     } catch (err) {
       setLoading(false);
       // 6. Xử lý lỗi
@@ -202,7 +202,7 @@ function Register() {
       {/* Nếu đã có tài khoản */}
       <div className="text-sm text-[#BDBDBD]" style={{ marginTop: "16px" }}>
         Bạn đã có tài khoản?
-        <Link to="/login" className="text-[#FA5130] font-semibold">
+        <Link to="/auth/login" className="text-[#FA5130] font-semibold">
           {" "}
           Đăng nhập
         </Link>

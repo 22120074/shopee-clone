@@ -8,10 +8,15 @@ import PrimaryButton from "../components/Button";
 import useIsWindow from "../hooks/useIsWindow";
 import { useSelector } from "react-redux";
 import emptyCart from "../assets/Empty-bro.svg";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loadItem } from "../features/cart/cartSlice";
+import { createOrupdateCart, getCart } from "../services/cart.service";
 
 function CartLayout() {
+  const dispatch = useDispatch();
+
   const isPhone = useIsWindow("(max-width: 768px)");
   // const isIPad = useIsWindow("(min-width: 769px) and (max-width: 1024px)");
 
@@ -28,6 +33,39 @@ function CartLayout() {
   const [totalPrice, setTotalPrice] = useState(0);
   // Dùng useState để lưu trạng thái tùy chọn của footer
   const [isChangeFooter, setIsChangeFooter] = useState(false);
+  // sử dụng useSelector để lấy thông tin người dùng
+  const user = useSelector((state) => state.auth.currentUser);
+  // Lấy thông tin giỏ hàng từ Redux store
+  const items = useSelector((state) => state.cart.items);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const totalPriceCart = useSelector((state) => state.cart.totalPrice);
+
+  const fetchCart = useCallback(async () => {
+    if (user && user.userId) {
+      const cart = await getCart(user.userId);
+      if (cart) {
+        dispatch(loadItem(cart.data));
+      }
+    }
+  }, [dispatch, user?.userId]);
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
+
+  useEffect(() => {
+    const syncCart = async () => {
+      await createOrupdateCart({
+        userId: user.userId,
+        items: items,
+        totalQuantity: totalQuantity,
+        totalPrice: totalPriceCart,
+      });
+    };
+    if (user && user.userId) {
+      syncCart();
+    }
+  }, [items, user?.userId, totalQuantity, totalPriceCart]);
 
   return (
     <div className="w-full bg-[#F5F5F5] pt-5 h-screen md:h-auto pb-10">

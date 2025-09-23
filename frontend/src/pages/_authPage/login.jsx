@@ -1,16 +1,16 @@
-import "../css/auth.css";
+import "../../css/auth.css";
 import { useState } from "react";
-import PrimaryButton from "../components/Button";
+import PrimaryButton from "../../components/Button";
 import { FcGoogle } from "react-icons/fc"; // Icon Google đầy đủ màu
 import { FaFacebook } from "react-icons/fa"; // Icon Facebook đầy đủ màu
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../features/auth/authSlice";
-import { loadItem } from "../features/cart/cartSlice";
-import { login as loginService } from "../services/user.service";
-import { getCurrentUser, refreshToken } from "../services/user.service";
-import { getCart } from "../services/cart.service";
+import { login } from "../../features/auth/authSlice";
+import { loadItem } from "../../features/cart/cartSlice";
+import { login as loginService } from "../../services/user.service";
+import { getCurrentUser, refreshToken } from "../../services/user.service";
+import { getCart } from "../../services/cart.service";
 
 function Login() {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ function Login() {
           return; // Không navigate về login nữa
         } catch (refreshErr) {
           // Refresh thất bại → quay về login
-          navigate("/login");
+          navigate("/auth/login");
           return;
         }
       }
@@ -177,7 +177,7 @@ function Login() {
       {/* Phần chưa có tài khoản */}
       <div className="text-sm text-[#BDBDBD]" style={{ marginTop: "16px" }}>
         Bạn mới biết đến Shopee?
-        <Link to="/register" className="text-[#FA5130] font-semibold">
+        <Link to="/auth/register" className="text-[#FA5130] font-semibold">
           {" "}
           Đăng ký
         </Link>

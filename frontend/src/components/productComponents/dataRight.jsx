@@ -124,7 +124,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
     // Hàm xử lí thêm sản phẩm vào giỏ hàng
     const handleAddToCart = () => {
         if (!user) {
-            navigate('/login');
+            navigate('/auth/login');
             return;
         }
         if (focusAttribute) {

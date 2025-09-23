@@ -1,13 +1,13 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
-function AuthLayout() {
+function AuthPage() {
     const location = useLocation();
     let title = "";
 
-    if (location.pathname === "/login") {
+    if (location.pathname === "/auth/login") {
         title = "Đăng nhập";
-    } else if (location.pathname === "/register") {
+    } else if (location.pathname === "/auth/register") {
         title = "Đăng ký";
     }
 
@@ -51,4 +51,4 @@ function AuthLayout() {
     )
 }
 
-export default AuthLayout;
+export default AuthPage;

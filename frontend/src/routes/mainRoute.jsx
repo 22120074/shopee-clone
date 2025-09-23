@@ -1,13 +1,12 @@
 // src/routes/index.jsx
 import { Route } from "react-router-dom";
-
 import MainLayout from "../layouts/MainLayout";
 import CategoryLayout from "../layouts/CategoryLayout";
-import ProductLayout from "../layouts/ProductLayout";
+import ProductLayout from "../layouts/productLayout";
 import TrendingProductLayout from "../layouts/TrendingProductLayout";
-import CartLayout from "../layouts/CartLayout";
-
+import CartLayout from "../layouts/cartLayout";
 import Home from "../pages/home";
+
 export const mainRoutes = (
   <>
     {/* Main layout */}
