@@ -140,7 +140,7 @@ function Header() {
                                         onMouseEnter={isDesktop ? () => setOpenUserDropdown("open") : undefined}
                                         onMouseLeave={isDesktop ? () => setOpenUserDropdown("close") : undefined}   
                                     >
-                                        <Link to="/user" >
+                                        <Link to="/user/orders" >
                                             <div className='flex items-center'>
                                                 <div className='w-8 h-8 rounded-full overflow-hidden mr-2'>
                                                     <img src={user.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />

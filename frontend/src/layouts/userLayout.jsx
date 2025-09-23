@@ -3,9 +3,9 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SideBar from '../components/SideBar';
 
-function MainLayout() {
+function UserLayout() {
     return (
-        <div className="MainLayout">
+        <div className="UserLayout">
             <Header />
             <div>
                 <SideBar />
@@ -16,4 +16,4 @@ function MainLayout() {
     );
 }
 
-export default MainLayout;
+export default UserLayout;
