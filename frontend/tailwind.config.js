@@ -11,9 +11,11 @@ module.exports = {
         primaryRatingColor: '#FFFBF8',
         primaryBorderRating: '#FFC7B3',
         primaryTextColor: '#ee4d2d',
+        lesslessgrayColor: '#E0E0E0',
         lessgrayColor: '#CCCCCC',
         grayTextColor: '#888888',
         moregrayTextColor: '#777777',
+        backgroundGrayColor: '#F5F5F5',
         hoverTextColorHeader: '#00b9c7',
       },
       backgroundImage: {

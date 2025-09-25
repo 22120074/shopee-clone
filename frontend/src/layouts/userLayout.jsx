@@ -5,9 +5,9 @@ import SideBar from '../components/SideBar';
 
 function UserLayout() {
     return (
-        <div className="UserLayout">
+        <div className="UserLayout bg-backgroundGrayColor">
             <Header />
-            <div>
+            <div className="flex max-w-7xl mx-auto px-10">
                 <SideBar />
                 <Outlet />
             </div>
