@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useOptimistic } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handelexpiredToken } from '../../services/auth.helper';
@@ -9,8 +9,8 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // Sử dụng useOptimistic để lưu số lượng lượt thích
-    const [liked, setLiked] = useOptimistic(false, (state, newLiked) => newLiked);
-    const [likes, setLikes] = useOptimistic(product?.likes || 0, (state, newLikes) => state + newLikes);
+    const [liked, setLiked] = useState(false);
+    const [likes, setLikes] = useState(product?.likes || 0);
 
     // Hàm kiểm tra xem người dùng đã thích sản phẩm hay chưa
     const fetchisLiked = useCallback(async (productID) => {
@@ -39,8 +39,6 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
 
     // Hàm xử lý khi người dùng nhấn nút thích
     const handleLike = async () => {
-        const prevLiked = liked;
-        const prevLikes = likes;
         try {
             if (!user) {
                 navigate('/auth/login');
@@ -48,7 +46,7 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
             }
             // Giả sử mỗi lần nhấn like sẽ tăng 1 lượt thích
             if (liked) {
-                setLikes(-1);
+                setLikes(prev => prev - 1);
                 setLiked(false);
                 if (!user.userId)
                     await unlikeProduct(product.id, user.googleID);
@@ -56,7 +54,7 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
                     await unlikeProduct(product.id, user.userId);
                 return;
             } else {
-                setLikes(1);
+                setLikes(prev => prev + 1);
                 setLiked(true);
                 console.log(typeof(user.userId));
                 if (!user.userId)
@@ -66,8 +64,6 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
             }
         } catch (error) {
             console.error("Lỗi khi Like/Unlike sản phẩm", error);
-            setLikes(prevLikes);
-            setLiked(prevLiked);
         }
     };
 
