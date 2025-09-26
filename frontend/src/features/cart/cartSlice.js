@@ -30,9 +30,9 @@ const cartSlice = createSlice({
         },
         loadItem(state, action) {
             const cart = action.payload;
-            state.items = cart.items || [];
-            state.totalQuantity = cart.totalQuantity || 0;
-            state.totalPrice = cart.totalPrice || 0;
+            state.items = cart?.items || [];
+            state.totalQuantity = cart?.totalQuantity || 0;
+            state.totalPrice = cart?.totalPrice || 0;
             localStorage.setItem("cart", JSON.stringify({
                 items: state.items,
                 totalQuantity: state.totalQuantity,

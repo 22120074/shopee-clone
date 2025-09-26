@@ -69,16 +69,16 @@ function ProductPage() {
     useEffect(() => {
         const syncCart = async () => {
             await createOrupdateCart({
-                userId: user.userId,
+                userId: user.userId || user.googleID,
                 items: items,
                 totalQuantity: totalQuantity,
                 totalPrice: totalPrice,
             });
         };
-        if (user?.userId) {
+        if (user?.userId || user?.googleID) {
             syncCart();
         }
-    }, [items, user?.userId, totalQuantity, totalPrice]);
+    }, [items, user?.userId, user?.googleID, totalQuantity, totalPrice]);
 
     return (
     <div className="w-full bg-[#F5F5F5] h-auto">

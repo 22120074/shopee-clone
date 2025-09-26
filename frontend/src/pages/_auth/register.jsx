@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc"; // Icon Google đầy đủ màu
 import { FaFacebook } from "react-icons/fa"; // Icon Facebook
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../services/user.service"; // Import hàm đăng ký từ service
+import { register } from "../../services/auth.service"; // Import hàm đăng ký từ service
 
 function Register() {
   const navigate = useNavigate();

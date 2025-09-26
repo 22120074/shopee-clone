@@ -28,13 +28,18 @@ const dataUserSchema = new mongoose.Schema(
     userId: {
       // tham chiếu đến _id của collection users
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "User",
+      require: false
+    },
+    googleID: {
+      type: String,
+      unique: true,
+      required: false
     },
     phone: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
     email: {
       type: String,

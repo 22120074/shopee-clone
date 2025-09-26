@@ -1,5 +1,5 @@
 import { login } from "../features/auth/authSlice";
-import { getCurrentUser, refreshToken } from "./user.service";
+import { getCurrentUser, refreshToken } from "./auth.service";
 
 export const handelexpiredToken = async (error, navigate, dispatch) => {
     if (error.response && error.response.status === 401) {

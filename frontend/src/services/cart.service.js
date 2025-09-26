@@ -12,3 +12,10 @@ export const getCart = (userId) => {
         withCredentials: true,
     });
 };
+
+export const getUserRating = (data) => {
+    return axios.get(`${process.env.REACT_APP_API_URL}/auth/data_list_rating`, {
+        params: data,
+        withCredentials: true,
+    });
+};

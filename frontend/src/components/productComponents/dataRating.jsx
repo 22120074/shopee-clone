@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { getProductReviews, getEachNumofTypeRating } from "../../services/product.service";
-import { getUserRating } from "../../services/user.service";
+import { getUserRating } from "../../services/cart.service";
 import { formatNumber, formatDate, formatRating } from "../../utils/numberFormat";
 import VideoHls from './../VideoHls';
 import NormalButton from "../../components/NormalButton";
@@ -364,14 +364,14 @@ function DataRatingProduct({ product, rating, isPhone }) {
                             {/* Avatar */}
                             <Link to="/user" className="flex items-start justify-center gap-2"> 
                                 <div className='w-[32px] h-[32px] rounded-full overflow-hidden'>
-                                    <img src={dataUserList[idx].avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                                    <img src={dataUserList[idx]?.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
                                 </div>
                             </Link>
                             {/* Hiển thị thông tin bình luận */}
                             <div className="flex flex-col flex-1 gap-3">
                                 {/* Phần tên, điểm, ngày giờ đánh giá */}
                                 <div className="flex flex-col items-start justify-start text-xs gap-2">
-                                    <div className="">{dataUserList[idx].name || formatNumber(dataUserList[idx].phone)}</div>
+                                    <div className="">{dataUserList[idx]?.name || formatNumber(dataUserList[idx]?.phone)}</div>
                                     <div className='flex'>
                                         {[1, 2, 3, 4, 5].map((i) => (
                                             <i key={i}

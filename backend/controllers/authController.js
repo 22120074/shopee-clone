@@ -1,6 +1,7 @@
 const { User, DataUser } = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 exports.register = async (req, res, next) => {
   try {
@@ -76,11 +77,11 @@ exports.login = async (req, res, next) => {
         .json({ message: "Số điện thoại hoặc mật khẩu không đúng." });
     }
 
-    // Tạo access token (15 phút)
+    // Tạo access token (1 ngàys)
     const accessToken = jwt.sign(
       { userId: user._id, phone: user.phone },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "1d" }
     );
 
     // Tạo refresh token (7 ngày)
@@ -97,7 +98,7 @@ exports.login = async (req, res, next) => {
         secure: false,
         sameSite: "Lax",
         // secure: process.env.NODE_ENV === 'production',
-        maxAge: 15 * 60 * 1000, // 15 phút
+        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 ngày
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
@@ -115,9 +116,12 @@ exports.login = async (req, res, next) => {
 exports.getMe = async (req, res) => {
   try {
     const userId = req.user.userId;
-
-    // Tìm thông tin người dùng chi tiết từ collection dataUser dựa theo userId
-    const userData = await DataUser.findOne({ userId });
+    let userData;
+    if (typeof userId === "string" && !mongoose.Types.ObjectId.isValid(userId)) {
+      userData = await DataUser.findOne({ googleID: userId });
+    } else {
+      userData = await DataUser.findOne({ userId: userId });
+    }
 
     if (!userData) {
       return res
@@ -162,7 +166,7 @@ exports.refreshToken = (req, res) => {
     const newAccessToken = jwt.sign(
       { userId: decoded.userId, phone: decoded.phone },
       process.env.JWT_SECRET,
-      { expiresIn: "1m" } // 1 phút để test
+      { expiresIn: "1d" }
     );
 
     // Gửi access token mới vào cookie
@@ -172,7 +176,7 @@ exports.refreshToken = (req, res) => {
       secure: false,
       sameSite: "Lax",
       // secure: process.env.NODE_ENV === 'production',
-      maxAge: 1 * 60 * 1000, // 1 phút
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 ngày
     });
 
     return res.json({ message: "Access token mới đã được cấp" });

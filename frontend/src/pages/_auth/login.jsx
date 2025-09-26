@@ -1,22 +1,23 @@
 import "../../css/auth.css";
 import { useState } from "react";
 import PrimaryButton from "../../components/Button";
-import { FcGoogle } from "react-icons/fc"; // Icon Google đầy đủ màu
+import GGButton from "../../components/ggButton";
 import { FaFacebook } from "react-icons/fa"; // Icon Facebook đầy đủ màu
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
 import { loadItem } from "../../features/cart/cartSlice";
-import { login as loginService } from "../../services/user.service";
-import { getCurrentUser, refreshToken } from "../../services/user.service";
+import { login as loginService } from "../../services/auth.service";
+import { getCurrentUser, refreshToken } from "../../services/auth.service";
 import { getCart } from "../../services/cart.service";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(false);
+  const [isloading, setLoadingNormal] = useState(false);
+  const [isLoadingSpecial, setLoadingSpecial] = useState(false);
   const [serverError, setServerError] = useState("");
 
   const [formData, setFormData] = useState({
@@ -51,7 +52,7 @@ function Login() {
     setServerError("");
 
     try {
-      setLoading(true);
+      setLoadingNormal(true);
       // Gọi API đăng nhập
       await loginService({
         phone: formData.phone,
@@ -68,10 +69,9 @@ function Login() {
         }
       }
       // Chuyển hướng về trang chủ
-      setLoading(false);
+      setLoadingNormal(false);
       navigate("/");
     } catch (err) {
-      setLoading(false);
       if (err.response?.status === 401) {
         try {
           // Gọi API refresh
@@ -86,6 +86,7 @@ function Login() {
           return;
         }
       }
+      setLoadingNormal(false);
       // Lỗi khác 401
       console.error("Lỗi khi lấy user:", err);
       const msg =
@@ -169,10 +170,7 @@ function Login() {
           <FaFacebook className="w-5 h-5 mr-2" style={{ color: "#1877F2" }} />
           <span>Facebook</span>
         </button>
-        <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center">
-          <FcGoogle className="w-5 h-5 mr-2" />
-          <span>Google</span>
-        </button>
+        <GGButton isLoadingSpecial={isLoadingSpecial} setLoadingSpecial={setLoadingSpecial} dispatch={dispatch} navigate={navigate} />
       </div>
       {/* Phần chưa có tài khoản */}
       <div className="text-sm text-[#BDBDBD]" style={{ marginTop: "16px" }}>
