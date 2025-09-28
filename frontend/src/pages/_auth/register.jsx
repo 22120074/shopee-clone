@@ -162,10 +162,10 @@ function Register() {
             </p>
           )}
         </div>
-
+        {/* Nút đăng ký */}
         <PrimaryButton
           height="40px"
-          width="340px"
+          width="100%"
           text="Đăng ký"
           type="submit"
         />

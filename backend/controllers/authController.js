@@ -67,17 +67,17 @@ exports.login = async (req, res, next) => {
     if (!user) {
       return res
         .status(401)
-        .json({ message: "Số điện thoại hoặc mật khẩu không đúng." });
+        .json({ message: "Số điện thoại không tìm thấy." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res
         .status(401)
-        .json({ message: "Số điện thoại hoặc mật khẩu không đúng." });
+        .json({ message: "Mật khẩu không khớp với tài khoản." });
     }
 
-    // Tạo access token (1 ngàys)
+    // Tạo access token (1 ngày)
     const accessToken = jwt.sign(
       { userId: user._id, phone: user.phone },
       process.env.JWT_SECRET,

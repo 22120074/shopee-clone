@@ -1,46 +1,63 @@
 import "../../css/auth.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PrimaryButton from "../../components/Button";
+import TailSpinner from "../../components/skeletons/spinnerButton";
 import GGButton from "../../components/ggButton";
 import { FaFacebook } from "react-icons/fa"; // Icon Facebook đầy đủ màu
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
 import { loadItem } from "../../features/cart/cartSlice";
-import { login as loginService } from "../../services/auth.service";
-import { getCurrentUser, refreshToken } from "../../services/auth.service";
+import { login as loginService, getCurrentUser, refreshToken } from "../../services/auth.service";
 import { getCart } from "../../services/cart.service";
+import { isValidPhone } from "../../utils/numberCheck";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const [isloading, setLoadingNormal] = useState(false);
+  // State để quản lý loading bình thường và loading khi đăng nhập GG, lỗi server
+  const [isLoadingNormal, setLoadingNormal] = useState(false);
   const [isLoadingSpecial, setLoadingSpecial] = useState(false);
   const [serverError, setServerError] = useState("");
-
+  // State để quản lý form và lỗi form
   const [formData, setFormData] = useState({
     phone: "",
     password: "",
   });
-
   const [errors, setErrors] = useState({
     phone: "",
     password: "",
   });
+  // State để quản lí ẩn hiện lỗi form
+  const [showErrors, setShowErrors] = useState(false);
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
+  useEffect(() => {
+    console.log("Show Errors:", showErrors);
+    console.log("Errors:", errors);
+  }, [showErrors, errors]);
 
   // Hàm xử lý post của form
   const handleChange = (e) => {
+    setShowErrors(false);
+    setServerError("");
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
+    let errorMessage = "";
+    if (name === "phone" && !isValidPhone(value)) {
+      errorMessage = "Số điện thoại không hợp lệ";
+    }
+    if (name === "password" && value.length < 8) {
+      errorMessage = "Mật khẩu phải có ít nhất 8 ký tự";
+    }
     setErrors((prev) => ({
       ...prev,
-      [name]: "",
+      [name]: errorMessage,
     }));
   };
 
@@ -48,50 +65,56 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setServerError("");
-
-    try {
-      setLoadingNormal(true);
-      // Gọi API đăng nhập
-      await loginService({
-        phone: formData.phone,
-        password: formData.password,
-      });
-      // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng
-      const currentUser = await getCurrentUser();
-      // Nếu không có lỗi, cập nhật state auth
-      if (currentUser) {
-        dispatch(login(currentUser.data.dataUser));
-        const cart = await getCart(currentUser.data.dataUser.userId);
-        if (cart) {
-          dispatch(loadItem(cart.data));
+    setShowErrors(true);
+    let isLogin = false;
+    if (errors.phone === '' && errors.password === '') {
+      try {
+        setLoadingNormal(true);
+        // Gọi API đăng nhập
+        await loginService({
+          phone: formData.phone,
+          password: formData.password,
+        });
+        // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng
+        isLogin = true;
+        const currentUser = await getCurrentUser();
+        // Nếu không có lỗi, cập nhật state auth
+        if (currentUser) {
+          dispatch(login(currentUser.data.dataUser));
+          // Lấy giỏ hàng của user
+          const cart = await getCart(currentUser.data.dataUser.userId);
+          if (cart) {
+            dispatch(loadItem(cart.data));
+          }
+        } 
+        // Chuyển hướng về trang chủ
+        await delay(1000);
+        navigate("/");
+      } catch (err) {
+        if (err.response?.status === 401 && isLogin) {
+          try {
+            // Gọi API refresh
+            await refreshToken();
+            // Refresh thành công → gọi lại /me
+            const refreshedUser = await getCurrentUser();
+            dispatch(login(refreshedUser.data.dataUser));
+            // Chuyển hướng về trang chủ
+            await delay(1000);
+            navigate("/");
+            return; // Không navigate về login nữa
+          } catch (refreshErr) {
+            const msg = refreshErr.response?.data?.message || "Lỗi kết nối. Vui lòng thử lại.";
+            setServerError(msg);
+            return;
+          }
         }
+        // Lỗi khác 401
+        console.error("Lỗi khi lấy user:", err);
+        const msg = err.response.data.message || "Lỗi kết nối. Vui lòng thử lại.";
+        setServerError(msg);
+      } finally {
+        setLoadingNormal(false);
       }
-      // Chuyển hướng về trang chủ
-      setLoadingNormal(false);
-      navigate("/");
-    } catch (err) {
-      if (err.response?.status === 401) {
-        try {
-          // Gọi API refresh
-          await refreshToken();
-          // Refresh thành công → gọi lại /me
-          const refreshedUser = await getCurrentUser();
-          dispatch(login(refreshedUser.data.dataUser));
-          return; // Không navigate về login nữa
-        } catch (refreshErr) {
-          // Refresh thất bại → quay về login
-          navigate("/auth/login");
-          return;
-        }
-      }
-      setLoadingNormal(false);
-      // Lỗi khác 401
-      console.error("Lỗi khi lấy user:", err);
-      const msg =
-        err.response?.data?.message || "Lỗi kết nối. Vui lòng thử lại.";
-      setServerError(msg);
     }
   };
 
@@ -105,7 +128,7 @@ function Login() {
       <form onSubmit={handleSubmit} className="auth_form">
         {/* Input số điện thoại */}
         <input
-          type="text"
+          type="tel"
           name="phone"
           value={formData.phone}
           onChange={handleChange}
@@ -125,22 +148,32 @@ function Login() {
             required
           />
           {/* Hiển thị lỗi nếu có */}
-          {serverError && (
-            <p
-              className="absolute text-red-500 text-xs mt-1 left-0"
-              style={{ top: "calc(39px)", left: "0" }}
-            >
-              Lỗi tài khoản hoặc mật khẩu
+          { serverError && errors.phone === '' && errors.password === '' && (
+            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: "calc(39px)", left: "0" }}>
+              {serverError}
+            </p>
+          )}
+          { errors && showErrors && (
+            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: "calc(39px)", left: "0" }}>
+              {errors.phone || errors.password}
             </p>
           )}
         </div>
-
-        <PrimaryButton
-          height="40px"
-          width="340px"
-          text="Đăng nhập"
-          type="submit"
-        />
+        {/* Nút đăng nhập */}
+        <div className="relative w-full h-auto">
+          <PrimaryButton
+            height="40px"
+            width="100%"
+            text={isLoadingNormal ? "" : "Đăng nhập"}
+            type="submit"
+          />
+          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+            ${isLoadingNormal ? "" : `${isLoadingSpecial ? "bg-white/50" : "hidden"}`} `}>
+            <TailSpinner size={"30px"} stroke={"5px"}  _hidden={isLoadingSpecial ? "hidden" : ""}
+              color={"white"}
+            />
+          </div>
+        </div>
         <span className="block text-left w-full">
           <Link to="/" className="text-xs" style={{ color: "#0055AA" }}>
             Quên mật khẩu

@@ -53,6 +53,10 @@ module.exports = {
           '0%': { opacity: '1', transform: 'scale(1)' },
           '100%': { opacity: '0', transform: 'scale(0.4)' },
         },
+        spin: {
+          '0%': { transform: 'translate(-50%, -50%) rotate(0deg)' },
+          '100%': { transform: 'translate(-50%, -50%) rotate(360deg)' },
+        },
       },
       animation: {
         'fade-out': 'fadeOut 0.3s linear forwards',
@@ -62,6 +66,7 @@ module.exports = {
         shimmer: 'shimmer 2.5s linear infinite',
         dropdownIn: 'dropdownIn 0.2s ease-out forwards',
         dropdownOut: 'dropdownOut 0.2s ease-in forwards',
+        spin: 'spin 1.4s linear infinite',
       },
     },
   },

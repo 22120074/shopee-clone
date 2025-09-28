@@ -10,8 +10,7 @@ function GGButton({ isLoadingSpecial, setLoadingSpecial, dispatch, navigate }) {
         flow: "auth-code",
         onSuccess: async (codeResponse) => {
             try {
-                setLoadingSpecial(true);
-                const res = await loginGG({ codeResponse });
+                await loginGG({ codeResponse });
                 // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng
                 const currentUser = await getCurrentUser();
                 // Nếu không có lỗi, cập nhật state auth
@@ -23,7 +22,6 @@ function GGButton({ isLoadingSpecial, setLoadingSpecial, dispatch, navigate }) {
                     }
                 }
                 // Chuyển hướng về trang chủ
-                setLoadingSpecial(false);
                 navigate("/");
             } catch (err) {
                 if (err.response?.status === 401) {
@@ -40,15 +38,19 @@ function GGButton({ isLoadingSpecial, setLoadingSpecial, dispatch, navigate }) {
                         return;
                     }
                 }
-                setLoadingSpecial(false);
                 console.error("Login failed:", err.response?.data || err.message);
+            } finally {
+                setLoadingSpecial(false);
             }
         },
-        onError: (err) => console.error("Google login failed:", err),
+        onError: (err) => { console.error("Google login failed:", err); setLoadingSpecial(false); },
     });
 
     return (
-        <button onClick={() => login()}
+        <button onClick={() => { 
+                setLoadingSpecial(true);
+                login() 
+            }}
             className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center"
         >
             <FcGoogle className="w-5 h-5 mr-2" />
