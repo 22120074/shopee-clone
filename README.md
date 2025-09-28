@@ -113,28 +113,28 @@ shopee-clone/
 ├── 📁 backend/                     # Server API (Node.js + Express)
 │   ├── 📁 config/                 # 
 │   ├── 📁 controllers/            # Logic xử lý requests
-│   │   ├── authController.js       # Xác thực người dùng
-│   │   ├── authGG-Fb.js            # OAuth Google/Facebook
-│   │   ├── cartController.js      # Quản lý giỏ hàng
-│   │   └── productController.js   # Quản lý sản phẩm
+│   │   ├── authController.js           # Xác thực người dùng
+│   │   ├── authGG-Fb.js                # OAuth Google/Facebook
+│   │   ├── cartController.js           # Quản lý giỏ hàng
+│   │   └── productController.js        # Quản lý sản phẩm      
 │   ├── 📁 middleware/             # Middleware functions
-│   │   ├── authMiddleware.js      # Xác thực JWT
-│   │   └── errorHandle.js         # Xử lý lỗi
+│   │   ├── authMiddleware.js           # Xác thực JWT
+│   │   └── errorHandle.js              # Xử lý lỗi
 │   ├── 📁 models/                 # Database models
-│   │   ├── Cart.js               # Model giỏ hàng (MongoDB)
-│   │   ├── User.js               # Model người dùng (MongoDB)
-│   │   └── 📁 PostgreSql/        # Models PostgreSQL
-│   │       ├── product.model.js   # Sản phẩm
-│   │       ├── rating.model.js    # Đánh giá
-│   │       ├── stock.model.js     # Kho hàng
+│   │   ├── Cart.js                     # Model giỏ hàng (MongoDB)
+│   │   ├── User.js                     # Model người dùng (MongoDB)
+│   │   └── 📁 PostgreSql/              # Models PostgreSQL
+│   │       ├── product.model.js        # Sản phẩm
+│   │       ├── rating.model.js         # Đánh giá
+│   │       ├── stock.model.js          # Kho hàng
 │   │       └── ...
 │   ├── 📁 routes/                 # API routes
-│   │   ├── authRoute.js          # Routes xác thực
-│   │   ├── cartRoute.js          # Routes giỏ hàng
-│   │   └── productRoute.js       # Routes sản phẩm
+│   │   ├── authRoute.js                # Routes xác thực
+│   │   ├── cartRoute.js                # Routes giỏ hàng
+│   │   └── productRoute.js             # Routes sản phẩm
 │   ├── 📁 services/               # Business logic
-│   │   ├── cart.service.js       # Logic giỏ hàng
-│   │   └── product.service.js    # Logic sản phẩm
+│   │   ├── cart.service.js             # Logic giỏ hàng
+│   │   └── product.service.js          # Logic sản phẩm
 │   ├── server.js                 # Entry point
 │   └── package.json              # Dependencies
 │
@@ -209,20 +209,12 @@ cd shopee-clone
 ```bash
 cd backend
 npm install
-
-# Tạo file .env
-cp .env.example .env
-# Cấu hình database connections và JWT secret
 ```
 
 ### 3. Cài đặt Frontend
 ```bash
 cd ../frontend
 npm install
-
-# Tạo file .env
-cp .env.example .env
-# Cấu hình API base URL
 ```
 
 ### 4. Chạy ứng dụng
@@ -272,6 +264,7 @@ REACT_APP_GOOGLE_CLIENT_ID=
 - State management
 
 ### 🔄 Đang phát triển
+- Spinner Login/Register
 - Order management
 - Admin features
 

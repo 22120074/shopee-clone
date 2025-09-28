@@ -2,7 +2,7 @@ import React from "react";
 
 const TailSpinner = ({ size, color, stroke, _hidden }) => {
     return (
-    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
         flex items-center justify-start rounded-full animate-spin ${_hidden}`}
         style={{
             "--uib-size": size || "40px",
