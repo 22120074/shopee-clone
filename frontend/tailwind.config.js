@@ -63,7 +63,15 @@ module.exports = {
         stretch: {
           "0%": { strokeDasharray: "0, 150", strokeDashoffset: "0", },
           "50%": { strokeDasharray: "75, 150", strokeDashoffset: "-25", },
-          "100%": { strokeDasharray: "140, 150", strokeDashoffset: "-100", },
+          "100%": { strokeDasharray: "120, 150", strokeDashoffset: "-100", },
+        },
+        expandingHeight: {
+          "0%": { maxHeight: "0px", opacity: 0 },
+          "100%": { maxHeight: "500px", opacity: 1 },
+        },
+        collapsingHeight: {
+          "0%": { maxHeight: "500px", opacity: 1 },
+          "100%": { maxHeight: "0px", opacity: 0 },
         },
       },
       animation: {
@@ -77,6 +85,8 @@ module.exports = {
         spin: 'spin 1.4s linear infinite',
         rotate: "rotate 2s linear infinite",
         stretch: "stretch 1.5s ease-in-out infinite",
+        expandingHeight: 'expandingHeight 0.5s ease-out forwards',
+        collapsingHeight: 'collapsingHeight 0.2s ease-out forwards',
       },
     },
   },

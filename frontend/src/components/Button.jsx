@@ -4,6 +4,7 @@ function PrimaryButton({
   text,
   onClick,
   type = "button",
+  disabled,
   children
 }) {
   return (
@@ -17,6 +18,7 @@ function PrimaryButton({
         color: "white",
         fontSize: "16px",
       }}
+      disabled={disabled}
       className="relative flex items-center justify-center bg-primaryColor"
     >
       {text}

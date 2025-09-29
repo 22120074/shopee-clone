@@ -1,9 +1,9 @@
 import "../../css/auth.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PrimaryButton from "../../components/Button";
 import StretchSpinner from "../../components/skeletons/spinnerButton";
 import GGButton from "../../components/ggButton";
-import { FaFacebook } from "react-icons/fa"; // Icon Facebook đầy đủ màu
+import FBButton from "../../components/fbButton";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
@@ -32,12 +32,6 @@ function Login() {
   const [showErrors, setShowErrors] = useState(false);
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-
-  useEffect(() => {
-    console.log("Show Errors:", showErrors);
-    console.log("Errors:", errors);
-  }, [showErrors, errors]);
 
   // Hàm xử lý post của form
   const handleChange = (e) => {
@@ -160,10 +154,20 @@ function Login() {
           )}
         </div>
         {/* Nút đăng nhập */}
-        <PrimaryButton height="40px" width="100%" text={isLoadingNormal ? "" : "Đăng nhập"} type="submit">
+        <PrimaryButton 
+          height="40px" 
+          width="100%" 
+          text={isLoadingNormal ? "" : "Đăng nhập"} 
+          type="submit" 
+          disabled={isLoadingSpecial}
+        >
           <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
-            ${isLoadingNormal ? "" : `${isLoadingSpecial ? "bg-white/50" : "hidden"}`} `}>
-            <StretchSpinner size={"30px"} stroke={"5px"}  _hidden={isLoadingSpecial ? "hidden" : ""}
+            ${isLoadingNormal ? "" : `${isLoadingSpecial ? "bg-white/50" : "hidden"}`}`}
+          >
+            <StretchSpinner 
+              size={"30px"} 
+              stroke={"5px"}  
+              _hidden={isLoadingSpecial ? "hidden" : ""}
               color={"white"}
             />
           </div>
@@ -184,16 +188,31 @@ function Login() {
       </div>
       {/* Phần đăng nhập bằng tài khoản khác */}
       <div className="flex items-center justify-between w-full gap-4">
-        <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center"
-          style={{ backgroundColor: "white", color: "black", height: "40px" }}
-        >
-          <FaFacebook className="w-5 h-5 mr-2" style={{ color: "#1877F2" }} />
-          <span>Facebook</span>
-        </button>
-        <GGButton isLoadingSpecial={isLoadingSpecial} setLoadingSpecial={setLoadingSpecial} dispatch={dispatch} navigate={navigate}>
+        <FBButton setLoadingSpecial={setLoadingSpecial} disabled={isLoadingNormal}>
           <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
-            ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"} `}>
-            <StretchSpinner size={"30px"} stroke={"5px"}  _hidden={isLoadingNormal ? "hidden" : ""}
+            ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"}`}
+          >
+            <StretchSpinner 
+              size={"30px"} 
+              stroke={"6px"}  
+              _hidden={isLoadingNormal ? "hidden" : ""}
+              color={"#ee4d2d"}
+            />
+          </div>        
+        </FBButton>
+        <GGButton 
+          disabled={isLoadingNormal} 
+          setLoadingSpecial={setLoadingSpecial} 
+          dispatch={dispatch} 
+          navigate={navigate}
+        >
+          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+            ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"}`}
+          >
+            <StretchSpinner 
+              size={"30px"} 
+              stroke={"6px"}  
+              _hidden={isLoadingNormal ? "hidden" : ""}
               color={"#ee4d2d"}
             />
           </div>

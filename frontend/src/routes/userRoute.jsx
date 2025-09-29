@@ -8,8 +8,7 @@ export const userRoutes = (
     <>
     <Route element={<UserLayout />}>
         {/* Route /user/notifications/ */}
-        <Route path="/user/notifications" element={<UserUnknown />} />
-        <Route path="/user/notifications/order" element={<UserUnknown />} />
+        <Route path="/user/notifications/orders" element={<UserUnknown />} />
         <Route path="/user/notifications/wallet" element={<UserUnknown />} />
         <Route path="/user/notifications/shopee" element={<UserUnknown />} />
         {/* Route /user/account/ */}

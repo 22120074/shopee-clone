@@ -9,6 +9,11 @@ function SideBar() {
     // State để quản lý việc mở rộng mục Summary
     const [open, setOpen] = useState([false, false, false]);
 
+    let path = window.location.pathname; // Lấy đường dẫn hiện tại
+    let mainSegment = path.split('/')[1]; // Lấy phần đầu tiên sau dấu '/'
+    let firstSegment = path.split('/')[2]; // Lấy phần đầu hai sau dấu '/'
+    let secondSegment = path.split('/')[3]; // Lấy phần thứ ba sau dấu '/'
+    console.log(firstSegment, secondSegment);
 
     return (
     <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor h-screen">
@@ -32,33 +37,41 @@ function SideBar() {
         </div>
         <div className='h-0 w-[90%] border-b border-lesslessgrayColor mx-auto mb-9' />
         <div className='flex flex-col items-center justify-start w-full h-auto gap-2'>
-            <details className='select-none w-full' open={open[0]}>
-                <summary className='flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor'
+            <div className='select-none w-full'>
+                <div className='flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor'
                     onClick={(e) => {
                         e.preventDefault();
                         if (!open[0]) { 
                                 setOpen([true, false, false]);
-                                navigate('/user/notifications');
+                                navigate('/user/notifications/orders');
                             }
                     }}
                 >
                     <i className="absolute left-0 top-1/2 transform -translate-y-1/2 fa-regular fa-bell text-primaryTextColor"></i>
                     Thông báo
-                </summary>
-                <div className='flex flex-col items-start justify-center w-full gap-2 mt-2'>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' onClick={() => navigate('/user/notifications/')}>
+                </div>
+                <div className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
+                    ${open[0] ? 'animate-expandingHeight' : 'animate-collapsingHeight' }`}
+                >
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'orders' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/notifications/orders')}
+                    >
                         Cập nhật đơn hàng
                     </div>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' onClick={() => navigate('/user/notifications/')}>
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'wallet' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/notifications/wallet')}
+                    >
                         Cập nhật ví
                     </div>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' onClick={() => navigate('/user/notifications/')}>
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'shopee' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/notifications/shopee')}
+                    >
                         Cập nhật Shopee
                     </div>
                 </div>
-            </details>
-            <details className='select-none w-full' open={open[1]}>
-                <summary className='flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor'
+            </div>
+            <div className='select-none w-full'>
+                <div className='flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor'
                     onClick={(e) => {
                         e.preventDefault();
                         if (!open[1]) { 
@@ -68,26 +81,38 @@ function SideBar() {
                 >
                     <i className="absolute left-0 top-1/2 transform -translate-y-1/2 fa-regular fa-user text-blue-500"></i>
                     Tài khoản của tôi
-                </summary>
-                <div className='flex flex-col items-start justify-center w-full gap-2 mt-2 '>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' 
-                        onClick={() => navigate('/user/account/profile')}>Hồ sơ
+                </div>
+                <div className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
+                    ${open[1] ? 'animate-expandingHeight' : 'animate-collapsingHeight' }`}
+                >
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'profile' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/account/profile')}
+                    >
+                        Hồ sơ
                     </div>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' 
-                        onClick={() => navigate('/user/account/bank')}>Ngân hàng
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'bank' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/account/bank')}
+                    >
+                        Ngân hàng
                     </div>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' 
-                        onClick={() => navigate('/user/account/address')}>Địa chỉ
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'address' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/account/address')}
+                    >
+                        Địa chỉ
                     </div>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' 
-                        onClick={() => navigate('/user/account/password')}>Đổi mật khẩu
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'password' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/account/password')}
+                    >
+                        Đổi mật khẩu
                     </div>
-                    <div className='pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor' 
-                        onClick={() => navigate('/user/account/privacy')}>Những thiết lập riêng tư
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'privacy' ? 'text-primaryTextColor' : ''}`} 
+                        onClick={() => navigate('/user/account/privacy')}
+                    >
+                        Những thiết lập riêng tư
                     </div>
                 </div>
-            </details>
-            <div className='flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor'
+            </div>
+            <div className={`flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor ${open[2] ? 'text-primaryTextColor' : ''}`}
                 onClick={() => {
                     if (!open[2]) {
                         setOpen([false, false, true]);

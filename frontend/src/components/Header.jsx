@@ -154,15 +154,15 @@ function Header() {
                                         <div className={`user_dropdown w-auto min-w-max absolute ${openUserDropdown}`}>
                                             <ul className='flex flex-col text-black'>
                                                 <li className='user_dropdown-item hover:bg-gray-100 hover:text-hoverTextColorHeader'>
-                                                    <Link to="/" className='user_dropdown-item_link'>Tài khoản của tôi</Link>
+                                                    <Link to="/user/account/profile" className='user_dropdown-item_link'>Tài khoản của tôi</Link>
                                                 </li>
                                                 <li className='user_dropdown-item hover:bg-gray-100 hover:text-hoverTextColorHeader'>
-                                                    <Link to="/" className='user_dropdown-item_link'>Đơn mua</Link>
+                                                    <Link to="/user/orders" className='user_dropdown-item_link'>Đơn mua</Link>
                                                 </li>
                                                 <li className='user_dropdown-item hover:bg-gray-100 hover:text-hoverTextColorHeader'
                                                     onClick={handleLogout}
                                                     >
-                                                    <span  className='user_dropdown-item_link'>Đăng xuất</span>
+                                                    <span className='user_dropdown-item_link'>Đăng xuất</span>
                                                 </li>
                                             </ul>
                                         </div>

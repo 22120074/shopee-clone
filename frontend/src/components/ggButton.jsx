@@ -5,7 +5,7 @@ import { loginGG, getCurrentUser, refreshToken } from "../services/auth.service"
 import { getCart } from "../services/cart.service";
 import { login as loginRedux } from "../features/auth/authSlice";
 
-function GGButton({ isLoadingSpecial, setLoadingSpecial, dispatch, navigate, children }) {
+function GGButton({ disabled, setLoadingSpecial, dispatch, navigate, children }) {
     const login = useGoogleLogin({
         flow: "auth-code",
         onSuccess: async (codeResponse) => {
@@ -58,6 +58,7 @@ function GGButton({ isLoadingSpecial, setLoadingSpecial, dispatch, navigate, chi
                 setLoadingSpecial(true);
                 login() 
             }}
+            disabled={disabled}
             className="relative flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center"
         >
             <FcGoogle className="w-5 h-5 mr-2" />
