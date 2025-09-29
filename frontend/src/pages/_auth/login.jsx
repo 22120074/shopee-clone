@@ -1,7 +1,7 @@
 import "../../css/auth.css";
 import { useEffect, useState } from "react";
 import PrimaryButton from "../../components/Button";
-import TailSpinner from "../../components/skeletons/spinnerButton";
+import StretchSpinner from "../../components/skeletons/spinnerButton";
 import GGButton from "../../components/ggButton";
 import { FaFacebook } from "react-icons/fa"; // Icon Facebook đầy đủ màu
 import { Link, useNavigate } from "react-router-dom";
@@ -160,20 +160,14 @@ function Login() {
           )}
         </div>
         {/* Nút đăng nhập */}
-        <div className="relative w-full h-auto">
-          <PrimaryButton
-            height="40px"
-            width="100%"
-            text={isLoadingNormal ? "" : "Đăng nhập"}
-            type="submit"
-          />
+        <PrimaryButton height="40px" width="100%" text={isLoadingNormal ? "" : "Đăng nhập"} type="submit">
           <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingNormal ? "" : `${isLoadingSpecial ? "bg-white/50" : "hidden"}`} `}>
-            <TailSpinner size={"30px"} stroke={"5px"}  _hidden={isLoadingSpecial ? "hidden" : ""}
+            <StretchSpinner size={"30px"} stroke={"5px"}  _hidden={isLoadingSpecial ? "hidden" : ""}
               color={"white"}
             />
           </div>
-        </div>
+        </PrimaryButton>
         <span className="block text-left w-full">
           <Link to="/" className="text-xs" style={{ color: "#0055AA" }}>
             Quên mật khẩu
@@ -181,32 +175,32 @@ function Login() {
         </span>
       </form>
       {/* Phần đường kẻ ngăn cách */}
-      <div
-        className="flex items-center justify-center w-full"
-        style={{ margin: "32px 0" }}
-      >
+      <div className="flex items-center justify-center w-full" style={{ margin: "32px 0" }}>
         <div className="line"></div>
-        <div style={{ font: "12px", color: "#DBDBDB", padding: "0 16px" }}>
+        <div className="text-[12px] text-[#DBDBDB] px-4 py-0">
           Hoặc
         </div>
         <div className="line"></div>
       </div>
       {/* Phần đăng nhập bằng tài khoản khác */}
-      <div
-        className="flex items-center justify-between w-full"
-        style={{ gap: "16px" }}
-      >
-        <button
-          className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center"
+      <div className="flex items-center justify-between w-full gap-4">
+        <button className="flex items-center border border-gray-300 rounded px-4 py-2 flex-1 justify-center"
           style={{ backgroundColor: "white", color: "black", height: "40px" }}
         >
           <FaFacebook className="w-5 h-5 mr-2" style={{ color: "#1877F2" }} />
           <span>Facebook</span>
         </button>
-        <GGButton isLoadingSpecial={isLoadingSpecial} setLoadingSpecial={setLoadingSpecial} dispatch={dispatch} navigate={navigate} />
+        <GGButton isLoadingSpecial={isLoadingSpecial} setLoadingSpecial={setLoadingSpecial} dispatch={dispatch} navigate={navigate}>
+          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+            ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"} `}>
+            <StretchSpinner size={"30px"} stroke={"5px"}  _hidden={isLoadingNormal ? "hidden" : ""}
+              color={"#ee4d2d"}
+            />
+          </div>
+        </GGButton>
       </div>
       {/* Phần chưa có tài khoản */}
-      <div className="text-sm text-[#BDBDBD]" style={{ marginTop: "16px" }}>
+      <div className="text-sm text-[#BDBDBD] mt-4">
         Bạn mới biết đến Shopee?
         <Link to="/auth/register" className="text-[#FA5130] font-semibold">
           {" "}

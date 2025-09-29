@@ -57,6 +57,14 @@ module.exports = {
           '0%': { transform: 'translate(-50%, -50%) rotate(0deg)' },
           '100%': { transform: 'translate(-50%, -50%) rotate(360deg)' },
         },
+        rotate: {
+          "100%": { transform: "rotate(360deg)" },
+        },
+        stretch: {
+          "0%": { strokeDasharray: "0, 150", strokeDashoffset: "0", },
+          "50%": { strokeDasharray: "75, 150", strokeDashoffset: "-25", },
+          "100%": { strokeDasharray: "140, 150", strokeDashoffset: "-100", },
+        },
       },
       animation: {
         'fade-out': 'fadeOut 0.3s linear forwards',
@@ -67,6 +75,8 @@ module.exports = {
         dropdownIn: 'dropdownIn 0.2s ease-out forwards',
         dropdownOut: 'dropdownOut 0.2s ease-in forwards',
         spin: 'spin 1.4s linear infinite',
+        rotate: "rotate 2s linear infinite",
+        stretch: "stretch 1.5s ease-in-out infinite",
       },
     },
   },

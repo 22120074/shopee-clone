@@ -4,6 +4,7 @@ function PrimaryButton({
   text,
   onClick,
   type = "button",
+  children
 }) {
   return (
     <button
@@ -16,9 +17,10 @@ function PrimaryButton({
         color: "white",
         fontSize: "16px",
       }}
-      className="flex items-center justify-center bg-primaryColor"
+      className="relative flex items-center justify-center bg-primaryColor"
     >
       {text}
+      {children}
     </button>
   );
 }

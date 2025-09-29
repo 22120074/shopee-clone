@@ -1,22 +1,31 @@
 import React from "react";
 
-const TailSpinner = ({ size, color, stroke, _hidden }) => {
+const StretchSpinner = ({ size, color, stroke, _hidden }) => {
     return (
-    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-        flex items-center justify-start rounded-full animate-spin ${_hidden}`}
-        style={{
-            "--uib-size": size || "40px",
-            "--uib-color": color || "black",
-            "--uib-stroke": stroke || "5px",
-            "--mask-size": "calc(var(--uib-size) / 2 - var(--uib-stroke))",
-            height: "var(--uib-size)",
-            width: "var(--uib-size)",
-            WebkitMask: "radial-gradient(circle var(--mask-size), transparent 99%, #000 100%)",
-            mask: "radial-gradient(circle var(--mask-size), transparent 99%, #000 100%)",
-            backgroundImage: "conic-gradient(transparent 25%, var(--uib-color))",
-        }}
-    />
+        <svg className={`animate-rotate overflow-visible ${_hidden}`}
+            viewBox="0 0 40 40"
+            height={size}
+            width={size}
+            style={{
+                "--uib-color": color,
+                "--uib-stroke": stroke,
+            }}
+        >
+            {/* Background circle - Muốn hiển thị thì đổi opacity-[] */}
+            <circle className="stroke-[--uib-color] opacity-0" cx="20" cy="20" r="17.5"
+                pathLength="100"
+                strokeWidth={stroke}
+                fill="none"
+            />
+            {/* Circle đang quay */}
+            <circle className="stroke-[--uib-color] animate-stretch" cx="20" cy="20" r="17.5"
+                pathLength="100"
+                strokeWidth={stroke}
+                fill="none"
+                strokeLinecap="round"
+            />
+        </svg>
     );
 };
 
-export default TailSpinner;
+export default StretchSpinner;
