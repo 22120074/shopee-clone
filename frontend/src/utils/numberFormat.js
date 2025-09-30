@@ -38,3 +38,11 @@ export const formatDate = (dateInput, format = 'dd/MM/yyyy') => {
 export const formatRating = (ratingNumber) => {
     return Math.floor(ratingNumber * 10) / 10;
 }
+
+export const hiddenPhone = (phone) => {
+    if (phone.length <= 2) return phone; 
+    
+    const visible = phone.slice(-2);             
+    const hidden = "*".repeat(phone.length - 2); 
+    return hidden + visible;
+};

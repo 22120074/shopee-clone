@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import UserLayout from "../layouts/userLayout";
-import UserOrder from "../pages/_user/userOrder";
-import UserProfile from "../pages/_user/userProfile";
+import UserOrder from "../pages/_user/_order/userOrder";
+import UserProfile from "../pages/_user/_account/userProfile";
 import UserUnknown from "../pages/_user/userUnknown";
 
 export const userRoutes = (

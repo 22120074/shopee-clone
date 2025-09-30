@@ -51,6 +51,11 @@ const dataUserSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    displayName: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     gender: {
       type: String,
       enum: ["male", "female", "other"],

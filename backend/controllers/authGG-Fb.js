@@ -39,6 +39,7 @@ exports.googleLogin = async (req, res) => {
                 phone: "",              // để trống
                 email: `${email}`,      // gắn email từ Google
                 name: `${name}`,        // gắn name từ Google
+                displayName: "",        // để trống
                 gender: "other",        // theo default
                 dateOfBirth: null,      // để trống
                 avatarUrl: `${picture}`,// gắn avatarUrl từ Google (nếu có)

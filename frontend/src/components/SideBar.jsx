@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -6,17 +6,27 @@ function SideBar() {
     const navigate = useNavigate();
     // Lấy thông tin user từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
-    // State để quản lý việc mở rộng mục Summary
-    const [open, setOpen] = useState([false, false, false]);
-
+    
     let path = window.location.pathname; // Lấy đường dẫn hiện tại
     let mainSegment = path.split('/')[1]; // Lấy phần đầu tiên sau dấu '/'
     let firstSegment = path.split('/')[2]; // Lấy phần đầu hai sau dấu '/'
     let secondSegment = path.split('/')[3]; // Lấy phần thứ ba sau dấu '/'
+
+    // State để quản lý việc mở rộng mục Summary
+    const [lastOpen, setLastOpen] = useState([false, false, false]);
+    const [open, setOpen] = useState([
+        false || firstSegment === 'notifications', 
+        false || firstSegment === 'account', 
+        false || firstSegment === 'orders'
+    ]);
     console.log(firstSegment, secondSegment);
+    useEffect(() => {
+        console.log("open: ", open);
+        console.log("lastOpen: ", lastOpen);
+    }, [open, lastOpen]);   
 
     return (
-    <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor h-screen">
+    <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor">
         { user && 
         <>
         <div className='flex items-center justify-start gap-2 w-full h-28'>
@@ -42,6 +52,7 @@ function SideBar() {
                     onClick={(e) => {
                         e.preventDefault();
                         if (!open[0]) { 
+                                setLastOpen(open);
                                 setOpen([true, false, false]);
                                 navigate('/user/notifications/orders');
                             }
@@ -51,7 +62,7 @@ function SideBar() {
                     Thông báo
                 </div>
                 <div className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
-                    ${open[0] ? 'animate-expandingHeight' : 'animate-collapsingHeight' }`}
+                    ${open[0] ? 'animate-expandingHeight' : lastOpen[0] ? 'animate-collapsingHeight' : 'hidden' }`}
                 >
                     <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'orders' ? 'text-primaryTextColor' : ''}`} 
                         onClick={() => navigate('/user/notifications/orders')}
@@ -75,6 +86,7 @@ function SideBar() {
                     onClick={(e) => {
                         e.preventDefault();
                         if (!open[1]) { 
+                            setLastOpen(open);
                             setOpen([false, true, false]);
                             navigate('/user/account/profile');
                     }}}
@@ -83,7 +95,7 @@ function SideBar() {
                     Tài khoản của tôi
                 </div>
                 <div className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
-                    ${open[1] ? 'animate-expandingHeight' : 'animate-collapsingHeight' }`}
+                    ${open[1] ? 'animate-expandingHeight' : lastOpen[0] ? 'animate-collapsingHeight' : 'hidden' }`}
                 >
                     <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'profile' ? 'text-primaryTextColor' : ''}`} 
                         onClick={() => navigate('/user/account/profile')}
@@ -115,6 +127,7 @@ function SideBar() {
             <div className={`flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor ${open[2] ? 'text-primaryTextColor' : ''}`}
                 onClick={() => {
                     if (!open[2]) {
+                        setLastOpen(open);
                         setOpen([false, false, true]);
                         navigate('/user/orders');
                     }

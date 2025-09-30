@@ -17,6 +17,7 @@ export const mainRoutes = (
     <Route element={<MainLayout />}>
       <Route path="/category/:categoryName" element={<CategoryPage />} />
     </Route>
+    {/* Sản phẩm */}
     <Route element={<MainLayout />}>
       <Route path="/product/TrendingProduct" element={<TrendingProductPage />} />
       <Route path="/product/:productName" element={<ProductPage />} />

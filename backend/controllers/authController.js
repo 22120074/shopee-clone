@@ -39,6 +39,7 @@ exports.register = async (req, res, next) => {
       phone: newUser.phone,
       email: "", // để trống
       name: "", // để trống
+      displayName: "", // để trống
       gender: "other", // theo default enum
       dateOfBirth: null, // để trống
       avatarUrl: "", // để trống
