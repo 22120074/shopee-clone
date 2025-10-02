@@ -45,3 +45,19 @@ export const loginGG = ({ codeResponse }) => {
         code: codeResponse.code,
     });
 };
+
+export const sendOtpEmail = (email) => {
+    return axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/send-otp-email`,
+        { email },
+        { withCredentials: true }
+    );
+};
+
+export const verifyOtpEmail = (email, otp) => {
+    return axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/verify-otp-email`,
+        { email, otp },
+        { withCredentials: true }
+    );
+};

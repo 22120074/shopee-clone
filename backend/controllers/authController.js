@@ -2,6 +2,8 @@ const { User, DataUser } = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const redisClient = require('./../config/redisConfig');
+const nodemailer = require('nodemailer');
 
 exports.register = async (req, res, next) => {
   try {
@@ -203,6 +205,64 @@ exports.getUserListRating = async (req, res, next) => {
     const result = userList.map((id) => ratingsMap.get(id));
 
     return res.json({ ratings: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+exports.sendOtpEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Bắt buộc phải có Email.' });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Lưu OTP vào Redis với TTL 5 phút (300 giây)
+    await redisClient.setEx(`otp:${email}`, 300, otp);
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Your OTP Code',
+      text: `Your OTP code is ${otp}. It expires in 5 minutes.`
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'OTP Email được gửi thành công.' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.vertifyOtpEmail = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Bắt buộc phải có Email và OTP.' });
+    }
+
+    // Kiểm tra OTP trong Redis
+    const storedOtp = await redisClient.get(`otp:${email}`);
+    if (!storedOtp) {
+      return res.status(400).json({ message: 'OTP không hợp lệ hoặc đã hết hạn.' });
+    }
+
+    if (storedOtp !== otp) {
+      return res.status(400).json({ message: 'OTP không đúng.' });
+    }
+
+    // Xóa OTP đã xác thực
+    await redisClient.del(`otp:${email}`);
+
+    res.status(200).json({ message: 'Xác thực OTP thành công.' });
   } catch (error) {
     next(error);
   }

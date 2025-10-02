@@ -1,8 +1,16 @@
 import React, { useRef, useState } from "react";
 import { gsap } from "gsap";
+import { useSelector } from "react-redux";
+import { sendOtpEmail } from "../../../services/auth.service";
 
 function EmailVertify() {
+    // Lấy thông tin user từ Redux store
+    const user = useSelector((state) => state.auth.currentUser);
+    // UseState để quản lý trạng thái hover
     const [isHovered, setIsHovered] = useState(false);
+    // UseState để quản lý trạng thái gửi email
+    const [isSent, setIsSent] = useState(false);
+    // Refs để tham chiếu đến các phần tử DOM
     const btnRef = useRef(null);
     const iconRef = useRef(null);
     const lettersRef = useRef([]);
@@ -39,12 +47,26 @@ function EmailVertify() {
     const text = "Xác minh bằng mã OTP gửi qua Email";
     lettersRef.current = [];
 
+    const handleOnclick = () => {
+        try {
+            sendOtpEmail(user.email);
+            setIsSent(true);
+        } catch (error) {
+            console.error("Error sending OTP email:", error);
+        }
+    }
+
     return (
         <div className="flex flex-1 flex-col items-start justify-start bg-white mt-4 rounded-sm shadow-md py-4 px-8">
             <div className="w-full border-b border-lesslessgrayColor pb-4">
                 <div className="text-xl text-black">Hồ sơ của tôi</div>
                 <div className="text-base text-moregrayTextColor">Quản lí thông tin hồ sơ để bảo mật tài khoản</div>
             </div>
+            { isSent ? (
+                <div>
+
+                </div>
+            ) : (
             <div className="relative w-full flex flex-col items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="#FA5130" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
                     className="absolute top-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
@@ -63,6 +85,7 @@ function EmailVertify() {
                 <button ref={btnRef} className="flex items-center justify-center gap-3 py-2 px-6 text-primaryTextColor rounded-sm text-base
                     border border-primaryTextColor hover:bg-primaryRatingColor"
                     onMouseEnter={handleMouseEnter}
+                    onClick={handleOnclick}
                 >
                     <i ref={iconRef} className="fa-regular fa-envelope text-lg"></i> 
                     <span className="flex gap-1"> {/* gap giữa các từ */}
@@ -82,6 +105,7 @@ function EmailVertify() {
                     </span>
                 </button>
             </div>
+            )}
         </div>
     )
 }  

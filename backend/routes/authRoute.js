@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, getMe, logout, refreshToken, getUserListRating } = require('../controllers/authController');
+const { register, login, getMe, logout, refreshToken, getUserListRating, sendOtpEmail, vertifyOtpEmail } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 const { googleLogin } = require("../controllers/authGG-Fb");
 
@@ -14,5 +14,8 @@ router.post('/logout', logout);
 router.get('/data_list_rating', getUserListRating);
 // Logic [Đăng nhập], [Lỗi đăng nhập] bằng Google
 router.post("/google", googleLogin);
+// Logic [Gửi mã OTP về email], [Xác thực mã OTP email]
+router.post('/send-otp-email', sendOtpEmail);
+router.post('/vertify-otp-email', vertifyOtpEmail);
 
 module.exports = router;
