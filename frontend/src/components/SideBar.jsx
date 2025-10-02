@@ -19,11 +19,16 @@ function SideBar() {
         false || firstSegment === 'account', 
         false || firstSegment === 'orders'
     ]);
-    console.log(firstSegment, secondSegment);
+
     useEffect(() => {
-        console.log("open: ", open);
-        console.log("lastOpen: ", lastOpen);
-    }, [open, lastOpen]);   
+        if (firstSegment || secondSegment) {
+            setOpen([
+                false || firstSegment === 'notifications', 
+                false || firstSegment === 'account', 
+                false || firstSegment === 'orders'
+            ]);
+        }
+    }, [firstSegment, secondSegment]);   
 
     return (
     <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor">
@@ -64,17 +69,23 @@ function SideBar() {
                 <div className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
                     ${open[0] ? 'animate-expandingHeight' : lastOpen[0] ? 'animate-collapsingHeight' : 'hidden' }`}
                 >
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'orders' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'orders' ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/notifications/orders')}
                     >
                         Cập nhật đơn hàng
                     </div>
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'wallet' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'wallet' ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/notifications/wallet')}
                     >
                         Cập nhật ví
                     </div>
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'shopee' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'shopee' ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/notifications/shopee')}
                     >
                         Cập nhật Shopee
@@ -97,34 +108,49 @@ function SideBar() {
                 <div className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
                     ${open[1] ? 'animate-expandingHeight' : lastOpen[0] ? 'animate-collapsingHeight' : 'hidden' }`}
                 >
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'profile' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'profile' 
+                                || secondSegment === 'email-vertify' 
+                                || secondSegment === 'phone-vertify' 
+                                ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/account/profile')}
                     >
                         Hồ sơ
                     </div>
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'bank' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'bank' ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/account/bank')}
                     >
                         Ngân hàng
                     </div>
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'address' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'address' ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/account/address')}
                     >
                         Địa chỉ
                     </div>
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'password' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'password' ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/account/password')}
                     >
                         Đổi mật khẩu
                     </div>
-                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor ${secondSegment === 'privacy' ? 'text-primaryTextColor' : ''}`} 
+                    <div className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
+                            ${secondSegment === 'privacy' ? 'text-primaryTextColor' : ''}
+                        `} 
                         onClick={() => navigate('/user/account/privacy')}
                     >
                         Những thiết lập riêng tư
                     </div>
                 </div>
             </div>
-            <div className={`flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor ${open[2] ? 'text-primaryTextColor' : ''}`}
+            <div className={`flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor 
+                    ${open[2] ? 'text-primaryTextColor' : ''}
+                `}
                 onClick={() => {
                     if (!open[2]) {
                         setLastOpen(open);

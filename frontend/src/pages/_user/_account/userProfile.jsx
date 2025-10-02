@@ -11,12 +11,17 @@ function UserProfile() {
     // Lấy thông tin user từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
 
+    // UseState lưu giới tính, tên, tên hiển thị, email, số điện thoại, ngày sinh
+    const [displayNameForm, setDisplayNameForm] = useState(user?.displayName || "");
+    const [nameForm, setNameForm] = useState(user?.name || "");
+    // const [emailForm, setEmailForm] = useState(user?.email || "");
+    // const [phoneForm, setPhoneForm] = useState(user?.phone || "");
     const [genderForm, setGenderForm] = useState(user?.gender); // male, female, other
-
-    // useState ngày, tháng, năm sinh, mở rộng dropdown ngày tháng năm sinh, bắt lỗi nhập ngày tháng năm sinh
     const [day, setDay] = useState("");
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
+
+    // UseState ngày, tháng, năm sinh, mở rộng dropdown Date, bắt lỗi nhập Date
     const [openDropdown, setOpenDropdown] = useState({
         day: false,
         month: false,
@@ -24,28 +29,29 @@ function UserProfile() {
     });
     const [dateError, setDateError] = useState("");
 
-    // Ref để bắt sự kiện click ngoài dropdown
+    // Ref và useEffect để bắt sự kiện click ngoài dropdown của Date
     const dayRef = useRef(null);
     const monthRef = useRef(null);
     const yearRef = useRef(null);
 
     useEffect(() => {
-    const handleClickOutside = (event) => {
-        if (dayRef.current && !dayRef.current.contains(event.target) && monthRef.current && !monthRef.current.contains(event.target) && yearRef.current && !yearRef.current.contains(event.target)) {
-            setOpenDropdown({
-                day: false,
-                month: false,
-                year: false,
-            });
-        }
-    };
+        const handleClickOutside = (event) => {
+            if (dayRef.current && !dayRef.current.contains(event.target) && monthRef.current && !monthRef.current.contains(event.target) && yearRef.current && !yearRef.current.contains(event.target)) {
+                setOpenDropdown({
+                    day: false,
+                    month: false,
+                    year: false,
+                });
+            }
+        };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-    };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, []);
 
+    // useEffect để validate ngày tháng năm sinh
     useEffect(() => {
         if (day && month && year) {
             const date = new Date(year, month - 1, day); // chú ý: month - 1 vì JS month 0-11
@@ -76,7 +82,8 @@ function UserProfile() {
                     type="text" 
                     id="displayName" 
                     className="h-9 border border-gray-300 rounded-sm p-2 ml-4 focus:outline-none text-[15px]" 
-                    value={user?.displayName}
+                    value={displayNameForm}
+                    onChange={(e) => setDisplayNameForm(e.target.value)}
                 />
                 {/* Họ và tên */}
                 <label htmlFor="userName" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Họ và tên</label>
@@ -84,19 +91,20 @@ function UserProfile() {
                     type="text" 
                     id="userName" 
                     className="h-9 border border-gray-300 rounded-sm p-2 ml-4 focus:outline-none text-[15px]" 
-                    value={user?.name}
+                    value={nameForm}
+                    onChange={(e) => setNameForm(e.target.value)}
                 />
                 {/* Email */}
                 <label htmlFor="userEmail" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Email</label>
                 <div type="text" id="userEmail" className="flex items-center justify-between h-9 ml-4 text-[15px]">
                     {emailHidden(user?.email) || "Chưa thiết lập Email"}
-                    <Link className='text-primaryTextColor text-sm'>Thay đổi</Link>
+                    <Link to='/user/account/email-vertify' className='text-primaryTextColor text-sm'>Thay đổi</Link>
                 </div>
                 {/* Số điện thoại */}
                 <label htmlFor="userPhone" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Số điện thoại</label>
                 <div type="text" id="userPhone" className="flex items-center justify-between h-9 ml-4 text-[15px]">
                     {hiddenPhone(user?.phone) || "Chưa thiết lập số điện thoại"}
-                    <Link className='text-primaryTextColor text-sm'>Thay đổi</Link>
+                    <Link to='/user/account/phone-verify' className='text-primaryTextColor text-sm'>Thay đổi</Link>
                 </div>
                 {/* Giới tính */}
                 <label htmlFor="userSex" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Giới tính</label>
@@ -256,8 +264,27 @@ function UserProfile() {
                 </div>
             </form>
             {/* Avatar */}
-            <div>
-
+            <div className="flex flex-col w-full h-auto min-h-32 items-center justify-start gap-4 py-6">
+                <div className='w-26 h-26 rounded-full overflow-hidden mr-2 border cursor-pointer' 
+                    onClick={() => alert('Chức năng thay đổi avatar đang được phát triển')}
+                >
+                    <img src={user?.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                </div>
+                <button className={`flex items-center justify-center bg-white text-black border border-black rounded-sm px-4 w-auto h-10
+                        border-lessgrayColor text-sm font-normal
+                    `}
+                    onClick={() => alert('Chức năng thay đổi avatar đang được phát triển')}
+                >
+                    Thay đổi ảnh đại diện
+                </button>         
+                <div className="flex flex-col items-center justify-center">                    
+                    <span className="text-moregrayTextColor text-base text-center px-4">
+                        Dung lượng tối đa 1MB. 
+                    </span>
+                    <span className="text-moregrayTextColor text-xs text-center px-4">
+                        Định dạng: .JPEG, .PNG, .JPG.
+                    </span>
+                </div>   
             </div>
         </div>
         <div className="flex w-full items-center justify-center ml-4 gap-2 mt-16">
