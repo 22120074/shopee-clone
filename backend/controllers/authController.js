@@ -214,7 +214,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    pass: process.env.EMAIL_PASS_APP
   }
 });
 
@@ -226,13 +226,20 @@ exports.sendOtpEmail = async (req, res, next) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Lưu OTP vào Redis với TTL 5 phút (300 giây)
-    await redisClient.setEx(`otp:${email}`, 300, otp);
+    await redisClient.set(`otp:${email}`, otp, { EX: 300 });
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Your OTP Code',
-      text: `Your OTP code is ${otp}. It expires in 5 minutes.`
+      html: `
+        <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+          <h2 style="color: #333;">🔒 Your OTP Code</h2>
+          <p style="font-size: 18px;">Use the following OTP to verify your account:</p>
+          <p style="font-size: 32px; font-weight: bold; color: #1a73e8; margin: 20px 0;">${otp}</p>
+          <p style="font-size: 14px; color: #666;">This OTP expires in 5 minutes.</p>
+        </div>
+      `
     };
 
     await transporter.sendMail(mailOptions);
