@@ -5,6 +5,8 @@
 ![Backend](https://img.shields.io/badge/Backend-Node.js-green)
 ![Database](https://img.shields.io/badge/Database-PostgreSQL-blue)
 ![Database](https://img.shields.io/badge/Database-MongoDB-green)
+![Cache](https://img.shields.io/badge/Cache-Redis-red)
+![Deployment](https://img.shields.io/badge/Deployment-Docker-blue)
 
 
 Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính năng cơ bản của sàn thương mại điện tử **Shopee**. Ứng dụng full-stack gồm **Frontend (React)** và **Backend (Node.js + Express)**, kết nối với cơ sở dữ liệu **PostgreSQL MongoDB**.
@@ -38,6 +40,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - **Sequelize 6.37.7** - ORM cho PostgreSQL
 - **PostgreSQL (pg 8.16.3)** - Cơ sở dữ liệu chính - Product
 - **MongoDB & Mongoose 8.15.0** - Cơ sở dữ liệu phụ - User, Cart
+- **Redis** - Cơ sở dữ liệu cache, session storage
 - **JWT (jsonwebtoken 9.0.2)** - Xác thực người dùng
 - **Bcrypt.js 3.0.2** - Mã hóa mật khẩu
 - **Google OAuth 2.0** - Đăng nhập bằng Google
@@ -45,6 +48,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - **Cookie Parser 1.4.7** - Xử lý cookies
 
 ### DevOps & Tools
+- **Docker & Docker Compose** - Containerization và orchestration
 - **Nodemon 3.1.10** - Auto-restart server khi development
 - **PostCSS 8.5.6** - CSS post-processor
 - **Autoprefixer 10.4.21** - Tự động thêm CSS prefixes
@@ -163,6 +167,7 @@ shopee-clone/
 │   │   └── App.js                # Main App component
 │   └── package.json              # Dependencies
 │
+├── docker-compose.yaml           # Docker Compose configuration
 ├── script.sql                    # Database sample data
 ├── scriptRating.sql              # Rating sample data
 ├── client_secret_*.json          # Google OAuth credentials
@@ -189,6 +194,9 @@ shopee-clone/
 - **Users**: Thông tin đăng nhập và tài khoản người dùng
 - **Carts**: Giỏ hàng
 
+### Redis (Cache)
+- **Cache**: Cache dữ liệu thường xuyên truy cập
+
 ---
 
 ## �📦 Cài đặt và chạy dự án
@@ -197,6 +205,8 @@ shopee-clone/
 - Node.js >= 16.0.0
 - PostgreSQL >= 12.0
 - MongoDB >= 4.4
+- Redis >= 4.0
+- Docker & Docker Compose (tùy chọn)
 - npm >= 8.0.0
 
 ### 1. Clone repository
@@ -219,7 +229,7 @@ npm install
 
 ### 4. Chạy ứng dụng
 
-#### Development mode
+#### Development mode (Manual)
 ```bash
 # Terminal 1: Backend
 cd backend
@@ -228,6 +238,14 @@ node server.js
 # Terminal 2: Frontend
 cd frontend
 npm start
+```
+
+#### Production mode với Docker
+```bash
+
+# Build lại images trước khi chạy
+docker-compose up --build -d
+
 ```
 
 ## 🔧 Cấu hình môi trường
@@ -253,6 +271,23 @@ REACT_APP_GOOGLE_CLIENT_ID=
 
 ---
 
+## 🐳 Docker Deployment
+
+### Services được triển khai:
+- **Redis**: Cache & Session storage (Port 6379)
+
+### Docker Commands:
+```bash
+# Khởi động tất cả services
+docker-compose up -d
+
+# Rebuild images và khởi động
+docker-compose up --build -d
+
+```
+
+---
+
 ## 📊 Tiến độ dự án
 
 ### ✅ Hoàn thành - Nếu có lỗi thì sẽ xem lại sau
@@ -262,6 +297,8 @@ REACT_APP_GOOGLE_CLIENT_ID=
 - Rating system
 - Responsive UI
 - State management
+- Redis integration (Cache & Session)
+- Docker deployment - Redis
 
 ### 🔄 Đang phát triển
 - Spinner Login/Register
@@ -293,4 +330,4 @@ doduy7924zz@gmail.com
 0837079950
 ---
 
-*Cập nhật lần cuối: 26/09/2025*
+*Cập nhật lần cuối: 03/10/2025*
