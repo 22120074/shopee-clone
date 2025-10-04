@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const dbPostgre = require('./models/PostgreSql/index');
-// const errorHandler = require('./middleware/errorHandler');
+const { errorHandler } = require('./middleware/errorHandle');
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 });
 
 // Xử lý lỗi chung
-// app.use(errorHandler);
+app.use(errorHandler);
 
 // Public thư mục ảnh, video
 app.use('/images', express.static('D:/Môn_Học/Shopee_Database/Images'));

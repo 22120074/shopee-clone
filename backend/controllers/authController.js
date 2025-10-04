@@ -116,7 +116,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.getMe = async (req, res) => {
+exports.getMe = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     let userData;
@@ -135,8 +135,7 @@ exports.getMe = async (req, res) => {
     // Trả về toàn bộ dữ liệu trong document dataUser
     res.json({ dataUser: userData });
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin người dùng:", error);
-    res.status(500).json({ message: "Lỗi server" });
+    next(error);
   }
 };
 
@@ -262,7 +261,10 @@ exports.vertifyOtpEmail = async (req, res, next) => {
       return res.status(400).json({ message: 'OTP không hợp lệ hoặc đã hết hạn.' });
     }
 
-    if (storedOtp !== otp) {
+    // Trim OTP để bỏ " " thừa nếu có
+    const cleanOtp = otp.trim();
+
+    if (storedOtp !== cleanOtp) {
       return res.status(400).json({ message: 'OTP không đúng.' });
     }
 

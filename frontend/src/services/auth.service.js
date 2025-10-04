@@ -54,9 +54,9 @@ export const sendOtpEmail = (email) => {
     );
 };
 
-export const verifyOtpEmail = (email, otp) => {
+export const veritfyOtpEmail = (email, otp) => {
     return axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/verify-otp-email`,
+        `${process.env.REACT_APP_API_URL}/auth/vertify-otp-email`,
         { email, otp },
         { withCredentials: true }
     );

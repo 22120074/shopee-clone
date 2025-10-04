@@ -2,7 +2,7 @@ const { createCartByUserId, createCartByGoogleId, getCartByUserId, updateCartByU
     checkExistingCartByGoogleId, updateCartByGoogleId } = require('../services/cart.service');
 const mongoose = require("mongoose");
 
-module.exports.createOrUpdateCart = async (req, res) => {
+module.exports.createOrUpdateCart = async (req, res, next) => {
     const { userId, items, totalQuantity, totalPrice } = req.body;
     try {
         if (typeof userId === "string" && !mongoose.Types.ObjectId.isValid(userId)) {
@@ -21,11 +21,11 @@ module.exports.createOrUpdateCart = async (req, res) => {
             return res.status(201).json(cart);
         }
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        next(error);
     }
 };
 
-module.exports.getCart = async (req, res) => {
+module.exports.getCart = async (req, res, next) => {
     const { userId } = req.query;
     try {
         let cart;
@@ -36,6 +36,6 @@ module.exports.getCart = async (req, res) => {
         }
         return res.status(200).json(cart);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        next(error);
     }
 }

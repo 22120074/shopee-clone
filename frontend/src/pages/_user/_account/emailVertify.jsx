@@ -1,7 +1,9 @@
-import React, { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useSelector } from "react-redux";
-import { sendOtpEmail } from "../../../services/auth.service";
+import { sendOtpEmail, veritfyOtpEmail } from "../../../services/auth.service";
+import { emailHidden } from "../../../utils/stringFormat";
+import PrimaryButton from "../../../components/Button";
 
 function EmailVertify() {
     // Lấy thông tin user từ Redux store
@@ -10,6 +12,11 @@ function EmailVertify() {
     const [isHovered, setIsHovered] = useState(false);
     // UseState để quản lý trạng thái gửi email
     const [isSent, setIsSent] = useState(false);
+    // UseState để quản lý trạng thái nhập mã OTP
+    const [currentInputOtp, setCurrentInputOtp] = useState(0);
+    // Ref tham chiếu đến input OTP đầu tiên, form
+    const firstOtp = useRef(null);
+    const formRef = useRef(null);
     // Refs để tham chiếu đến các phần tử DOM
     const btnRef = useRef(null);
     const iconRef = useRef(null);
@@ -30,13 +37,13 @@ function EmailVertify() {
                 letter,
                 { y: 0, rotation: 0 },
                 {
-                y: -16,
-                rotation: 360,
-                duration: 0.5,
-                ease: "power2.out",
-                yoyo: true,
-                repeat: 1,
-                delay: i * 0, // lần lượt
+                    y: -16,
+                    rotation: 360,
+                    duration: 0.5,
+                    ease: "power2.out",
+                    yoyo: true,
+                    repeat: 1,
+                    delay: i * 0, // lần lượt
                 },
                 0 // start cùng lúc với timeline
             );
@@ -47,24 +54,183 @@ function EmailVertify() {
     const text = "Xác minh bằng mã OTP gửi qua Email";
     lettersRef.current = [];
 
+    // Xử lý sự kiện click gửi email
     const handleOnclick = () => {
         try {
             sendOtpEmail(user.email);
             setIsSent(true);
+            focusInputOtp();
         } catch (error) {
             console.error("Error sending OTP email:", error);
+        }
+    };
+
+    // Xử lý sự kiện thay đổi trong ô input OTP 
+    const onChangeInputOTP = (e) => {
+        const input = e.target;
+        if (input.value.length > 1) {
+            const value = input.value.slice(0, 1);
+            if (value.match(/[0-9]/)) {
+                input.value = value;
+            } else {
+                input.value = "";
+            }
+        }
+        if (input.value && input.nextElementSibling) {
+            setCurrentInputOtp(prev => prev + 1);
+            input.nextElementSibling.focus();
+        }
+    };
+
+    // Xử lý sự kiện dán (paste) vào ô input - chỉ sử dụng cho ô đầu tiên
+    const onPaste = (e) => {
+        const pasteData = e.clipboardData.getData("text");
+        const pasteValues = pasteData.split("").filter((char) => char.match(/[0-9]/)).slice(0, 6);
+        const inputs = e.target.form.elements;
+        pasteValues.forEach((value, index) => {
+            if (inputs[index]) {
+                inputs[index].value = value;
+            }
+        });
+        if (pasteValues.length > 0 && inputs[pasteValues.length - 1]) {
+            inputs[pasteValues.length - 1].focus();
+            setCurrentInputOtp(() => pasteValues.length - 1);
+        }
+    };
+
+    // Khi blur khỏi ô input, nếu ô đó trống thì focus lại
+    const handleOnBlur = (e) => {
+        const inputs = e.target.form.elements;
+        if (!inputs[currentInputOtp].value) {
+            inputs[currentInputOtp].focus();
+        }
+    };
+
+    // Tự động focus vào ô hiện tại khi currentInputOtp thay đổi - Chủ yếu fix lỗi khi ở index 5 + Backspace sẽ không tự focus index 4
+    // mặc dù currentInputOtp đã được set lại
+    useEffect(() => {
+        if (!formRef.current) return;
+        const inputs = formRef.current.querySelectorAll("input");
+        if (inputs[currentInputOtp]) {
+            inputs[currentInputOtp].focus();
+        }
+    }, [currentInputOtp]);
+
+    // Hàm để focus lại khi bấm Button
+    const focusInputOtp = () => {
+        const inputs = formRef.current.querySelectorAll("input");
+        if (inputs[currentInputOtp]) {
+            inputs[currentInputOtp].focus();
+        }
+    };
+
+    // Xử lý sự kiện nhấn phím Backspace
+    const handleKeyDown = (e) => {
+        if (e.key !== "Backspace") return; // chỉ xử lý backspace
+        e.preventDefault(); // tránh hành vi mặc định
+
+        const form = e.target.form;
+        const index = Array.prototype.indexOf.call(form, e.target);
+        if (e.target.value) {
+            // ô hiện tại có giá trị → xóa giá trị, focus giữ nguyên
+            e.target.value = "";
+        } else if (index > 0) {
+            // ô trống → focus ô trước và xóa giá trị ô trước
+            form[index - 1].focus();
+            form[index - 1].value = "";
+            setCurrentInputOtp(prev => prev - 1);
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!formRef.current) return;
+        const inputs = formRef.current.querySelectorAll("input");
+        let otp = "";
+        inputs.forEach(input => {
+            otp += input.value;
+        });
+        if (otp.length < 6) {
+            alert("Vui lòng nhập đủ 6 chữ số của mã OTP.");
+            return;
+        }
+        console.log("OTP entered:", otp);  
+        try {
+            await veritfyOtpEmail(user.email, otp);
+            alert("Xác minh email thành công!");
+            focusInputOtp();
+        } catch (error) {
+            console.error("Error verifying OTP:", error);
+            focusInputOtp();
         }
     }
 
     return (
         <div className="flex flex-1 flex-col items-start justify-start bg-white mt-4 rounded-sm shadow-md py-4 px-8">
-            <div className="w-full border-b border-lesslessgrayColor pb-4">
+            <div className="w-full border-b border-lesslessgrayColor pb-4 select-none">
                 <div className="text-xl text-black">Hồ sơ của tôi</div>
                 <div className="text-base text-moregrayTextColor">Quản lí thông tin hồ sơ để bảo mật tài khoản</div>
             </div>
             { isSent ? (
-                <div>
-
+                <div className="w-full flex flex-col items-center justify-center gap-8 py-10 select-none">
+                    <div className="text-xl">Nhập mã xác nhận</div>
+                    <div className="text-base flex flex-col items-center justify-center">
+                        <div>Mã xác nhận đã được gửi đến Email</div>
+                        <div>{emailHidden(user.email)}</div>
+                    </div>
+                    <form action="" class="grid grid-cols-6 gap-3" ref={formRef}>
+                        <input ref={firstOtp} inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 1" autoFocus
+                            onChange={onChangeInputOTP} 
+                            onPaste={onPaste}
+                            onBlur={handleOnBlur}
+                            onMouseDown={(e) => e.preventDefault()}
+                            // onKeyDown={handleKeyDown}
+                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                        />
+                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 2" 
+                            onChange={onChangeInputOTP}
+                            onBlur={handleOnBlur}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onKeyDown={handleKeyDown}
+                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                        />
+                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 3" 
+                            onChange={onChangeInputOTP}
+                            onBlur={handleOnBlur}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onKeyDown={handleKeyDown}
+                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                        />
+                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 4" 
+                            onChange={onChangeInputOTP}
+                            onBlur={handleOnBlur}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onKeyDown={handleKeyDown}
+                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                        />
+                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 5" 
+                            onChange={onChangeInputOTP}
+                            onBlur={handleOnBlur}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onKeyDown={handleKeyDown}
+                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                        />
+                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 6" 
+                            onChange={onChangeInputOTP}
+                            onBlur={handleOnBlur}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onKeyDown={handleKeyDown}
+                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                        />
+                    </form>
+                    <div className="text-sm text-moregrayTextColor flex items-center justify-center gap-2">
+                        Bạn vẫn chưa nhận được? 
+                        <button className="text-primaryTextColor"
+                            onClick={handleOnclick}
+                        >
+                            Gửi lại mã
+                        </button>
+                    </div>
+                    <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={handleSubmit} />
                 </div>
             ) : (
             <div className="relative w-full flex flex-col items-center justify-center">
@@ -91,15 +257,15 @@ function EmailVertify() {
                     <span className="flex gap-1"> {/* gap giữa các từ */}
                         {text.split(" ").map((word, wIdx) => (
                             <span key={wIdx} className="flex gap-0"> {/* chữ trong từ sát nhau */}
-                            {word.split("").map((char, cIdx) => (
-                                <span
-                                key={cIdx}
-                                ref={(el) => lettersRef.current.push(el)}
-                                className="inline-block"
-                                >
-                                {char}
-                                </span>
-                            ))}
+                                {word.split("").map((char, cIdx) => (
+                                    <span
+                                        key={cIdx}
+                                        ref={(el) => lettersRef.current.push(el)}
+                                        className="inline-block"
+                                    >
+                                        {char}
+                                    </span>
+                                ))}
                             </span>
                         ))}
                     </span>
