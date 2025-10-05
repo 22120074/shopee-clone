@@ -42,6 +42,9 @@ app.use('/product', productRoute);
 const cartRoute = require('./routes/cartRoute');
 app.use('/cart', cartRoute);
 
+const userRoute = require('./routes/userRoute');
+app.use('/user', userRoute);
+
 const PORT = process.env.PORT || 5000;
 
 Promise.all([

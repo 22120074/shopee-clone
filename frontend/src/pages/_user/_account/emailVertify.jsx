@@ -4,14 +4,15 @@ import { useSelector } from "react-redux";
 import { sendOtpEmail, veritfyOtpEmail } from "../../../services/auth.service";
 import { emailHidden } from "../../../utils/stringFormat";
 import PrimaryButton from "../../../components/Button";
+import StepProgress from "../../../components/StepProgress";
 
 function EmailVertify() {
     // Lấy thông tin user từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
     // UseState để quản lý trạng thái hover
     const [isHovered, setIsHovered] = useState(false);
-    // UseState để quản lý trạng thái gửi email
-    const [isSent, setIsSent] = useState(false);
+    // UseState để quản lý bước hiện tại (1, 2, 3)
+    const [currentStep, setCurrentStep] = useState(1);
     // UseState để quản lý trạng thái nhập mã OTP
     const [currentInputOtp, setCurrentInputOtp] = useState(0);
     // Ref tham chiếu đến input OTP đầu tiên, form
@@ -21,6 +22,14 @@ function EmailVertify() {
     const btnRef = useRef(null);
     const iconRef = useRef(null);
     const lettersRef = useRef([]);
+
+    // Steps cho StepProgress
+    const steps = [
+        { number: 1, label: 'Gửi mã xác nhận' },
+        { number: 2, label: 'Nhập mã OTP' },
+        { number: 3, label: 'Thay đổi email' },
+        { number: 4, label: 'Hoàn thành' },
+    ];
 
     const handleMouseEnter = () => {
         if (isHovered) return;
@@ -58,10 +67,25 @@ function EmailVertify() {
     const handleOnclick = () => {
         try {
             sendOtpEmail(user.email);
-            setIsSent(true);
+            setCurrentStep(2); // Chuyển sang bước 2
             focusInputOtp();
         } catch (error) {
             console.error("Error sending OTP email:", error);
+        }
+    };
+
+    // Xử lý quay lại bước trước
+    const handleGoBack = () => {
+        if (currentStep > 1) {
+            setCurrentStep(currentStep - 1);
+            setCurrentInputOtp(0);
+            // Clear all OTP inputs
+            if (formRef.current) {
+                const inputs = formRef.current.querySelectorAll("input");
+                inputs.forEach(input => {
+                    input.value = "";
+                });
+            }
         }
     };
 
@@ -155,13 +179,19 @@ function EmailVertify() {
         }
         console.log("OTP entered:", otp);  
         try {
+            focusInputOtp();
             await veritfyOtpEmail(user.email, otp);
             alert("Xác minh email thành công!");
-            focusInputOtp();
+            setCurrentStep(3); // Chuyển sang bước 3
         } catch (error) {
             console.error("Error verifying OTP:", error);
             focusInputOtp();
         }
+    }
+
+    const handleUpdateEmail = () => {
+        
+        setCurrentStep(4); // Chuyển sang bước hoàn thành
     }
 
     return (
@@ -170,56 +200,62 @@ function EmailVertify() {
                 <div className="text-xl text-black">Hồ sơ của tôi</div>
                 <div className="text-base text-moregrayTextColor">Quản lí thông tin hồ sơ để bảo mật tài khoản</div>
             </div>
-            { isSent ? (
-                <div className="w-full flex flex-col items-center justify-center gap-8 py-10 select-none">
-                    <div className="text-xl">Nhập mã xác nhận</div>
+            
+            {/* Thanh tiến độ */}
+            <StepProgress currentStep={currentStep} steps={steps} />
+            
+            { currentStep === 2 ? (
+                <div className="w-full flex flex-col items-center justify-center gap-8 py-0 select-none">
+                    <div className="text-xl">
+                        Nhập mã xác nhận
+                    </div>
                     <div className="text-base flex flex-col items-center justify-center">
                         <div>Mã xác nhận đã được gửi đến Email</div>
                         <div>{emailHidden(user.email)}</div>
                     </div>
-                    <form action="" class="grid grid-cols-6 gap-3" ref={formRef}>
-                        <input ref={firstOtp} inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 1" autoFocus
+                    <form action="" className="grid grid-cols-6 gap-3" ref={formRef}>
+                        <input ref={firstOtp} inputMode="numeric" pattern="[0-9]*" maxLength="1" aria-label="OTP digit 1" autoFocus
                             onChange={onChangeInputOTP} 
                             onPaste={onPaste}
                             onBlur={handleOnBlur}
                             onMouseDown={(e) => e.preventDefault()}
                             // onKeyDown={handleKeyDown}
-                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                            className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
                         />
-                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 2" 
+                        <input inputMode="numeric" pattern="[0-9]*" maxLength="1" aria-label="OTP digit 2" 
                             onChange={onChangeInputOTP}
                             onBlur={handleOnBlur}
                             onMouseDown={(e) => e.preventDefault()}
                             onKeyDown={handleKeyDown}
-                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                            className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
                         />
-                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 3" 
+                        <input inputMode="numeric" pattern="[0-9]*" maxLength="1" aria-label="OTP digit 3" 
                             onChange={onChangeInputOTP}
                             onBlur={handleOnBlur}
                             onMouseDown={(e) => e.preventDefault()}
                             onKeyDown={handleKeyDown}
-                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                            className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
                         />
-                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 4" 
+                        <input inputMode="numeric" pattern="[0-9]*" maxLength="1" aria-label="OTP digit 4" 
                             onChange={onChangeInputOTP}
                             onBlur={handleOnBlur}
                             onMouseDown={(e) => e.preventDefault()}
                             onKeyDown={handleKeyDown}
-                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                            className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
                         />
-                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 5" 
+                        <input inputMode="numeric" pattern="[0-9]*" maxLength="1" aria-label="OTP digit 5" 
                             onChange={onChangeInputOTP}
                             onBlur={handleOnBlur}
                             onMouseDown={(e) => e.preventDefault()}
                             onKeyDown={handleKeyDown}
-                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                            className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
                         />
-                        <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="OTP digit 6" 
+                        <input inputMode="numeric" pattern="[0-9]*" maxLength="1" aria-label="OTP digit 6" 
                             onChange={onChangeInputOTP}
                             onBlur={handleOnBlur}
                             onMouseDown={(e) => e.preventDefault()}
                             onKeyDown={handleKeyDown}
-                            class="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
+                            className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none" 
                         />
                     </form>
                     <div className="text-sm text-moregrayTextColor flex items-center justify-center gap-2">
@@ -230,22 +266,39 @@ function EmailVertify() {
                             Gửi lại mã
                         </button>
                     </div>
-                    <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={handleSubmit} />
+                    <div className="w-full flex items-center justify-center gap-6 mt-4">
+                        <button className="relative flex items-center justify-center gap-3 py-2 px-6 w-[180px] h-10
+                            text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
+                            onClick={handleGoBack}
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                className="w-6 h-6"
+                            >
+                                <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"> 
+                                    <path d="M4 10L3.29289 10.7071L2.58579 10L3.29289 9.29289L4 10ZM21 18C21 18.5523 20.5523 19 20 19C19.4477 19 19 18.5523 19 18L21 18ZM8.29289 15.7071L3.29289 10.7071L4.70711 9.29289L9.70711 14.2929L8.29289 15.7071ZM3.29289 9.29289L8.29289 4.29289L9.70711 5.70711L4.70711 10.7071L3.29289 9.29289ZM4 9L14 9L14 11L4 11L4 9ZM21 16L21 18L19 18L19 16L21 16ZM14 9C17.866 9 21 12.134 21 16L19 16C19 13.2386 16.7614 11 14 11L14 9Z" fill="currentColor"></path> 
+                                </g>
+                            </svg>
+                            Quay lại
+                        </button>
+                        <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={handleSubmit} />
+                    </div>
                 </div>
-            ) : (
-            <div className="relative w-full flex flex-col items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="#FA5130" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                    className="absolute top-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+            ) : currentStep === 1 ? (
+            <div className="relative w-full flex flex-col items-center justify-start min-h-[350px]">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="#FA5130" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+                    className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
                 >
                     <path d="M12 2 3 5v6c0 5.25 3.75 9.74 9 11 5.25-1.26 9-5.75 9-11V5l-9-3z"/>
                     <path d="M9 12.5l1.8 1.8L15 10.1"/>
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80" aria-hidden="true"
-                    className="absolute top-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                 >
                     <path d="M12 2v20c5.25-1.26 9-5.75 9-11V5l-9-3z" fill="#FFC7B3"/>
                 </svg>
-                <div className="text-lg text-black mt-32 mb-6 w-[420px]">
+                <div className="text-lg text-black mt-24 mb-6 w-[420px]">
                     Để tăng cường bảo mật cho tài khoản của bạn, hãy xác minh thông tin bằng một trong những cách sau.
                 </div>
                 <button ref={btnRef} className="flex items-center justify-center gap-3 py-2 px-6 text-primaryTextColor rounded-sm text-base
@@ -271,6 +324,43 @@ function EmailVertify() {
                     </span>
                 </button>
             </div>
+            ) : currentStep === 3 ? (
+                <div className="w-full flex flex-col items-center justify-center gap-8 py-0 select-none">
+                    <div className="text-xl">
+                        Nhập địa chỉ Email mới
+                    </div>
+                    <form action="" className="w-full flex flex-col items-center justify-center max-w-[300px]" ref={formRef}>
+                        <input placeholder="Nhập địa chỉ Email mới của bạn" autoFocus
+                            className="w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none" 
+                        />
+                    </form>
+                    <div className="w-full flex items-center justify-center gap-6 mt-4">
+                        <button className="relative flex items-center justify-center gap-3 py-2 px-6 w-[180px] h-10
+                            text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
+                            onClick={handleGoBack}
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                className="w-6 h-6"
+                            >
+                                <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"> 
+                                    <path d="M4 10L3.29289 10.7071L2.58579 10L3.29289 9.29289L4 10ZM21 18C21 18.5523 20.5523 19 20 19C19.4477 19 19 18.5523 19 18L21 18ZM8.29289 15.7071L3.29289 10.7071L4.70711 9.29289L9.70711 14.2929L8.29289 15.7071ZM3.29289 9.29289L8.29289 4.29289L9.70711 5.70711L4.70711 10.7071L3.29289 9.29289ZM4 9L14 9L14 11L4 11L4 9ZM21 16L21 18L19 18L19 16L21 16ZM14 9C17.866 9 21 12.134 21 16L19 16C19 13.2386 16.7614 11 14 11L14 9Z" fill="currentColor"></path> 
+                                </g>
+                            </svg>
+                            Quay lại
+                        </button>
+                        <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={handleUpdateEmail} />
+                    </div>
+                </div>
+            ) : (
+                // Step 3 - Hoàn thành
+                <div className="w-full flex flex-col items-center justify-center gap-8 py-10">
+                    <div className="text-xl text-green-600">Xác minh email thành công!</div>
+                    <div className="text-base text-center">
+                        Email của bạn đã được xác minh thành công.
+                    </div>
+                </div>
             )}
         </div>
     )

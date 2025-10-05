@@ -31,7 +31,7 @@ function SideBar() {
     }, [firstSegment, secondSegment]);   
 
     return (
-    <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor">
+    <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor min-h-[600px]">
         { user && 
         <>
         <div className='flex items-center justify-start gap-2 w-full h-28'>
