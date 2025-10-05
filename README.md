@@ -402,10 +402,10 @@ docker-compose up --build -d
 
 *[Thêm screenshots của ứng dụng ở đây]*
 ![Home](https://github.com/user-attachments/assets/a123321d-3bf1-489e-8582-9d20b6976619)
-![Product_Page](https://github.com/user-attachments/assets/9ba22bbd-ed19-4e99-9022-c1535c9561ac)
-![Cart_Page](https://github.com/user-attachments/assets/f25c648d-e829-4870-ad65-6145217f53be)
-![Login_Page](https://github.com/user-attachments/assets/0fba0b73-98ed-4a48-a1b6-c07ed7e61219)
-![Register_Page](https://github.com/user-attachments/assets/c19d3b44-cfdf-4c75-9ba4-d802b15bb2b2)
+![Product_Page](https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579950-90eeedc8-a803-403d-abf8-edcc6844fca8.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191258Z&X-Amz-Expires=300&X-Amz-Signature=6f35310f70403507721fd693720fdada27949356f6eb2c8c1d1c82a2a05aedb0&X-Amz-SignedHeaders=host)
+![Cart_Page](https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579899-79555d53-1567-4738-aa67-59df73a26469.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191220Z&X-Amz-Expires=300&X-Amz-Signature=2522f4a8efc4b4c30f880c38ecf5730545b6396cb7602904fc83d8bf0d968959&X-Amz-SignedHeaders=host)
+![Login_Page](https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579741-55f3cdce-8c0a-41cf-b767-a81855f34464.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T190940Z&X-Amz-Expires=300&X-Amz-Signature=004ab61e848f9904aab23ad8d96d3a6b7a5708c7ea6e143d7e698ab53b25cd68&X-Amz-SignedHeaders=host)
+![Register_Page](https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579819-4e8bd08d-2dbf-43e1-a76e-6a89d4ffb3a0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191105Z&X-Amz-Expires=300&X-Amz-Signature=2c28f796bd5d68349522b2edfb05949a6d0a6b18d33f8e6a60783f07c3c4e5ed&X-Amz-SignedHeaders=host)
 
 ---
 
