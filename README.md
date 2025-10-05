@@ -407,6 +407,15 @@ docker-compose up --build -d
 ![Login_Page](https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579741-55f3cdce-8c0a-41cf-b767-a81855f34464.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T190940Z&X-Amz-Expires=300&X-Amz-Signature=004ab61e848f9904aab23ad8d96d3a6b7a5708c7ea6e143d7e698ab53b25cd68&X-Amz-SignedHeaders=host)
 ![Register_Page](https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579819-4e8bd08d-2dbf-43e1-a76e-6a89d4ffb3a0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191105Z&X-Amz-Expires=300&X-Amz-Signature=2c28f796bd5d68349522b2edfb05949a6d0a6b18d33f8e6a60783f07c3c4e5ed&X-Amz-SignedHeaders=host)
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a123321d-3bf1-489e-8582-9d20b6976619" alt="Home" width="400">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579950-90eeedc8-a803-403d-abf8-edcc6844fca8.png" alt="Product Page" width="400">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579899-79555d53-1567-4738-aa67-59df73a26469.png" alt="Cart Page" width="400">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579741-55f3cdce-8c0a-41cf-b767-a81855f34464.png" alt="Login Page" width="400">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579819-4e8bd08d-2dbf-43e1-a76e-6a89d4ffb3a0.png" alt="Register Page" width="400">
+</p>
+
+
 ---
 
 ## 👨‍💻 Tác giả
