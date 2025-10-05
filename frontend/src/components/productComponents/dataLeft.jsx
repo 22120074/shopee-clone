@@ -56,7 +56,7 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
             } else {
                 setLikes(prev => prev + 1);
                 setLiked(true);
-                console.log(typeof(user.userId));
+                // console.log(typeof(user.userId));
                 if (!user.userId)
                     await likeProduct(product.id, user.googleID);
                 else    

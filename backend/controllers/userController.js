@@ -2,12 +2,15 @@ const { updateEmail } = require("../services/user.service");
 
 exports.updateEmailAPI = async (req, res, next) => {
     try {
-        const { userId, newEmail } = req.body;
-        let email = newEmail.trim();
-        if (!userId || !newEmail) {
+        const { userId, email } = req.body;
+        let newEmail = email.trim();
+        // console.log("UserId: ", userId);
+        // console.log("Type: ", typeof userId);
+        // console.log("New Email: ", newEmail);
+        if (!userId || !email) {
             return res.status(400).json({ message: "Thiếu userId hoặc newEmail" });
         }
-        const updatedUser = await updateEmail(userId, email);
+        const updatedUser = await updateEmail(userId, newEmail);
         if (!updatedUser) {
             return res.status(404).json({ message: "Người dùng không tồn tại" });
         }

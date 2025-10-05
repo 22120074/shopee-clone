@@ -19,8 +19,12 @@ const authSlice = createSlice({
       localStorage.removeItem("user");
       localStorage.removeItem("cart");
     },
+    updateEmail_Redux: (state, action) => {
+      state.currentUser.email = action.payload;
+      localStorage.setItem("user", JSON.stringify(state.currentUser));
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateEmail_Redux } = authSlice.actions;
 export default authSlice.reducer;

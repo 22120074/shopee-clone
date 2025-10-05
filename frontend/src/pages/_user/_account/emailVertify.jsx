@@ -1,16 +1,24 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateEmail_Redux } from "../../../features/auth/authSlice";
 import { sendOtpEmail, veritfyOtpEmail } from "../../../services/auth.service";
+import { updateEmail } from "../../../services/user.service";
 import { emailHidden } from "../../../utils/stringFormat";
 import PrimaryButton from "../../../components/Button";
 import StepProgress from "../../../components/StepProgress";
+import StretchSpinner from "../../../components/skeletons/spinnerButton";
 
 function EmailVertify() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     // Lấy thông tin user từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
     // UseState để quản lý trạng thái hover
     const [isHovered, setIsHovered] = useState(false);
+    // UseState để quản lý trạng thái loading đặc biệt (khi submit OTP)
+    const [isLoading, setIsLoading] = useState(false);
     // UseState để quản lý bước hiện tại (1, 2, 3)
     const [currentStep, setCurrentStep] = useState(1);
     // UseState để quản lý trạng thái nhập mã OTP
@@ -22,14 +30,15 @@ function EmailVertify() {
     const btnRef = useRef(null);
     const iconRef = useRef(null);
     const lettersRef = useRef([]);
-
-    // Steps cho StepProgress
+    // Steps cho Thanh tiến độ
     const steps = [
         { number: 1, label: 'Gửi mã xác nhận' },
         { number: 2, label: 'Nhập mã OTP' },
         { number: 3, label: 'Thay đổi email' },
         { number: 4, label: 'Hoàn thành' },
     ];
+    // UseState để quản lý email mới
+    const [email, setEmail] = useState("");
 
     const handleMouseEnter = () => {
         if (isHovered) return;
@@ -166,7 +175,9 @@ function EmailVertify() {
         }
     };
 
+    // Xử lý sự kiện submit form OTP
     const handleSubmit = async () => {
+        setIsLoading(true);
         if (!formRef.current) return;
         const inputs = formRef.current.querySelectorAll("input");
         let otp = "";
@@ -177,21 +188,39 @@ function EmailVertify() {
             alert("Vui lòng nhập đủ 6 chữ số của mã OTP.");
             return;
         }
-        console.log("OTP entered:", otp);  
         try {
             focusInputOtp();
             await veritfyOtpEmail(user.email, otp);
-            alert("Xác minh email thành công!");
             setCurrentStep(3); // Chuyển sang bước 3
         } catch (error) {
             console.error("Error verifying OTP:", error);
             focusInputOtp();
+        } finally {
+            setIsLoading(false);
         }
     }
 
-    const handleUpdateEmail = () => {
-        
-        setCurrentStep(4); // Chuyển sang bước hoàn thành
+    const handleUpdateEmail = async () => {
+        try {
+            setIsLoading(true);
+            // console.log("ID:", user?.userId, " and ", user?.googleID);
+            // console.log("New email:", email);
+            const response = await updateEmail(user?.userId || user?.googleID, email);
+            if (response) {
+                // Cập nhật email trong Redux
+                dispatch(updateEmail_Redux(email));
+                // Chuyển sang bước 4
+                setCurrentStep(4);
+                const timer = setTimeout(() => {
+                    navigate("/user/account/profile");
+                }, 1500);
+                return () => clearTimeout(timer);
+            }
+        } catch (error) {
+            console.error("Error updating email:", error);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -282,7 +311,18 @@ function EmailVertify() {
                             </svg>
                             Quay lại
                         </button>
-                        <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={handleSubmit} />
+                        <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={() => handleSubmit()}>
+                            <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+                                ${isLoading ? "bg-white/50" : "hidden"}`}
+                            >
+                                <StretchSpinner 
+                                    size={"30px"} 
+                                    stroke={"5px"}  
+                                    _hidden={isLoading ? "" : "hidden"}
+                                    color={"white"}
+                                />
+                            </div>                        
+                        </PrimaryButton>
                     </div>
                 </div>
             ) : currentStep === 1 ? (
@@ -331,6 +371,8 @@ function EmailVertify() {
                     </div>
                     <form action="" className="w-full flex flex-col items-center justify-center max-w-[300px]" ref={formRef}>
                         <input placeholder="Nhập địa chỉ Email mới của bạn" autoFocus
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none" 
                         />
                     </form>
@@ -350,7 +392,18 @@ function EmailVertify() {
                             </svg>
                             Quay lại
                         </button>
-                        <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={handleUpdateEmail} />
+                        <PrimaryButton width="180px" height="40px" text="Kế tiếp" onClick={() => handleUpdateEmail()}>
+                            <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+                                ${isLoading ? "bg-white/50" : "hidden"}`}
+                            >
+                                <StretchSpinner 
+                                    size={"30px"} 
+                                    stroke={"5px"}  
+                                    _hidden={isLoading ? "" : "hidden"}
+                                    color={"white"}
+                                />
+                            </div>                        
+                        </PrimaryButton>
                     </div>
                 </div>
             ) : (
