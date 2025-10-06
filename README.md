@@ -208,12 +208,10 @@ shopee-clone/
 │   │   │   ├── 📁 cartComponents/           # Cart components
 │   │   │   │   ├── headerCart.jsx              # Cart header
 │   │   │   │   ├── productList.jsx             # Cart product list
-│   │   │   │   ├── footerCart.jsx              # Cart footer/total
 │   │   │   │   └── ...                         # More components
 │   │   │   │
 │   │   │   ├── 📁 productComponents/        # Product components
 │   │   │   │   ├── dataDetailProduct.jsx       # Product detail data
-│   │   │   │   ├── dataLeft.jsx                # Left section data
 │   │   │   │   ├── dataRating.jsx              # Rating data display
 │   │   │   │   └── ...                         # More components
 │   │   │   │
@@ -225,7 +223,10 @@ shopee-clone/
 │   │   │   ├── 📁 _auth/                    # Authentication pages
 │   │   │   ├── 📁 _cart/                    # Cart pages
 │   │   │   ├── 📁 _product/                 # Product pages
-│   │   │   ├── 📁 _user/                    # User profile pages
+│   │   │   ├── 📁 _user/                    # User pages
+│   │   │       ├── 📁 _notification/             # Notigication pages
+│   │   │       ├── 📁 _order/                    # Order pages
+│   │   │       └── 📁 _account/                  # Profile pages
 │   │   │   └── 📁 _catagory/                # Category pages
 │   │   │
 │   │   ├── 📁 features/                 # Redux slices

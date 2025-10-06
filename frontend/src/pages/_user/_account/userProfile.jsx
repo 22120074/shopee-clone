@@ -104,7 +104,7 @@ function UserProfile() {
                 <label htmlFor="userPhone" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Số điện thoại</label>
                 <div type="text" id="userPhone" className="flex items-center justify-between h-9 ml-4 text-[15px]">
                     {hiddenPhone(user?.phone) || "Chưa thiết lập số điện thoại"}
-                    <Link to='/user/account/phone-verify' className='text-primaryTextColor text-sm'>Thay đổi</Link>
+                    <Link to='/user/account/phone-vertify' className='text-primaryTextColor text-sm'>Thay đổi</Link>
                 </div>
                 {/* Giới tính */}
                 <label htmlFor="userSex" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Giới tính</label>

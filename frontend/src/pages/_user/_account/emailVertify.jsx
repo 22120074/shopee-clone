@@ -8,7 +8,7 @@ import { updateEmail } from "../../../services/user.service";
 import { emailHidden } from "../../../utils/stringFormat";
 import PrimaryButton from "../../../components/Button";
 import StepProgress from "../../../components/StepProgress";
-import StretchSpinner from "../../../components/skeletons/spinnerButton";
+import Spinner from "../../../components/skeletons/spinnerButton";
 
 function EmailVertify() {
     const navigate = useNavigate();
@@ -315,7 +315,7 @@ function EmailVertify() {
                             <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
                                 ${isLoading ? "bg-white/50" : "hidden"}`}
                             >
-                                <StretchSpinner 
+                                <Spinner 
                                     size={"30px"} 
                                     stroke={"5px"}  
                                     _hidden={isLoading ? "" : "hidden"}
@@ -396,7 +396,7 @@ function EmailVertify() {
                             <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
                                 ${isLoading ? "bg-white/50" : "hidden"}`}
                             >
-                                <StretchSpinner 
+                                <Spinner 
                                     size={"30px"} 
                                     stroke={"5px"}  
                                     _hidden={isLoading ? "" : "hidden"}
@@ -407,11 +407,10 @@ function EmailVertify() {
                     </div>
                 </div>
             ) : (
-                // Step 3 - Hoàn thành
                 <div className="w-full flex flex-col items-center justify-center gap-8 py-10">
                     <div className="text-xl text-green-600">Xác minh email thành công!</div>
                     <div className="text-base text-center">
-                        Email của bạn đã được xác minh thành công.
+                        Email của bạn đã được cập nhật thành công.
                     </div>
                 </div>
             )}

@@ -1,7 +1,7 @@
 import "../../css/auth.css";
 import { useState } from "react";
 import PrimaryButton from "../../components/Button";
-import StretchSpinner from "../../components/skeletons/spinnerButton";
+import Spinner from "../../components/skeletons/spinnerButton";
 import GGButton from "../../components/ggButton";
 import FBButton from "../../components/fbButton";
 import { Link, useNavigate } from "react-router-dom";
@@ -164,7 +164,7 @@ function Login() {
           <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingNormal ? "" : `${isLoadingSpecial ? "bg-white/50" : "hidden"}`}`}
           >
-            <StretchSpinner 
+            <Spinner 
               size={"30px"} 
               stroke={"5px"}  
               _hidden={isLoadingSpecial ? "hidden" : ""}
@@ -192,7 +192,7 @@ function Login() {
           <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"}`}
           >
-            <StretchSpinner 
+            <Spinner 
               size={"30px"} 
               stroke={"6px"}  
               _hidden={isLoadingNormal ? "hidden" : ""}
@@ -209,7 +209,7 @@ function Login() {
           <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"}`}
           >
-            <StretchSpinner 
+            <Spinner 
               size={"30px"} 
               stroke={"6px"}  
               _hidden={isLoadingNormal ? "hidden" : ""}

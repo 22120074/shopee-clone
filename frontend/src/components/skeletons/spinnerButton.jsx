@@ -1,6 +1,6 @@
 import React from "react";
 
-const StretchSpinner = ({ size, color, stroke, _hidden }) => {
+const Spinner = ({ size, color, stroke, _hidden }) => {
     return (
         <svg className={`animate-rotate overflow-visible ${_hidden}`}
             viewBox="0 0 40 40"
@@ -28,4 +28,4 @@ const StretchSpinner = ({ size, color, stroke, _hidden }) => {
     );
 };
 
-export default StretchSpinner;
+export default Spinner;
