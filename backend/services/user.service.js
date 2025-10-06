@@ -22,6 +22,28 @@ const updateEmail = async (userId, newEmail) => {
     }
 }
 
+const updatePhone = async (userId, newPhone) => {
+    try {
+        let userData;
+        if (typeof userId === "string" && !mongoose.Types.ObjectId.isValid(userId)) {
+            userData = await DataUser.findOneAndUpdate(
+                { googleID: userId },
+                { $set: { phone: newPhone } },
+                { new: true });
+        } else {
+            userData = await DataUser.findOneAndUpdate(
+                { userId: userId },
+                { $set: { phone: newPhone } },
+                { new: true }
+            );
+        }
+        return userData;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = {
-    updateEmail
+    updateEmail,
+    updatePhone,
 };

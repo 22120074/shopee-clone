@@ -90,7 +90,7 @@ function PhoneVertify() {
     const handleUpdatePhone = async () => {
         try {
             setIsLoading(true);
-            if (!phone || phone.length < 10) {
+            if (!phone || phone.length < 10 || phone.length > 12) {
                 alert("Vui lòng nhập số điện thoại hợp lệ.");
                 return;
             }
@@ -111,8 +111,6 @@ function PhoneVertify() {
             setIsLoading(false);
         }
     };
-
-
 
     return (
         <div className="flex flex-1 flex-col items-start justify-start bg-white mt-4 rounded-sm shadow-md py-4 px-8">
