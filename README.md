@@ -90,17 +90,18 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 ### 👤 Quản lý người dùng
 - [x] Profile người dùng
     - [x] Email - Vertify & Update
+    - [x] Phone - Update
 
 ### 🎨 Giao diện & UX
 - [x] Responsive design với TailwindCSS - Mobile, Ipad, PC
 - [x] Loading Skeletons - List of user comments
-- [x] Toast Notifications - In Cart, Product Layout - Component
+- [x] StackBar Notifications - In Cart, Product, User Layout - Component
 - [x] Image Preview - Thanh hình ảnh & Ảnh chính - Component
 - [x] Image Revealer - Component
 - [x] Carousel Slide - Hình ảnh - Responsive - Component
 - [x] Carousel Slide - Danh mục - Responsive
 - [x] Pagination - In review comments - Responsive - Component
-- [x] Smooth animations với GSAP
+- [x] Smooth animations với GSAP - Text, ImageRevealer
 - [x] Scroll to top - Component
 - [x] Animation hiện mượt mà ở Sidebar - In User Layout 
 - [x] Spinner Button - Component
@@ -404,11 +405,11 @@ docker-compose up --build -d
 *[Thêm screenshots của ứng dụng ở đây]*
 
 <p align="center">
-  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497577514-a123321d-3bf1-489e-8582-9d20b6976619.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T192101Z&X-Amz-Expires=300&X-Amz-Signature=2468fa04e054a2d5bd369855163a253d9dcacfcffadcf75bbd7b560102424b50&X-Amz-SignedHeaders=host" alt="Home" width="400">
-  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579950-90eeedc8-a803-403d-abf8-edcc6844fca8.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191258Z&X-Amz-Expires=300&X-Amz-Signature=6f35310f70403507721fd693720fdada27949356f6eb2c8c1d1c82a2a05aedb0&X-Amz-SignedHeaders=host" alt="Product Page" width="400">
-  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579899-79555d53-1567-4738-aa67-59df73a26469.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191220Z&X-Amz-Expires=300&X-Amz-Signature=2522f4a8efc4b4c30f880c38ecf5730545b6396cb7602904fc83d8bf0d968959&X-Amz-SignedHeaders=host" alt="Cart Page" width="400">
-  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579741-55f3cdce-8c0a-41cf-b767-a81855f34464.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T190940Z&X-Amz-Expires=300&X-Amz-Signature=004ab61e848f9904aab23ad8d96d3a6b7a5708c7ea6e143d7e698ab53b25cd68&X-Amz-SignedHeaders=host" alt="Login Page" width="400">
-  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497580773-c5213aad-22ce-4463-bbde-ad652f2f3048.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T192433Z&X-Amz-Expires=300&X-Amz-Signature=f5c5566d05c75efee5cb1aefcddad84eb82228ff7f925864b88fbb3946707a53&X-Amz-SignedHeaders=host" alt="Register Page" width="400">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497577514-a123321d-3bf1-489e-8582-9d20b6976619.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T192101Z&X-Amz-Expires=300&X-Amz-Signature=2468fa04e054a2d5bd369855163a253d9dcacfcffadcf75bbd7b560102424b50&X-Amz-SignedHeaders=host" alt="Home" width="200">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579950-90eeedc8-a803-403d-abf8-edcc6844fca8.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191258Z&X-Amz-Expires=300&X-Amz-Signature=6f35310f70403507721fd693720fdada27949356f6eb2c8c1d1c82a2a05aedb0&X-Amz-SignedHeaders=host" alt="Product Page" width="200">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579899-79555d53-1567-4738-aa67-59df73a26469.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T191220Z&X-Amz-Expires=300&X-Amz-Signature=2522f4a8efc4b4c30f880c38ecf5730545b6396cb7602904fc83d8bf0d968959&X-Amz-SignedHeaders=host" alt="Cart Page" width="200">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497579741-55f3cdce-8c0a-41cf-b767-a81855f34464.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T190940Z&X-Amz-Expires=300&X-Amz-Signature=004ab61e848f9904aab23ad8d96d3a6b7a5708c7ea6e143d7e698ab53b25cd68&X-Amz-SignedHeaders=host" alt="Login Page" width="200">
+  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/152791183/497580773-c5213aad-22ce-4463-bbde-ad652f2f3048.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251005T192433Z&X-Amz-Expires=300&X-Amz-Signature=f5c5566d05c75efee5cb1aefcddad84eb82228ff7f925864b88fbb3946707a53&X-Amz-SignedHeaders=host" alt="Register Page" width="200">
 </p>
 
 ---

@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { updatePhone } from "../../../services/user.service";
 import { useDispatch } from "react-redux";
 import { updatePhone_Redux } from "../../../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import StepProgress from "../../../components/StepProgress";
 import PrimaryButton from "../../../components/Button";
 import Spinner from "../../../components/skeletons/spinnerButton";
@@ -13,6 +13,8 @@ import Spinner from "../../../components/skeletons/spinnerButton";
 function PhoneVertify() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
+    const { addToast } = useOutletContext();
     // Lấy thông tin user từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
     // UseState để quản lí bước hiện tại
@@ -91,7 +93,7 @@ function PhoneVertify() {
         try {
             setIsLoading(true);
             if (!phone || phone.length < 10 || phone.length > 12) {
-                alert("Vui lòng nhập số điện thoại hợp lệ.");
+                addToast('Vui lòng nhập số điện thoại hợp lệ.', 'error', 'warning');
                 return;
             }
             const response = await updatePhone(user?.userId || user?.googleID, phone);

@@ -10,25 +10,16 @@ function UserProfile() {
     const dispatch = useDispatch();
     // Lấy thông tin user từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
-
-    // UseState lưu giới tính, tên, tên hiển thị, email, số điện thoại, ngày sinh
+    // UseState lưu giới tính, tên, tên hiển thị, ngày sinh
     const [displayNameForm, setDisplayNameForm] = useState(user?.displayName || "");
     const [nameForm, setNameForm] = useState(user?.name || "");
-    // const [emailForm, setEmailForm] = useState(user?.email || "");
-    // const [phoneForm, setPhoneForm] = useState(user?.phone || "");
     const [genderForm, setGenderForm] = useState(user?.gender); // male, female, other
     const [day, setDay] = useState("");
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
-
     // UseState ngày, tháng, năm sinh, mở rộng dropdown Date, bắt lỗi nhập Date
-    const [openDropdown, setOpenDropdown] = useState({
-        day: false,
-        month: false,
-        year: false,
-    });
+    const [openDropdown, setOpenDropdown] = useState({ day: false, month: false, year: false, });
     const [dateError, setDateError] = useState("");
-
     // Ref và useEffect để bắt sự kiện click ngoài dropdown của Date
     const dayRef = useRef(null);
     const monthRef = useRef(null);
@@ -264,7 +255,7 @@ function UserProfile() {
                 </div>
             </form>
             {/* Avatar */}
-            <div className="flex flex-col w-full h-auto min-h-32 items-center justify-start gap-4 py-6">
+            <div className="flex flex-col w-full h-auto min-h-32 items-center justify-start gap-4 py-6 select-none">
                 <div className='w-26 h-26 rounded-full overflow-hidden mr-2 border cursor-pointer' 
                     onClick={() => alert('Chức năng thay đổi avatar đang được phát triển')}
                 >

@@ -77,7 +77,7 @@ module.exports = {
       animation: {
         'fade-out': 'fadeOut 0.3s linear forwards',
         'fade-in': 'fadeIn 0.3s linear forwards',
-        'slide-bounce': 'slideInBounce 1.5s cubic-bezier(0, 0, 0, 1) forwards',
+        'slide-bounce': 'slideInBounce 1.3s cubic-bezier(0, 0, 0, 1) forwards',
         flip: 'flip 0.5s forwards',
         shimmer: 'shimmer 2.5s linear infinite',
         dropdownIn: 'dropdownIn 0.2s ease-out forwards',

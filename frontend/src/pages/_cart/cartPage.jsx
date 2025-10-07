@@ -1,7 +1,7 @@
 import "../../css/CartLayout.css";
 import HeaderCart from "../../components/cartComponents/headerCart";
 import useToastQueue from "../../hooks/useToastQueue";
-import ToastQueue from "../../components/cartComponents/toastQueueCart";
+import StackBar from "../../components/StackBar";
 import ProductList from "../../components/cartComponents/productList";
 import FooterCart from "../../components/cartComponents/footerCart";
 import PrimaryButton from "../../components/Button";
@@ -70,7 +70,7 @@ function CartPage() {
   return (
     <div className="w-full bg-[#F5F5F5] pt-5 h-screen md:h-auto pb-10">
       {/* Toast Queue để hiển thị từng thông báo */}
-      <ToastQueue toasts={toasts} />
+      <StackBar toasts={toasts} width={"400px"} height={"100px"} />
       {cartItems.length > 0 ? (
         <>
           {/* Thanh ngang phân cột trong giỏ hàng đại diện cho Header */}

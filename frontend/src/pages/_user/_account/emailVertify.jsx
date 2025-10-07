@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { gsap } from "gsap";
 import { useSelector, useDispatch } from "react-redux";
 import { updateEmail_Redux } from "../../../features/auth/authSlice";
@@ -13,6 +13,8 @@ import Spinner from "../../../components/skeletons/spinnerButton";
 function EmailVertify() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
+    const { addToast } = useOutletContext();
     // Lấy thông tin user từ Redux store
     const user = useSelector((state) => state.auth.currentUser);
     // UseState để quản lý trạng thái hover
@@ -185,7 +187,7 @@ function EmailVertify() {
             otp += input.value;
         });
         if (otp.length < 6) {
-            alert("Vui lòng nhập đủ 6 chữ số của mã OTP.");
+            addToast('Vui lòng nhập đủ 6 chữ số của mã OTP.', 'error', 'warning');
             return;
         }
         try {

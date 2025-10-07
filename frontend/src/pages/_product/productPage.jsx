@@ -8,7 +8,7 @@ import useIsWindow from '../../hooks/useIsWindow';
 import LeftData from '../../components/productComponents/dataLeft';
 import RightData from '../../components/productComponents/dataRight';
 import DataDetailProduct from '../../components/productComponents/dataDetailProduct';
-import ToastQueue from '../../components/productComponents/toastQueueProduct';
+import StackBar from '../../components/StackBar';
 import DataRatingProduct from '../../components/productComponents/dataRating';
 
 function ProductPage() {
@@ -83,7 +83,7 @@ function ProductPage() {
     return (
     <div className="w-full bg-[#F5F5F5] h-auto">
         {/* Toast Queue để hiển thị thông báo thành công*/}
-        <ToastQueue toasts={toasts} />
+        <StackBar toasts={toasts} width={"300px"} height={"80px"} />
         { product && !isPhone &&
             // Đường dẫn category 
             <div className='max-w-[1200px] mx-auto md:px-6 lg:px-0 flex gap-2 h-[56px] text-xs text-black tracking-widest items-center overflow-hidden'>
