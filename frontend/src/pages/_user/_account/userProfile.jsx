@@ -115,7 +115,7 @@ function UserProfile() {
                 <label htmlFor="userEmail" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Email</label>
                 <div type="text" id="userEmail" className="flex items-center justify-between h-9 ml-4 text-[15px]">
                     {emailHidden(user?.email) || "Chưa thiết lập Email"}
-                    <Link to='/user/account/email-vertify' className='text-primaryTextColor text-sm'>Thay đổi</Link>
+                    <Link to={user.email ? '/user/account/email-vertify' : '/user/account/no-email-update'} className='text-primaryTextColor text-sm'>Thay đổi</Link>
                 </div>
                 {/* Số điện thoại */}
                 <label htmlFor="userPhone" className="flex items-center justify-end text-[15px] text-moregrayTextColor">Số điện thoại</label>
