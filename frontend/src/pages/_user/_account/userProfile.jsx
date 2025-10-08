@@ -1,22 +1,24 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import './../../../css/offElement.css'
-import PrimaryButton from "../../../components/Button";
+import { Link, useOutletContext } from "react-router-dom";
 import { emailHidden } from "../../../utils/stringFormat";
 import { hiddenPhone } from "../../../utils/numberFormat";
+import { updateUserProfile } from "../../../services/user.service";
+import { updateProfile_Redux } from "../../../features/auth/authSlice";
+import './../../../css/offElement.css'
+import PrimaryButton from "../../../components/Button";
+import Spinner from "../../../components/skeletons/spinnerButton";
 
 function UserProfile() {
     const dispatch = useDispatch();
-    // Lấy thông tin user từ Redux store
-    const user = useSelector((state) => state.auth.currentUser);
+    const { addToast, user } = useOutletContext();
     // UseState lưu giới tính, tên, tên hiển thị, ngày sinh
     const [displayNameForm, setDisplayNameForm] = useState(user?.displayName || "");
     const [nameForm, setNameForm] = useState(user?.name || "");
     const [genderForm, setGenderForm] = useState(user?.gender); // male, female, other
-    const [day, setDay] = useState("");
-    const [month, setMonth] = useState("");
-    const [year, setYear] = useState("");
+    const [day, setDay] = useState(user?.dateOfBirth ? new Date(user.dateOfBirth).getDate() : "");
+    const [month, setMonth] = useState(user?.dateOfBirth ? new Date(user.dateOfBirth).getMonth() + 1 : "");
+    const [year, setYear] = useState(user?.dateOfBirth ? new Date(user.dateOfBirth).getFullYear() : "");
     // UseState ngày, tháng, năm sinh, mở rộng dropdown Date, bắt lỗi nhập Date
     const [openDropdown, setOpenDropdown] = useState({ day: false, month: false, year: false, });
     const [dateError, setDateError] = useState("");
@@ -24,6 +26,8 @@ function UserProfile() {
     const dayRef = useRef(null);
     const monthRef = useRef(null);
     const yearRef = useRef(null);
+    // UseState để lưu trạng thái loading
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -58,6 +62,28 @@ function UserProfile() {
             }
         }
     }, [day, month, year]);
+
+    const handleSubmitForm = async () => {
+        try {
+            setIsLoading(true);
+            const date = new Date(year, month - 1, day);
+            console.log(date);
+            const response = await updateUserProfile(user?.userId || user?.googleID, displayNameForm, nameForm, genderForm, date);
+            if (response) {
+                dispatch(updateProfile_Redux({
+                    displayName: displayNameForm,
+                    name: nameForm,
+                    gender: genderForm,
+                    dateOfBirth: date,
+                }));
+                addToast("Cập nhật hồ sơ thành công!", "success", "check");
+            }
+        } catch (error) {
+            console.error("Error updating profile:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     return (
     <div className="flex flex-1 flex-col items-start justify-start bg-white mt-4 rounded-sm shadow-md py-4 px-8">
@@ -259,7 +285,9 @@ function UserProfile() {
                 <div className='w-26 h-26 rounded-full overflow-hidden mr-2 border cursor-pointer' 
                     onClick={() => alert('Chức năng thay đổi avatar đang được phát triển')}
                 >
-                    <img src={user?.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                    <img src={user?.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar"
+                        className="user_avatar w-24 h-24 object-cover" 
+                    />
                 </div>
                 <button className={`flex items-center justify-center bg-white text-black border border-black rounded-sm px-4 w-auto h-10
                         border-lessgrayColor text-sm font-normal
@@ -279,7 +307,18 @@ function UserProfile() {
             </div>
         </div>
         <div className="flex w-full items-center justify-center ml-4 gap-2 mt-16">
-            <PrimaryButton width="200px" text={"Lưu"} disabled={dateError !== ''}></PrimaryButton>
+            <PrimaryButton width="200px" text={"Lưu"} disabled={dateError !== ''}  onClick={() => handleSubmitForm()}>
+                <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+                    ${isLoading ? "bg-white/50" : "hidden"}`}
+                >
+                    <Spinner 
+                        size={"30px"} 
+                        stroke={"5px"}  
+                        _hidden={isLoading ? "" : "hidden"}
+                        color={"white"}
+                    />
+                </div>                        
+            </PrimaryButton>
         </div>
     </div>
     )

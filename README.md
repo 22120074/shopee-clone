@@ -91,6 +91,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - [x] Profile người dùng
     - [x] Email - Vertify & Update
     - [x] Phone - Update
+    - [x] Profile - Update
 
 ### 🎨 Giao diện & UX
 - [x] Responsive design với TailwindCSS - Mobile, Ipad, PC

@@ -146,7 +146,7 @@ function Header() {
                                                     <img src={user.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
                                                 </div>
                                                 <div className='max-w-[100px] overflow-hidden'> 
-                                                    {user.name || user.phone || user._id}
+                                                    {user.displayName || user.name || user.phone || user._id}
                                                 </div>
                                             </div>
                                         </Link>

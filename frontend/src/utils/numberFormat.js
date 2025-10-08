@@ -40,6 +40,7 @@ export const formatRating = (ratingNumber) => {
 }
 
 export const hiddenPhone = (phone) => {
+    if (!phone) return;
     if (phone.length <= 2) return phone; 
     
     const visible = phone.slice(-2);             

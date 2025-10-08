@@ -1,4 +1,5 @@
 export const emailHidden = (email) => {
+    if (!email) return;
     const [localPart, domain] = email.split("@");
     if (localPart.length <= 2) return email;
 

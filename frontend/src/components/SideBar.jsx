@@ -8,7 +8,7 @@ function SideBar() {
     const user = useSelector((state) => state.auth.currentUser);
     
     let path = window.location.pathname; // Lấy đường dẫn hiện tại
-    let mainSegment = path.split('/')[1]; // Lấy phần đầu tiên sau dấu '/'
+    // let mainSegment = path.split('/')[1]; // Lấy phần đầu tiên sau dấu '/'
     let firstSegment = path.split('/')[2]; // Lấy phần đầu hai sau dấu '/'
     let secondSegment = path.split('/')[3]; // Lấy phần thứ ba sau dấu '/'
 
@@ -32,8 +32,6 @@ function SideBar() {
 
     return (
     <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor min-h-[600px]">
-        { user && 
-        <>
         <div className='flex items-center justify-start gap-2 w-full h-28'>
             <div className='w-14 h-14 rounded-full overflow-hidden mr-2 border cursor-pointer' 
                 onClick={() => navigate('/user/account/profile')}
@@ -164,8 +162,6 @@ function SideBar() {
             </div>
 
         </div>
-        </>
-        }
     </div>
     );
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { updatePhone } from "../../../services/user.service";
@@ -14,14 +13,12 @@ function PhoneVertify() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
-    const { addToast } = useOutletContext();
-    // Lấy thông tin user từ Redux store
-    const user = useSelector((state) => state.auth.currentUser);
+    const { addToast, user } = useOutletContext();
     // UseState để quản lí bước hiện tại
     const [currentStep, setCurrentStep] = useState(1);
     // Steps cho Thanh tiến độ
     const steps = [
-        { number: 1, label: 'Gửi mã xác nhận' },
+        { number: 1, label: 'Xác nhận yêu cầu' },
         { number: 2, label: 'Thay đổi số điện thoại' },
         { number: 3, label: 'Hoàn thành' },
     ];
@@ -43,7 +40,7 @@ function PhoneVertify() {
         setIsHovered(true);
         const tl = gsap.timeline();
 
-        // 1. Icon dịch 10px → nảy lại
+        // 1. Icon dịch 13px → nảy lại
         tl.to(iconRef.current, { x: 10, duration: 0.2, ease: "power1.out" })
         .to(iconRef.current, { x: 0, duration: 0.3, ease: "bounce.out" }, ">");
 
@@ -137,15 +134,15 @@ function PhoneVertify() {
                     >
                         <path d="M12 2v20c5.25-1.26 9-5.75 9-11V5l-9-3z" fill="#FFC7B3"/>
                     </svg>
-                    <div className="text-lg text-black mt-24 mb-6 w-[420px]">
-                        Để tăng cường bảo mật cho tài khoản của bạn, hãy xác minh thông tin bằng một trong những cách sau.
+                    <div className="text-lg text-black mt-24 mb-6 w-[420px] text-center">
+                        Để thay đổi số điện thoại cho tài khoản của bạn, hãy xác minh bằng cách nhấn vào nút sau.
                     </div>
-                    <button ref={btnRef} className="flex items-center justify-center gap-3 py-2 px-6 text-primaryTextColor rounded-sm text-base
+                    <button ref={btnRef} className="flex items-center justify-center gap-2 py-2 px-6 text-primaryTextColor rounded-sm text-base
                         border border-primaryTextColor hover:bg-primaryRatingColor"
                         onMouseEnter={handleMouseEnter}
                         onClick={handleOnclick}
                     >
-                        <i ref={iconRef} className="fa-regular fa-envelope text-lg"></i> 
+                        <i ref={iconRef} className="fa-solid fa-phone-flip text-lg"></i> 
                         <span className="flex gap-1"> {/* gap giữa các từ */}
                             {text.split(" ").map((word, wIdx) => (
                                 <span key={wIdx} className="flex gap-0"> {/* chữ trong từ sát nhau */}

@@ -43,7 +43,30 @@ const updatePhone = async (userId, newPhone) => {
     }
 };
 
+const updateProfile = async (userId, displayNameForm, nameForm, genderForm, date) => {
+    try {
+        let userData;
+        if (typeof userId === "string" && !mongoose.Types.ObjectId.isValid(userId)) {
+            userData = await DataUser.findOneAndUpdate(
+                { googleID: userId },
+                { $set: { displayName: displayNameForm, name: nameForm, gender: genderForm, dateOfBirth: date } },
+                { new: true, runValidators: true }
+            );
+        } else {
+            userData = await DataUser.findOneAndUpdate(
+                { userId: userId },
+                { $set: { displayName: displayNameForm, name: nameForm, gender: genderForm, dateOfBirth: date } },
+                { new: true, runValidators: true }
+            );
+        }
+        return userData;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = {
     updateEmail,
     updatePhone,
+    updateProfile
 };

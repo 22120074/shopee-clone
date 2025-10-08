@@ -27,8 +27,15 @@ const authSlice = createSlice({
       state.currentUser.phone = action.payload;
       localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
+    updateProfile_Redux: (state, action) => {
+      state.currentUser.displayName = action.payload.displayName;
+      state.currentUser.name = action.payload.name;
+      state.currentUser.gender = action.payload.gender;
+      state.currentUser.dateOfBirth = action.payload.dateOfBirth;
+      localStorage.setItem("user", JSON.stringify(state.currentUser));
+    },
   },
 });
 
-export const { login, logout, updateEmail_Redux, updatePhone_Redux } = authSlice.actions;
+export const { login, logout, updateEmail_Redux, updatePhone_Redux, updateProfile_Redux } = authSlice.actions;
 export default authSlice.reducer;

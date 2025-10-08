@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { updateEmailAPI, updatePhoneAPI } = require('../controllers/userController');
+const { updateEmailAPI, updatePhoneAPI, updateProfileAPI } = require('../controllers/userController');
 
-router.put('/update-email', updateEmailAPI);
-router.put('/update-phone', updatePhoneAPI);
+router.patch('/update-email', updateEmailAPI);
+router.patch('/update-phone', updatePhoneAPI);
+router.patch('/update-profile', updateProfileAPI);
 
 module.exports = router;

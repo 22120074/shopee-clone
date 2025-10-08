@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { gsap } from "gsap";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateEmail_Redux } from "../../../features/auth/authSlice";
 import { sendOtpEmail, veritfyOtpEmail } from "../../../services/auth.service";
 import { updateEmail } from "../../../services/user.service";
@@ -14,9 +14,7 @@ function EmailVertify() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
-    const { addToast } = useOutletContext();
-    // Lấy thông tin user từ Redux store
-    const user = useSelector((state) => state.auth.currentUser);
+    const { addToast, user } = useOutletContext();
     // UseState để quản lý trạng thái hover
     const [isHovered, setIsHovered] = useState(false);
     // UseState để quản lý trạng thái loading đặc biệt (khi submit OTP)
