@@ -1,4 +1,4 @@
-import '../css/GlitchText.css';
+import '../../css/GlitchText.css';
 // Đây là một component React để tạo hiệu ứng chữ "glitch" lấy từ ReactBit
 const GlitchText = ({ children, speed = 1, enableShadows = true, enableOnHover = true, className = '' }) => {
     const inlineStyles = {

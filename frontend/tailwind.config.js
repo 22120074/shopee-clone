@@ -73,6 +73,10 @@ module.exports = {
           "0%": { maxHeight: "500px", opacity: 1 },
           "100%": { maxHeight: "0px", opacity: 0 },
         },
+        shine: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
       },
       animation: {
         'fade-out': 'fadeOut 0.3s linear forwards',
@@ -87,6 +91,7 @@ module.exports = {
         stretch: "stretch 1.5s ease-in-out infinite",
         expandingHeight: 'expandingHeight 0.5s ease-out forwards',
         collapsingHeight: 'collapsingHeight 0.2s ease-out forwards',
+        shine: 'shine 5s linear infinite',
       },
     },
   },
