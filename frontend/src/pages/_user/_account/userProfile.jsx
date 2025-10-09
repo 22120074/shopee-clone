@@ -8,6 +8,7 @@ import { updateProfile_Redux } from "../../../features/auth/authSlice";
 import './../../../css/offElement.css'
 import PrimaryButton from "../../../components/Button";
 import Spinner from "../../../components/skeletons/spinnerButton";
+import FileSubmitButton from "../../../components/userComponents/fileSubmitButton";
 
 function UserProfile() {
     const dispatch = useDispatch();
@@ -86,7 +87,7 @@ function UserProfile() {
     }
 
     return (
-    <div className="flex flex-1 flex-col items-start justify-start bg-white mt-4 rounded-sm shadow-md py-4 px-8">
+    <div className="flex flex-1 flex-col items-start justify-start bg-white mt-4 rounded-sm shadow-md py-4 px-8 select-none">
         <div className="w-full border-b border-lesslessgrayColor pb-4">
             <div className="text-xl text-black">Hồ sơ của tôi</div>
             <div className="text-base text-moregrayTextColor">Quản lí thông tin hồ sơ để bảo mật tài khoản</div>
@@ -289,13 +290,7 @@ function UserProfile() {
                         className="user_avatar w-24 h-24 object-cover" 
                     />
                 </div>
-                <button className={`flex items-center justify-center bg-white text-black border border-black rounded-sm px-4 w-auto h-10
-                        border-lessgrayColor text-sm font-normal
-                    `}
-                    onClick={() => alert('Chức năng thay đổi avatar đang được phát triển')}
-                >
-                    Thay đổi ảnh đại diện
-                </button>         
+                <FileSubmitButton  />
                 <div className="flex flex-col items-center justify-center">                    
                     <span className="text-moregrayTextColor text-base text-center px-4">
                         Dung lượng tối đa 1MB. 

@@ -16,7 +16,9 @@ module.exports = {
         grayTextColor: '#888888',
         moregrayTextColor: '#777777',
         backgroundGrayColor: '#F5F5F5',
+        backgroundLightGrayColor: '#F9FAFB',
         hoverTextColorHeader: '#00b9c7',
+        blueButton: '#2563EB',
       },
       backgroundImage: {
         skeletonBackground: 'linear-gradient(90deg, #d1d1d1 20%, #ffffff 35%, #d1d1d1 50%)',
@@ -77,6 +79,26 @@ module.exports = {
           '0%': { backgroundPosition: '200% 0' },
           '100%': { backgroundPosition: '-200% 0' },
         },
+        // Dành cho Element không có thuộc tính absolute
+        zoomIn: {
+          '0%': { transform: 'scale(0.5)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        zoomOut: {
+          '0%': { transform: 'scale(1)', opacity: '1' },
+          '100%': { transform: 'scale(0.5)', opacity: '0' },
+        },
+        // ---------------------------------------------
+        // Dành cho Element có thuộc tính absolute
+        zoomInAbsolute: {
+          '0%': { transform: 'translate(-50%, -50%) scale(0.2)', opacity: '0', transformOrigin: 'center' },
+          '100%': { transform: 'translate(-50%, -50%) scale(1)', opacity: '1', transformOrigin: 'center' },
+        },
+        zoomOutAbsolute: {
+          '0%': { transform: 'translate(-50%, -50%) scale(1)', opacity: '1', transformOrigin: 'center' },
+          '100%': { transform: 'translate(-50%, -50%) scale(0.2)', opacity: '0', transformOrigin: 'center' },
+        },
+        // ---------------------------------------------
       },
       animation: {
         'fade-out': 'fadeOut 0.3s linear forwards',
@@ -92,6 +114,10 @@ module.exports = {
         expandingHeight: 'expandingHeight 0.5s ease-out forwards',
         collapsingHeight: 'collapsingHeight 0.2s ease-out forwards',
         shine: 'shine 5s linear infinite',
+        zoomIn: 'zoomIn 0.3s ease-out forwards',
+        zoomOut: 'zoomOut 0.3s ease-in forwards',
+        zoomInAbsolute: 'zoomInAbsolute 0.3s ease-out forwards',
+        zoomOutAbsolute: 'zoomOutAbsolute 0.3s ease-in forwards',
       },
     },
   },

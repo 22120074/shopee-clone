@@ -31,7 +31,7 @@ function SideBar() {
     }, [firstSegment, secondSegment]);   
 
     return (
-    <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor min-h-[600px]">
+    <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor min-h-[600px] select-none">
         <div className='flex items-center justify-start gap-2 w-full h-28'>
             <div className='w-14 h-14 rounded-full overflow-hidden mr-2 border cursor-pointer' 
                 onClick={() => navigate('/user/account/profile')}
