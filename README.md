@@ -98,13 +98,13 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - [x] Loading Skeletons - List of user comments
 - [x] StackBar Notifications - In Cart, Product, User Layout - Component
 - [x] Image Preview - Thanh hình ảnh & Ảnh chính - Component
-- [x] Image Revealer - Chuyển hình ảnh 1 sang 2 với animation GSap - Component
+- [x] Image Revealer - Chuyển hình ảnh 1 --> 2 với GSAP - Component
 - [x] Carousel Slide - Hình ảnh - Responsive - Component
 - [x] Carousel Slide - Danh mục - Responsive
 - [x] Pagination - In review comments - Responsive - Component
 - [x] Smooth animations với GSAP - Text, ImageRevealer
 - [x] Scroll to top - Component
-- [x] Animation hiện mượt mà ở [Sidebar - In User Layout], [Input File - In User Profile], [Cart, User Icon - In Header]
+- [x] Animation đóng mở mượt mà ở [Sidebar - In User Layout], [Input File - In User Profile], [Cart, User Icon - In Header]
 - [x] Spinner Button - Component
 - [x] Step Progress - Linh hoạt theo --var(Steps []) - Component
 
