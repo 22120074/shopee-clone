@@ -1,6 +1,6 @@
 function StackBar({ toasts, width, height }) {
     return (
-        <div className="fixed top-5 right-5 flex flex-col gap-3 h-auto z-10"
+        <div className="fixed top-5 right-5 flex flex-col gap-3 h-auto z-30"
             style={{
                 width: width || '300px',
             }}

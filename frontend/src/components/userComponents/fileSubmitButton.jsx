@@ -31,12 +31,14 @@ function FileSubmitButton({ user, addToast, dispatch, updateAvatar_Redux }) {
         const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!validTypes.includes(file.type)) {
             addToast('Vui lòng chọn tệp ảnh hợp lệ (JPEG, PNG, GIF)', 'error', 'warning');
+            fileInputRef.current.value = null;
             return;
         }
         // Kiểm tra kích thước file (ví dụ: không quá 1MB)
         const maxSize = 1 * 1024 * 1024;
         if (file.size > maxSize) {
             addToast('Kích thước tệp quá lớn. Vui lòng chọn tệp nhỏ hơn 1MB.', 'error', 'warning');
+            fileInputRef.current.value = null;
             return;
         }
         // Xử lí tệp hợp lệ (ví dụ: tải lên server hoặc hiển thị ảnh)
