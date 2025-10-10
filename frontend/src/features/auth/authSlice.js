@@ -34,8 +34,12 @@ const authSlice = createSlice({
       state.currentUser.dateOfBirth = action.payload.dateOfBirth;
       localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
+    updateAvatar_Redux: (state, action) => {
+      state.currentUser.avatarUrl = action.payload;
+      localStorage.setItem("user", JSON.stringify(state.currentUser));
+    },
   },
 });
 
-export const { login, logout, updateEmail_Redux, updatePhone_Redux, updateProfile_Redux } = authSlice.actions;
+export const { login, logout, updateEmail_Redux, updatePhone_Redux, updateProfile_Redux, updateAvatar_Redux } = authSlice.actions;
 export default authSlice.reducer;

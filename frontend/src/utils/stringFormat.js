@@ -8,3 +8,10 @@ export const emailHidden = (email) => {
     return `${visible}${hidden}@${domain}`;
 };
 
+export const userImageUrlFormat = (url) => {
+    if (!url) return "";
+    if (url.startsWith("http")) {
+        return url;
+    }
+    return `${process.env.REACT_APP_API_URL}${url}`;
+};

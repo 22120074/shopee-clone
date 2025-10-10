@@ -1,12 +1,13 @@
 import '../css/header.css';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate  } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import emptyCart from '../assets/Empty-bro.svg';
+import { userImageUrlFormat } from '../utils/stringFormat';
 import { logout } from '../features/auth/authSlice';
 import { clearAllItem } from '../features/cart/cartSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import emptyCart from '../assets/Empty-bro.svg';
-import PrimaryButton from './Button';
 import { createOrupdateCart } from '../services/cart.service';
-import { useEffect, useState } from 'react';
+import PrimaryButton from './Button';
 import useIsWindow from '../hooks/useIsWindow';
 
 function Header() {
@@ -143,7 +144,9 @@ function Header() {
                                         <Link to="/user/orders" >
                                             <div className='flex items-center'>
                                                 <div className='w-8 h-8 rounded-full overflow-hidden mr-2'>
-                                                    <img src={user.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                                                    <img src={userImageUrlFormat(user.avatarUrl) || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" 
+                                                        className="user_avatar w-8 h-8 object-cover" 
+                                                    />
                                                 </div>
                                                 <div className='max-w-[100px] overflow-hidden'> 
                                                     {user.displayName || user.name || user.phone || user._id}

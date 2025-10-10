@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getProductReviews, getEachNumofTypeRating } from "../../services/product.service";
 import { getUserRating } from "../../services/cart.service";
 import { formatNumber, formatDate, formatRating } from "../../utils/numberFormat";
+import { userImageUrlFormat } from '../../utils/stringFormat';
 import VideoHls from './../VideoHls';
 import NormalButton from "../../components/NormalButton";
 import ListRatingSkeleton from "../skeletons/listRatingSkeleton";
@@ -364,7 +365,9 @@ function DataRatingProduct({ product, rating, isPhone }) {
                             {/* Avatar */}
                             <Link to="/user" className="flex items-start justify-center gap-2"> 
                                 <div className='w-[32px] h-[32px] rounded-full overflow-hidden'>
-                                    <img src={dataUserList[idx]?.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                                    <img src={userImageUrlFormat(dataUserList[idx]?.avatarUrl) || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" 
+                                        className="user_avatar w-[32px] h-[32px] object-cover" 
+                                    />
                                 </div>
                             </Link>
                             {/* Hiển thị thông tin bình luận */}

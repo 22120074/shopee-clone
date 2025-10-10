@@ -23,3 +23,25 @@ export const updateUserProfile = (userId, displayName, name, gender, date) => {
         date: date
     }, { withCredentials: true });
 }
+
+export const updateUserAvatar = (userId, avatar, isUrl) => {
+    if (!isUrl) {
+        const formData = new FormData();
+        formData.append("userId", userId);
+        formData.append("avatar", avatar);
+        formData.append("isUrl", isUrl);
+
+        return axios.patch(`${process.env.REACT_APP_API_URL}/user/update-avatar`,
+            formData,
+            {
+                withCredentials: true,
+                headers: { "Content-Type": "multipart/form-data" }
+            }
+        );
+    }
+    return axios.patch(`${process.env.REACT_APP_API_URL}/user/update-avatar`, { 
+        userId: userId,
+        avatar: avatar, 
+        isUrl: isUrl
+    }, { withCredentials: true });
+}

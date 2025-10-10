@@ -1,10 +1,10 @@
 import { useDispatch } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { Link, useOutletContext } from "react-router-dom";
-import { emailHidden } from "../../../utils/stringFormat";
+import { emailHidden, userImageUrlFormat } from "../../../utils/stringFormat";
 import { hiddenPhone } from "../../../utils/numberFormat";
 import { updateUserProfile } from "../../../services/user.service";
-import { updateProfile_Redux } from "../../../features/auth/authSlice";
+import { updateProfile_Redux, updateAvatar_Redux } from "../../../features/auth/authSlice";
 import './../../../css/offElement.css'
 import PrimaryButton from "../../../components/Button";
 import Spinner from "../../../components/skeletons/spinnerButton";
@@ -286,11 +286,11 @@ function UserProfile() {
                 <div className='w-26 h-26 rounded-full overflow-hidden mr-2 border cursor-pointer' 
                     onClick={() => alert('Chức năng thay đổi avatar đang được phát triển')}
                 >
-                    <img src={user?.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar"
+                    <img src={userImageUrlFormat(user?.avatarUrl) || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar"
                         className="user_avatar w-24 h-24 object-cover" 
                     />
                 </div>
-                <FileSubmitButton  />
+                <FileSubmitButton user={user} addToast={addToast} dispatch={dispatch} updateAvatar_Redux={updateAvatar_Redux} />
                 <div className="flex flex-col items-center justify-center">                    
                     <span className="text-moregrayTextColor text-base text-center px-4">
                         Dung lượng tối đa 1MB. 

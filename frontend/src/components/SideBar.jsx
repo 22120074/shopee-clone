@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { userImageUrlFormat } from '../utils/stringFormat';
 
 function SideBar() {
     const navigate = useNavigate();
@@ -36,7 +37,9 @@ function SideBar() {
             <div className='w-14 h-14 rounded-full overflow-hidden mr-2 border cursor-pointer' 
                 onClick={() => navigate('/user/account/profile')}
             >
-                <img src={user?.avatarUrl || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" className="user_avatar" />
+                <img src={userImageUrlFormat(user?.avatarUrl) || "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"} alt="avatar" 
+                    className="user_avatar w-14 h-14 object-cover" 
+                />
             </div>
             <div className='max-w-[100px] overflow-hidden font-semibold text-sm'> 
                 {user.name || user.phone || user._id}

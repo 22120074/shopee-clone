@@ -32,6 +32,7 @@ app.use(errorHandler);
 // Public thư mục ảnh, video
 app.use('/images', express.static('D:/Môn_Học/Shopee_Database/Images'));
 app.use('/videos', express.static('D:/Môn_Học/Shopee_Database/Videos'));
+app.use('/uploads', express.static('D:/Môn_Học/Shopee_Database/Uploads'));
 
 const authRoute = require('./routes/authRoute');
 app.use('/auth', authRoute);
