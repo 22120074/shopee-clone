@@ -13,6 +13,9 @@ module.exports = (sequelize) =>
     favorite: DataTypes.BOOLEAN,
     discount: DataTypes.FLOAT,
     attributeName: DataTypes.STRING,
-    fromStore: DataTypes.STRING,
+    fromStore: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     category: DataTypes.STRING,
   });
