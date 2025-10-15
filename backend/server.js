@@ -29,7 +29,8 @@ app.get('/', (req, res) => {
 // Xử lý lỗi chung
 app.use(errorHandler);
 
-// Public thư mục ảnh, video
+// Public thư mục ảnh, video dành cho Ratings
+// Public thư mục ảnh đại diện dành cho User
 app.use('/images', express.static('D:/Môn_Học/Shopee_Database/Images'));
 app.use('/videos', express.static('D:/Môn_Học/Shopee_Database/Videos'));
 app.use('/uploads', express.static('D:/Môn_Học/Shopee_Database/Uploads'));

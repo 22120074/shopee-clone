@@ -1,4 +1,4 @@
-const Cart = require('../models/Cart');
+const Cart = require('../models/Mongoose/Cart');
 
 const checkExistingCart = async (userId) => {
     return await Cart.exists({ userId });

@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { User, DataUser } = require("../models/User");
+const { User, DataUser } = require("../models/Mongoose/User");
 const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
 

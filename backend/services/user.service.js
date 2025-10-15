@@ -1,4 +1,4 @@
-const { User, DataUser } = require("../models/User");
+const { User, DataUser } = require("../models/Mongoose/User");
 const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");

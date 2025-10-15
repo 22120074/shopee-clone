@@ -13,14 +13,14 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Import models
-db.Product = require("./product.model")(sequelize);
-db.Attribute = require("./attribute.model")(sequelize);
-db.ImageProduct = require("./image_product.model")(sequelize);
-db.Like = require("./like.model")(sequelize);
-db.Rating = require("./rating.model")(sequelize);
-db.Detail = require("./detail.model")(sequelize);
-db.Stock = require("./stock.model")(sequelize);
-db.Sold = require("./sold.model")(sequelize);
+db.Product = require("./Product/product.model")(sequelize);
+db.Attribute = require("./Product/attribute.model")(sequelize);
+db.ImageProduct = require("./Product/image_product.model")(sequelize);
+db.Like = require("./Product/like.model")(sequelize);
+db.Rating = require("./Rating/rating.model")(sequelize);
+db.Detail = require("./Product/detail.model")(sequelize);
+db.Stock = require("./Product/stock.model")(sequelize);
+db.Sold = require("./Product/sold.model")(sequelize);
 
 // Import liên quan đến Rating
 db.Image_Rating = require("./Rating/image.model")(sequelize);
