@@ -2,30 +2,19 @@ const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize) =>
-    sequelize.define("Shop", {
+    sequelize.define("Follow", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             allowNull: false,
             primaryKey: true,
         },
-        userId: {
+        follower: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        nameShop: {
+        following: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        address: DataTypes.STRING,
-        phone: DataTypes.STRING,
-        email: DataTypes.STRING,
-        avatarUrl: {
-            type: DataTypes.STRING,
-            defaultValue: "",
-        },
-        bannerUrl: {
-            type: DataTypes.STRING,
-            defaultValue: "",
         }
     });

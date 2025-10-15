@@ -19,6 +19,7 @@ db.Rating = require("./Rating/rating.model")(sequelize);
 db.Stock = require("./Product/stock.model")(sequelize);
 db.Sold = require("./Product/sold.model")(sequelize);
 db.Shop = require("./Shop/shop.model")(sequelize);
+db.Follow = require("./User/follower.model")(sequelize);
 
 // Import liên quan đến Rating
 db.Image_Rating = require("./Rating/image.model")(sequelize);
@@ -28,6 +29,8 @@ db.Video_Rating = require("./Rating/video.model")(sequelize);
 db.ImageProduct = require("./Product/image_product.model")(sequelize);
 db.Detail = require("./Product/detail.model")(sequelize);
 db.Like = require("./Product/like.model")(sequelize);
+
+// =================================================================================
 
 // Associations giữa các bảng chính
 db.Product.hasMany(db.Attribute, { foreignKey: "productId" });
