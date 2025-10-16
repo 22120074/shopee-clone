@@ -2,8 +2,8 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import GlitchText from '../components/animations/GlitchText';
 import PrimaryButton from '../components/Button';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from './Header/Header';
+import Footer from '../layouts/Footer';
 import SideBar from '../components/SideBar';
 import useToastQueue from '../hooks/useToastQueue';
 import StackBar from '../components/StackBar';
@@ -23,7 +23,7 @@ function UserLayout() {
                 { user ? (
                 <>
                     <SideBar />
-                    <Outlet context={{ addToast, user }} />                    
+                    <Outlet context={{ addToast }} />                    
                 </>
                 ) : (
                     <div className='flex flex-col w-full items-center justify-start bg-backgroundGrayColor min-h-[580px]

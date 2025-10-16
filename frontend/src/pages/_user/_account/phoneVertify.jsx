@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { updatePhone } from "../../../services/user.service";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updatePhone_Redux } from "../../../features/auth/authSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import StepProgress from "../../../components/StepProgress";
@@ -13,7 +13,9 @@ function PhoneVertify() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
-    const { addToast, user } = useOutletContext();
+    const { addToast } = useOutletContext();
+    // Sử dụng useSelector để lấy thông tin người dùng từ Redux store
+    const user = useSelector((state) => state.auth.currentUser);
     // UseState để quản lí bước hiện tại
     const [currentStep, setCurrentStep] = useState(1);
     // Steps cho Thanh tiến độ

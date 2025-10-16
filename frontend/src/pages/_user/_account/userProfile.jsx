@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { emailHidden, userImageUrlFormat } from "../../../utils/stringFormat";
@@ -12,7 +12,9 @@ import FileSubmitButton from "../../../components/userComponents/fileSubmitButto
 
 function UserProfile() {
     const dispatch = useDispatch();
-    const { addToast, user } = useOutletContext();
+    const { addToast } = useOutletContext();
+    // Sử dụng useSelector để lấy thông tin người dùng từ Redux store
+    const user = useSelector((state) => state.auth.currentUser);
     // UseState lưu giới tính, tên, tên hiển thị, ngày sinh
     const [displayNameForm, setDisplayNameForm] = useState(user?.displayName || "");
     const [nameForm, setNameForm] = useState(user?.name || "");

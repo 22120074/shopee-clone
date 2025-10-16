@@ -68,7 +68,7 @@
 .user_wrapper::after {
     content: "";
     width: 115px;
-    height: 20px;
+    height: 10px;
     top: calc(100%);
     right: calc(0);
     position: absolute;

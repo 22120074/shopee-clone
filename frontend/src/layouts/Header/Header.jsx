@@ -1,14 +1,14 @@
-import '../css/header.css';
+import '../../css/header.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate  } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import emptyCart from '../assets/Empty-bro.svg';
-import { userImageUrlFormat } from '../utils/stringFormat';
-import { logout } from '../features/auth/authSlice';
-import { clearAllItem } from '../features/cart/cartSlice';
-import { createOrupdateCart } from '../services/cart.service';
-import PrimaryButton from './Button';
-import useIsWindow from '../hooks/useIsWindow';
+import emptyCart from '../../assets/Empty-bro.svg';
+import { userImageUrlFormat } from '../../utils/stringFormat';
+import { logout } from '../../features/auth/authSlice';
+import { clearAllItem } from '../../features/cart/cartSlice';
+import { createOrupdateCart } from '../../services/cart.service';
+import PrimaryButton from '../../components/Button';
+import useIsWindow from '../../hooks/useIsWindow';
 
 function Header() {
     const isDesktop = useIsWindow("(min-width: 1024px)");
@@ -84,8 +84,10 @@ function Header() {
             >
                 {/* Hỗ trợ của web */}
                 <ul className="flex-row items-center hidden lg:flex">
-                    <li className="text-sm text-white li_borderleft pr-[9px] pl-[8px] relative">Kênh Người bán</li>
-                    <li className="text-sm text-white li_borderleft pr-[9px] pl-[8px] relative">Trờ thành Người bán Shoppe</li>
+                    <li className="text-sm text-white li_borderleft pr-[9px] pl-[8px] relative">
+                        <a href="/shop/register" target='_blank' rel='noopener noreferrer'>Kênh Người bán</a>
+                    </li>
+                    {/* <li className="text-sm text-white li_borderleft pr-[9px] pl-[8px] relative">Trờ thành Người bán Shoppe</li> */}
                     <li className="text-sm text-white li_borderleft pr-[9px] pl-[8px] relative">Tải ứng dụng</li>
                     <li className="text-sm text-white relative pr-[9px] pl-[8px] mr-[50px]">
                         Kết nối
