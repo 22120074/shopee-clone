@@ -15,9 +15,11 @@ module.exports = {
         lessgrayColor: '#CCCCCC',
         grayTextColor: '#888888',
         moregrayTextColor: '#777777',
+        hoverTextColorHeader: '#00b9c7',
+        // Background
         backgroundGrayColor: '#F5F5F5',
         backgroundLightGrayColor: '#F9FAFB',
-        hoverTextColorHeader: '#00b9c7',
+        // Button
         blueButton: '#2563EB',
       },
       backgroundImage: {

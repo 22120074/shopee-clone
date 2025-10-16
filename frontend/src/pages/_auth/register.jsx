@@ -4,14 +4,12 @@ import PrimaryButton from "../../components/Button";
 import Spinner from "../../components/skeletons/spinnerButton";
 import GGButton from "../../components/ggButton";
 import FBButton from "../../components/fbButton";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../services/auth.service"; // Import hàm đăng ký từ service
 
 function Register() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [isLoadingNormal, setLoadingNormal] = useState(false);
   const [isLoadingSpecial, setLoadingSpecial] = useState(false);
@@ -202,8 +200,6 @@ function Register() {
         <GGButton 
           disabled={isLoadingNormal} 
           setLoadingSpecial={setLoadingSpecial} 
-          dispatch={dispatch} 
-          navigate={navigate}
         >
           <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"} `}

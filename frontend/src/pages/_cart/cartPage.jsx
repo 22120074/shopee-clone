@@ -68,7 +68,7 @@ function CartPage() {
   }, [items, user?.userId, user?.googleID, totalQuantity, totalPriceCart]);
 
   return (
-    <div className="w-full bg-[#F5F5F5] pt-5 h-screen md:h-auto pb-10">
+    <div className="w-full bg-backgroundGrayColor pt-5 h-screen md:h-auto pb-10">
       {/* Toast Queue để hiển thị từng thông báo */}
       <StackBar toasts={toasts} width={"400px"} height={"100px"} />
       {cartItems.length > 0 ? (

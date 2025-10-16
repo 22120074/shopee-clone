@@ -217,7 +217,7 @@ function CategoryPage() {
     const category = images.find(img => img.name === categoryName);
 
     return (
-        <div className="flex flex-col items-center bg-[#F5F5F5] w-full pt-8">
+        <div className="flex flex-col items-center bg-backgroundGrayColor w-full pt-8">
             <CarouselSlider images={category ? category.images : []} width={'1200px'} height={'360px'} />
         </div>
     );

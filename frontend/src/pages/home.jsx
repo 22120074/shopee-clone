@@ -189,7 +189,7 @@ function Home() {
   const slideWidthCatePhone = Math.ceil(itemsPerLineCate / itemsPerSlideCate); // Tổng số slide cần thiết trên mobile
 
   return (
-    <div className="home_wrapper flex flex-col items-center bg-[#F5F5F5] w-full">
+    <div className="home_wrapper flex flex-col items-center bg-backgroundGrayColor w-full">
       {/* Phần hiển thị ảnh quảng cáo và danh mục ở đầu trang home */}
       <div className="home-events-banner flex flex-col items-center w-full h-auto bg-white min-w-0 mt-3 lg:mt-8">
         {/* Phần hiển thị danh sách ảnh quảng cáo */}

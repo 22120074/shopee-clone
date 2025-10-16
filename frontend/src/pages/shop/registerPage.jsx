@@ -1,9 +1,12 @@
+import 
 
 function SellerRegisterPage() {
 
     return (
-    <div>
-        <h1 className="text-3xl font-bold text-center mt-10">Trang đăng ký dành cho người bán</h1>
+    <div className="bg-backgroundGrayColor h-screen flex justify-center">
+        <div className="h-[560px] w-[1000px] rounded-sm shadow-md px-[20px] mx-auto mt-10 flex items-center border-b border-gray-300 bg-white">
+
+        </div>
     </div>
     )
 }

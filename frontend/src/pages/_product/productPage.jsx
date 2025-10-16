@@ -81,7 +81,7 @@ function ProductPage() {
     }, [items, user?.userId, user?.googleID, totalQuantity, totalPrice]);
 
     return (
-    <div className="w-full bg-[#F5F5F5] h-auto">
+    <div className="w-full bg-backgroundGrayColor h-auto">
         {/* Toast Queue để hiển thị thông báo thành công*/}
         <StackBar toasts={toasts} width={"300px"} height={"80px"} />
         { product && !isPhone &&
