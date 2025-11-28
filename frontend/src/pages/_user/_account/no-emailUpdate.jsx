@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { useDispatch, useSelector } from "react-redux";
 import { updateEmail_Redux } from "../../../features/auth/authSlice";
 import { updateEmail } from "../../../services/user.service";
-import PrimaryButton from "../../../components/Button";
+import PrimaryButton from "../../../components/buttons/Button";
 import StepProgress from "../../../components/StepProgress";
 import Spinner from "../../../components/skeletons/spinnerButton";
 

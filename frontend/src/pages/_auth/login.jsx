@@ -1,9 +1,5 @@
 import "../../css/auth.css";
 import { useState } from "react";
-import PrimaryButton from "../../components/Button";
-import Spinner from "../../components/skeletons/spinnerButton";
-import GGButton from "../../components/ggButton";
-import FBButton from "../../components/fbButton";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
@@ -11,6 +7,10 @@ import { loadItem } from "../../features/cart/cartSlice";
 import { login as loginService, getCurrentUser, refreshToken } from "../../services/auth.service";
 import { getCart } from "../../services/cart.service";
 import { isValidPhone } from "../../utils/numberCheck";
+import PrimaryButton from "../../components/buttons/Button";
+import Spinner from "../../components/skeletons/spinnerButton";
+import GGButton from "../../components/buttons/ggButton";
+import FBButton from "../../components/buttons/fbButton";
 
 function Login() {
   const navigate = useNavigate();

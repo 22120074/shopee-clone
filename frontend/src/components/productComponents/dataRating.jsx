@@ -5,7 +5,7 @@ import { getUserRating } from "../../services/cart.service";
 import { formatNumber, formatDate, formatRating } from "../../utils/numberFormat";
 import { userImageUrlFormat } from '../../utils/stringFormat';
 import VideoHls from './../VideoHls';
-import NormalButton from "../../components/NormalButton";
+import NormalButton from "../../components/buttons/NormalButton";
 import ListRatingSkeleton from "../skeletons/listRatingSkeleton";
 import Pagination from "../Pagination";
 

@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import GlitchText from '../components/animations/GlitchText';
-import PrimaryButton from '../components/Button';
+import PrimaryButton from '../components/buttons/Button';
 import Header from './Header/Header';
 import Footer from '../layouts/Footer';
 import SideBar from '../components/SideBar';

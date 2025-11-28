@@ -1,4 +1,4 @@
-import PrimaryButton from "../Button";
+import PrimaryButton from "../buttons/Button";
 import { useDispatch } from "react-redux";
 import { removeItem } from "../../features/cart/cartSlice";
 import { useEffect, useRef, useState } from "react";

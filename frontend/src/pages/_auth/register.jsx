@@ -1,12 +1,12 @@
 import "../../css/auth.css";
 import { useState } from "react";
-import PrimaryButton from "../../components/Button";
-import Spinner from "../../components/skeletons/spinnerButton";
-import GGButton from "../../components/ggButton";
-import FBButton from "../../components/fbButton";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../services/auth.service"; // Import hàm đăng ký từ service
+import Spinner from "../../components/skeletons/spinnerButton";
+import PrimaryButton from "../../components/buttons/Button";
+import GGButton from "../../components/buttons/ggButton";
+import FBButton from "../../components/buttons/fbButton";
 
 function Register() {
   const navigate = useNavigate();

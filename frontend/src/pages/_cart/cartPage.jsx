@@ -4,7 +4,7 @@ import useToastQueue from "../../hooks/useToastQueue";
 import StackBar from "../../components/StackBar";
 import ProductList from "../../components/cartComponents/productList";
 import FooterCart from "../../components/cartComponents/footerCart";
-import PrimaryButton from "../../components/Button";
+import PrimaryButton from "../../components/buttons/Button";
 import useIsWindow from "../../hooks/useIsWindow";
 import { useSelector } from "react-redux";
 import emptyCart from "../../assets/Empty-bro.svg";

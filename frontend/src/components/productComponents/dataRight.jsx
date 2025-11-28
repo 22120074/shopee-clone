@@ -1,4 +1,4 @@
-import PrimaryButton from '../Button';
+import PrimaryButton from '../buttons/Button';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';

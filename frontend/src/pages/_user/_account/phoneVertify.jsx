@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updatePhone_Redux } from "../../../features/auth/authSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import StepProgress from "../../../components/StepProgress";
-import PrimaryButton from "../../../components/Button";
+import PrimaryButton from "../../../components/buttons/Button";
 import Spinner from "../../../components/skeletons/spinnerButton";
 
 function PhoneVertify() {

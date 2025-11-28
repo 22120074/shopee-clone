@@ -6,7 +6,7 @@ import { hiddenPhone } from "../../../utils/numberFormat";
 import { updateUserProfile } from "../../../services/user.service";
 import { updateProfile_Redux, updateAvatar_Redux } from "../../../features/auth/authSlice";
 import './../../../css/offElement.css'
-import PrimaryButton from "../../../components/Button";
+import PrimaryButton from "../../../components/buttons/Button";
 import Spinner from "../../../components/skeletons/spinnerButton";
 import FileSubmitButton from "../../../components/userComponents/fileSubmitButton";
 

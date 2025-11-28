@@ -6,7 +6,7 @@ import { updateEmail_Redux } from "../../../features/auth/authSlice";
 import { sendOtpEmail, veritfyOtpEmail } from "../../../services/auth.service";
 import { updateEmail } from "../../../services/user.service";
 import { emailHidden } from "../../../utils/stringFormat";
-import PrimaryButton from "../../../components/Button";
+import PrimaryButton from "../../../components/buttons/Button";
 import StepProgress from "../../../components/StepProgress";
 import Spinner from "../../../components/skeletons/spinnerButton";
 

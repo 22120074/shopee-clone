@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loadItem } from "../features/cart/cartSlice";
+import { loadItem } from "../../features/cart/cartSlice";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
-import { loginGG, getCurrentUser, refreshToken } from "../services/auth.service";
-import { getCart } from "../services/cart.service";
-import { login as loginRedux } from "../features/auth/authSlice";
+import { loginGG, getCurrentUser, refreshToken } from "../../services/auth.service";
+import { getCart } from "../../services/cart.service";
+import { login as loginRedux } from "../../features/auth/authSlice";
 
 function GGButton({ disabled, setLoadingSpecial, children }) {
     const navigate = useNavigate();
