@@ -1,6 +1,8 @@
 // models/User.js
 const mongoose = require("mongoose");
 
+// Nếu người dùng đăng nhập bằng GG thì chỉ có dataUserScheme thôi, nhưng id sẽ là ggID gửi cho. 
+
 const userSchema = new mongoose.Schema(
   {
     phone: {
