@@ -423,9 +423,4 @@ docker-compose up --build -d
 
 ---
 
-## 📞 Liên hệ
-**Email:** doduy7924zz@gmail.com
-**Số điện thoại:** 0837079950
----
-
 *Cập nhật lần cuối: 06/10/2025*
