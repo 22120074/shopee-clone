@@ -78,7 +78,7 @@ const removeOldAvatar = async (userId) => {
         if (!user) return null;    
         if (user.avatarUrl && !user.avatarUrl.startsWith("http")) {
             const relativePath = user.avatarUrl.replace(/^[/\\]?uploads[/\\]?/, "");
-            const oldPath = path.join("D:/Môn_Học/Shopee_Database/Uploads", relativePath);
+            const oldPath = path.join("D:/Mon_Hoc/Shopee_Database/Uploads", relativePath);
             if (fs.existsSync(oldPath)) {
                 fs.unlinkSync(oldPath);
             }

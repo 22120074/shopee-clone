@@ -31,9 +31,9 @@ app.use(errorHandler);
 
 // Public thư mục ảnh, video dành cho Ratings
 // Public thư mục ảnh đại diện dành cho User
-app.use('/images', express.static('D:/Môn_Học/Shopee_Database/Images'));
-app.use('/videos', express.static('D:/Môn_Học/Shopee_Database/Videos'));
-app.use('/uploads', express.static('D:/Môn_Học/Shopee_Database/Uploads'));
+app.use('/images', express.static('D:/Mon_Hoc/Shopee_Database/Images'));
+app.use('/videos', express.static('D:/Mon_Hoc/Shopee_Database/Videos'));
+app.use('/uploads', express.static('D:/Mon_Hoc/Shopee_Database/Uploads'));
 
 const authRoute = require('./routes/authRoute');
 app.use('/auth', authRoute);

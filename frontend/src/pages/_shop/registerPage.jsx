@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import StepProgress from "../../components/StepProgress";
 import PrimaryButton from "../../components/buttons/Button";
 import Spinner from "../../components/skeletons/spinnerButton";
 
 function SellerRegisterPage() {
+    const user = useSelector((state) => state.auth.currentUser);
     // State để quản lý bước hiện tại
     const [currentStep, setCurrentStep] = useState(1);
     const steps = [
@@ -11,8 +13,10 @@ function SellerRegisterPage() {
         { number: 2, label: 'Cài đặt thông tin cửa hàng' },
         { number: 3, label: 'Hoàn thành' },
     ];
-    // State để quản lý trạng thái loading
+    // State để quản lý trạng thái loading, nameShop
     const [isLoading, setIsLoading] = useState(false);
+    const [nameShop, setNameShop] = useState(user?.name || "");
+
 
     const handleOnclick = () => {
         setCurrentStep(currentStep + 1);
@@ -49,11 +53,46 @@ function SellerRegisterPage() {
                     <PrimaryButton width="140px" height="36px" text="Bắt đầu đăng ký" onClick={handleOnclick} />
                 </div>
             ) : currentStep === 2 ? (
-                <div className="mt-10 flex flex-col items-center justify-center">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                <div className="w-full md:px-20 mt-10 flex flex-col items-center justify-center">
+                    {/* Form */}
+                    <form action="" className="w-full grid grid-cols-[120px_1fr] gap-y-6 px-10" autoComplete="off">
+                        <label htmlFor="displayName" className="flex items-center justify-end gap-1 text-[15px] text-black">
+                            <span className="text-red-500">*</span>
+                            Tên Shop
+                        </label>
+                        <input 
+                            type="text" 
+                            id="displayName" 
+                            className="w-80 h-9 border border-gray-300 rounded-sm p-2 ml-4 focus:outline-none text-[15px]" 
+                            value={nameShop}
+                            onChange={(e) => setNameShop(e.target.value)}
+                        />
+                        <label htmlFor="address" className="flex items-center justify-end gap-1 text-[15px] text-black">
+                            <span className="text-red-500">*</span>
+                            Địa chỉ lấy hàng
+                        </label>
+                        <button id='address' className="w-20 h-9 border border-gray-300 rounded-sm p-2 ml-4 flex items-center justify-center text-sm">
+                            + Thêm
+                        </button>
+                        <label htmlFor="email" className="flex items-center justify-end gap-1 text-[15px] text-black">                            
+                            <span className="text-red-500">*</span>
+                            Email
+                        </label>
+                        <input 
+                            type="text" 
+                            id="email" 
+                            className="w-80 h-9 border border-gray-300 bg-backgroundGrayColor rounded-sm p-2 ml-4 focus:outline-none 
+                                text-[15px] text-gray-400 cursor-not-allowed" 
+                            value={user?.email}
+                        />
+                        <label htmlFor="phone" className="flex items-center justify-end gap-1 text-[15px] text-black">
+                            <span className="text-red-500">*</span>
+                            Số điện thoại
+                        </label>
+                        <div type="text" id="phone" className="p-2 ml-4 text-[15px] text-black cursor-not-allowed">
+                            {user?.phone}
+                        </div>
+                    </form>
                     <div className="w-full flex items-center justify-center gap-6 mt-4">
                         <button className="relative flex items-center justify-center gap-3 py-2 px-6 w-[180px] h-10
                             text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
