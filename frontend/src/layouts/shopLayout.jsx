@@ -1,15 +1,26 @@
-import ShopHeader from '../layouts/Header/shopHeader';
-import Footer from '../layouts/Footer';
-import { Outlet } from 'react-router-dom';
+import ShopHeader from "../layouts/Header/shopHeader";
+import Footer from "../layouts/Footer";
+import { Outlet, useLocation } from "react-router-dom";
+import ShopSideBar from "../components/sidebar/shopSidebar";
 
 function ShopLayout() {
-    return (
-        <div className='w-full min-h-screen flex flex-col justify-between'>
-            <ShopHeader />
-            <Outlet />
-            <Footer />
+  const location = useLocation();
+  const urlPath = location.pathname === "/shop/register" ? "register" : "";
+
+  return (
+    <div className="w-full min-h-screen flex flex-col justify-between">
+      <ShopHeader />
+      {urlPath === "register" ? (
+        <Outlet />
+      ) : (
+        <div className="flex w-full">
+          <ShopSideBar />
+          <Outlet />
         </div>
-    );
+      )}
+      <Footer />
+    </div>
+  );
 }
 
 export default ShopLayout;

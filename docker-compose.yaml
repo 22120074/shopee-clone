@@ -1,9 +1,53 @@
-version: '3.8'
-
 services:
+  db:
+    image: postgres:16
+    container_name: shoppe-db
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      - POSTGRES_DB=Shoppe_DB
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456789
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:latest
     container_name: my-redis
+    restart: always
     ports:
       - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: node-be
     restart: always
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgres://postgres:123456789@db:5432/Shoppe_DB
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - "D:/Mon_Hoc/Shopee_Database/Images:/app/assets/images"
+      - "D:/Mon_Hoc/Shopee_Database/Videos:/app/assets/videos"
+      - "D:/Mon_Hoc/Shopee_Database/Uploads:/app/assets/uploads"
+
+volumes:
+  pgdata:

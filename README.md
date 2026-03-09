@@ -8,7 +8,6 @@
 ![Cache](https://img.shields.io/badge/Cache-Redis-red)
 ![Deployment](https://img.shields.io/badge/Deployment-Docker-blue)
 
-
 Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính năng cơ bản của sàn thương mại điện tử **Shopee**. Ứng dụng full-stack gồm **Frontend (React)** và **Backend (Node.js + Express)**, kết nối với cơ sở dữ liệu **PostgreSQL MongoDB**.
 
 ---
@@ -26,6 +25,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 ## 🚀 Công nghệ sử dụng
 
 ### Frontend
+
 - **ReactJS 19.1.0** - Library JavaScript cho giao diện người dùng
 - **Redux Toolkit 2.8.2** - Quản lý state toàn cục
 - **React Router DOM 7.6.0** - Điều hướng SPA
@@ -36,6 +36,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - **React Icons 5.5.0** - Bộ icon components
 
 ### Backend
+
 - **Node.js & Express.js 5.1.0** - Runtime và web framework
 - **Sequelize 6.37.7** - ORM cho PostgreSQL
 - **PostgreSQL (pg 8.16.3)** - Cơ sở dữ liệu chính - Product
@@ -48,6 +49,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - **Cookie Parser 1.4.7** - Xử lý cookies
 
 ### DevOps & Tools
+
 - **Docker & Docker Compose** - Containerization và orchestration
 - **Nodemon 3.1.10** - Auto-restart server khi development
 - **PostCSS 8.5.6** - CSS post-processor
@@ -58,6 +60,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 ## ⚡ Tính năng đã hoàn thành
 
 ### 🔐 Xác thực & Phân quyền
+
 - [x] Đăng ký tài khoản mới
 - [x] Đăng nhập với email/password
 - [x] Đăng nhập với Google OAuth 2.0
@@ -66,6 +69,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - [x] Quản lý session và cookies
 
 ### 🛍️ Sản phẩm
+
 - [x] Hiển thị danh sách phân loại và kích thước nếu có
 - [x] Chi tiết sản phẩm với hình ảnh
 - [x] Thông tin chi tiết sản phẩm
@@ -75,26 +79,30 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - [x] Thêm sản phẩm vào giỏ hàng
 
 ### 🛒 Giỏ hàng
+
 - [x] Cập nhật số lượng sản phẩm
 - [x] Xóa sản phẩm khỏi giỏ hàng
 - [x] Tính tổng giá trị đơn hàng
 - [x] Quản lý giỏ hàng với Redux
 
 ### ⭐ Đánh giá & Review
+
 - [x] Hiển thị danh sách đánh giá
-    - [x] Hiển thị - Điểm, Nội dung, Hình ảnh, Video
-    - [x] Hiển thị - Ngày, Tên, Phân loại hàng
-    - [x] Thanh chứa Video và Hình ảnh
-    - [x] Video - HLS Streaming - File .m3u8
+  - [x] Hiển thị - Điểm, Nội dung, Hình ảnh, Video
+  - [x] Hiển thị - Ngày, Tên, Phân loại hàng
+  - [x] Thanh chứa Video và Hình ảnh
+  - [x] Video - HLS Streaming - File .m3u8
 
 ### 👤 Quản lý người dùng
+
 - [x] Profile người dùng
-    - [x] Email - Vertify & Update
-    - [x] Phone - Update
-    - [x] Profile - Update
-    - [x] Avatar - Update - Url, File Object
+  - [x] Email - Vertify & Update
+  - [x] Phone - Update
+  - [x] Profile - Update
+  - [x] Avatar - Update - Url, File Object
 
 ### 🎨 Giao diện & UX
+
 - [x] Responsive design với TailwindCSS - Mobile, Ipad, PC
 - [x] Loading Skeletons - List of user comments
 - [x] StackBar Notifications - In Cart, Product, User Layout - Component
@@ -290,21 +298,24 @@ shopee-clone/
 ## �️ Cơ sở dữ liệu
 
 ### PostgreSQL (Chính)
+
 - **Products**: Thông tin sản phẩm, hình ảnh, video
 - **Detail**: Thông tin chi tiết sản phẩm
 - **Ratings**: Đánh giá và review
 - **Stock**: Quản lý kho hàng
 - **Attributes**: Thuộc tính sản phẩm
-- **Like**: Lượt thích 
+- **Like**: Lượt thích
 - **Sold**: Lượt bán
 - **Ảnh sản phẩm**: Ảnh chi tiết của sản phẩm
 - **Ảnh - Video đánh giá**: Ảnh và video của đánh giá
 
 ### MongoDB (Phụ)
+
 - **Users**: Thông tin đăng nhập và tài khoản người dùng
 - **Carts**: Giỏ hàng
 
 ### Redis (Cache)
+
 - **Cache**: Cache dữ liệu thường xuyên truy cập
 
 ---
@@ -312,6 +323,7 @@ shopee-clone/
 ## �📦 Cài đặt và chạy dự án
 
 ### Yêu cầu hệ thống
+
 - Node.js >= 16.0.0
 - PostgreSQL >= 12.0
 - MongoDB >= 4.4
@@ -320,18 +332,21 @@ shopee-clone/
 - npm >= 8.0.0
 
 ### 1. Clone repository
+
 ```bash
 git clone https://github.com/22120074/shopee-clone.git
 cd shopee-clone
 ```
 
 ### 2. Cài đặt Backend
+
 ```bash
 cd backend
 npm install
 ```
 
 ### 3. Cài đặt Frontend
+
 ```bash
 cd ../frontend
 npm install
@@ -340,6 +355,7 @@ npm install
 ### 4. Chạy ứng dụng
 
 #### Development mode (Manual)
+
 ```bash
 # Terminal 1: Backend
 cd backend
@@ -351,16 +367,20 @@ npm start
 ```
 
 #### Production mode với Docker
+
 ```bash
 
 # Build lại images trước khi chạy
 docker-compose up --build -d
+
+docker-compose up -d --build backend
 
 ```
 
 ## 🔧 Cấu hình môi trường
 
 ### Backend (.env)
+
 ```env
 PORT=5000
 MONGO_URI=
@@ -376,6 +396,7 @@ EMAIL_PASS_APP=
 ```
 
 ### Frontend (.env)
+
 ```env
 REACT_APP_API_URL=http://localhost:5000
 HOST=localhost
@@ -388,9 +409,11 @@ REACT_APP_GOOGLE_CLIENT_ID=
 ## 🐳 Docker Deployment
 
 ### Services được triển khai:
+
 - **Redis**: Cache & Session storage (Port 6379)
 
 ### Docker Commands:
+
 ```bash
 # Khởi động tất cả services
 docker-compose up -d
@@ -405,31 +428,36 @@ docker-compose up --build -d
 ## 🎨 Screenshots
 
 ### 💻 Giao diện Desktop (PC)
-| Trang chủ | Chi tiết sản phẩm | Giỏ hàng | Trang cá nhân |
-| :---: | :---: | :---: | :---: |
+
+|                Trang chủ                |                 Chi tiết sản phẩm                  |            Giỏ hàng             |               Trang cá nhân                |
+| :-------------------------------------: | :------------------------------------------------: | :-----------------------------: | :----------------------------------------: |
 | ![Homepage PC](picture/homepage_pc.png) | ![Product Detail PC](picture/productdetail_pc.png) | ![Cart PC](picture/cart_pc.png) | ![My Profile PC](picture/myprofile_pc.png) |
 
 ### 📟 Giao diện Tablet
-| Trang chủ | Chi tiết sản phẩm |
-| :---: | :---: |
+
+|                    Trang chủ                    |                     Chi tiết sản phẩm                      |
+| :---------------------------------------------: | :--------------------------------------------------------: |
 | ![Homepage Tablet](picture/homepage_tablet.png) | ![Product Detail Tablet](picture/productdetail_tablet.png) |
 
 ### 📱 Giao diện Mobile (Phone)
-| Trang chủ | Chi tiết sản phẩm |
-| :---: | :---: |
+
+|                   Trang chủ                   |                    Chi tiết sản phẩm                     |
+| :-------------------------------------------: | :------------------------------------------------------: |
 | ![Homepage Phone](picture/homepage_phone.png) | ![Product Detail Phone](picture/productdetail_phone.png) |
 
 ### 🔐 Xác thực & Đăng nhập
-| Giao diện Đăng nhập / Đăng ký |
-| :---: |
+
+|                      Giao diện Đăng nhập / Đăng ký                      |
+| :---------------------------------------------------------------------: |
 | <img src="picture/login_register.png" alt="Login Register" width="600"> |
+
 ---
 
 ## 👨‍💻 Tác giả
 
-**Sinh viên**: 22120074  - Đỗ Nhật Duy
+**Sinh viên**: 22120074 - Đỗ Nhật Duy
 **Repository**: [shopee-clone](https://github.com/22120074/shopee-clone)
 
 ---
 
-*Cập nhật lần cuối: 06/10/2025*
+_Cập nhật lần cuối: 06/10/2025_

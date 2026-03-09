@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { createOrUpdateCart, getCart } = require('../controllers/cartController');
+const { protect } = require('../middleware/authMiddleware');
 
-router.post('/addCart', createOrUpdateCart);
-router.get('/getCart', getCart);
+router.post('/addCart', protect, createOrUpdateCart);
+router.get('/getCart', protect, getCart);
 // router.put('/updateCart', createOrUpdateCart);
 // router.delete('/deleteCart', )
 

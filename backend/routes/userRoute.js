@@ -1,11 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { updateEmailAPI, updatePhoneAPI, updateProfileAPI, updateAvatarAPI } = require('../controllers/userController');
+const {
+  updateEmailAPI,
+  updatePhoneAPI,
+  updateProfileAPI,
+  updateAvatarAPI,
+} = require("../controllers/userController");
+const { protect } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
-router.patch('/update-email', updateEmailAPI);
-router.patch('/update-phone', updatePhoneAPI);
-router.patch('/update-profile', updateProfileAPI);
-router.patch('/update-avatar', upload.single("avatar"), updateAvatarAPI);
+router.patch("/update-email", protect, updateEmailAPI);
+router.patch("/update-phone", protect, updatePhoneAPI);
+router.patch("/update-profile", protect, updateProfileAPI);
+router.patch(
+  "/update-avatar",
+  protect,
+  upload.single("avatar"),
+  updateAvatarAPI,
+);
 
 module.exports = router;
