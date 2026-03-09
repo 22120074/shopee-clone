@@ -12,6 +12,17 @@ module.exports = (sequelize) =>
     productId: {
       type: DataTypes.UUID,
       allowNull: false,
+      unique: 'product_attribute_idx'
     },
-    attributeID: DataTypes.UUID,
+    attributeID: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      unique: 'product_attribute_idx'
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      validate: { min: 0 }
+    },
   });

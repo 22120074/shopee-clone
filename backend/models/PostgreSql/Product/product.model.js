@@ -14,7 +14,7 @@ module.exports = (sequelize) =>
     discount: DataTypes.FLOAT,
     attributeName: DataTypes.STRING,
     fromStore: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     category: DataTypes.STRING,

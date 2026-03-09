@@ -14,7 +14,7 @@ const Video_Rating = dbPostgre.Video_Rating;
 const Image_Rating = dbPostgre.Image_Rating;
 
 // Service liên quan đến lấy thông tin sản phẩm
-const getAllProduct = async ( limit ) => {
+const getAllProduct = async (limit) => {
     // Bước 1: lấy danh sách sản phẩm
     const products = await Product.findAll({
         limit,
@@ -36,10 +36,9 @@ const getAllProduct = async ( limit ) => {
             raw: true
         });
 
-        const soldCount = await Sold.count({
-            where: { productId: product.id },
-            raw: true
-        });
+        const soldCount = await Sold.sum('quantity', {
+            where: { productId: product.id }
+        }) || 0;
 
         return {
             ...product,
@@ -76,10 +75,9 @@ const getOneProduct = async (productID) => {
         raw: true
     });
 
-    const soldCount = await Sold.count({
-        where: { productId: product.id },
-        raw: true
-    });
+    const soldCount = await Sold.sum('quantity', {
+        where: { productId: product.id }
+    }) || 0;
 
     const detailedProduct = await Detail.findOne({
         where: { productId: product.id },
@@ -98,15 +96,10 @@ const getOneProduct = async (productID) => {
     });
 
     const stockCounts = await Stock.findAll({
-        attributes: [
-            'productId',
-            'attributeID',
-            [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
-        ],
+        attributes: ['productId', 'attributeID', 'quantity'],
         where: {
             productId: product.id
         },
-        group: ['productId', 'attributeID'],
         raw: true
     });
 
@@ -116,7 +109,7 @@ const getOneProduct = async (productID) => {
         image,
         soldCount,
         detailedProduct,
-        likes, 
+        likes,
         ratings,
         stockCounts
     };
@@ -183,7 +176,7 @@ const getReviewsByRating = async (productID, limit = 6, page = 1, rating) => {
             currentPage: 0
         };
     }
-    
+
     const reviews = await Rating.findAndCountAll({
         where: { productId: productID, rate: rating },
         attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
@@ -289,5 +282,7 @@ const getEachNumofTypeRating = async (productID) => {
     return result;
 };
 
-module.exports = { getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct,
-    getAllProductReviews, getReviewsByRating, getReviewsWithMedia, getEachNumofTypeRating };
+module.exports = {
+    getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct,
+    getAllProductReviews, getReviewsByRating, getReviewsWithMedia, getEachNumofTypeRating
+};

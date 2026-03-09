@@ -22,7 +22,7 @@ function DataDetailProduct({ product }) {
                     Số sản phẩm còn lại
                 </div>
                 <div className="text-sm md:text-base">
-                    {product.stockCounts.reduce((prevSum, item) => prevSum + parseInt(item.count), 0)}
+                    {product.stockCounts.reduce((prevSum, item) => prevSum + parseInt(item.quantity), 0)}
                 </div>
             </div>
             <div className="w-full h-14 grid grid-cols-[160px_1fr] md:grid-cols-[200px_1fr] flex items-center">

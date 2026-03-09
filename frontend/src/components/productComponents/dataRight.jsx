@@ -31,7 +31,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
     const [validSize, setValidSize] = useState([]);
 
     // Tính số lượng sản phẩm còn trong kho dựa trên focusAttribute
-    const stock = product?.stockCounts.find(attr => attr.attributeID === focusAttribute?.id)?.count || 0
+    const stock = product?.stockCounts.find(attr => attr.attributeID === focusAttribute?.id)?.quantity || 0
 
     // Sử dụng useState để lưu các mã hàng còn trong kho
     // inStockProduct là mảng chứa tên và kích thước của các sản phẩm còn
@@ -107,7 +107,7 @@ function DataRight({ product, user, addToast, rating, numReviews, setSelectedIma
         const inStock = [];
         if (product?.stockCounts) {
             product.stockCounts.forEach(attr => {
-                if (attr.count > 0) {
+                if (attr.quantity > 0) {
                     const matchedAttr = product.attributes.find(
                         a => a.id === attr.attributeID
                     );

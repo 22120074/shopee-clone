@@ -5,7 +5,7 @@ module.exports = (sequelize) =>
   sequelize.define("ImageProduct", {
     id: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4, // Automatically generate UUID
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       primaryKey: true,
     },

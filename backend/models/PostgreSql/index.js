@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize(
   process.env.DATABASE_URL ||
-    "postgres://postgres:123456789@localhost:5432/Shoppe_DB",
+  "postgres://postgres:123456789@localhost:5432/Shoppe_DB",
   {
     logging: false,
   },
@@ -19,7 +19,6 @@ db.Attribute = require("./Product/attribute.model")(sequelize);
 db.Rating = require("./Rating/rating.model")(sequelize);
 db.Stock = require("./Product/stock.model")(sequelize);
 db.Sold = require("./Product/sold.model")(sequelize);
-db.Shop = require("./Shop/shop.model")(sequelize);
 db.Follow = require("./User/follower.model")(sequelize);
 
 // Import liên quan đến Rating
@@ -45,9 +44,6 @@ db.Stock.belongsTo(db.Product, { foreignKey: "productId" });
 
 db.Attribute.hasMany(db.Stock, { foreignKey: "attributeID" });
 db.Stock.belongsTo(db.Attribute, { foreignKey: "attributeID" });
-
-db.Shop.hasMany(db.Product, { foreignKey: "fromStore" });
-db.Product.belongsTo(db.Shop, { foreignKey: "fromStore" });
 
 db.Rating.belongsTo(db.Attribute, { foreignKey: "attributeId" });
 db.Attribute.hasMany(db.Rating, { foreignKey: "attributeId" });
