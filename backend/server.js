@@ -31,12 +31,6 @@ app.get("/", (req, res) => {
 // Xử lý lỗi chung
 app.use(errorHandler);
 
-// Public thư mục ảnh, video dành cho Ratings
-// Public thư mục ảnh đại diện dành cho User
-app.use("/images", express.static("assets/images"));
-app.use("/videos", express.static("assets/videos"));
-app.use("/uploads", express.static("assets/uploads"));
-
 const authRoute = require("./routes/authRoute");
 app.use("/auth", authRoute);
 
@@ -51,6 +45,9 @@ app.use("/user", userRoute);
 
 const shopRoute = require("./routes/shopRoute");
 app.use("/shop", shopRoute);
+
+const mediaRoute = require("./routes/mediaRoute");
+app.use("/media", mediaRoute);
 
 const PORT = process.env.PORT || 5000;
 
