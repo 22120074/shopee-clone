@@ -17,4 +17,5 @@ module.exports = (sequelize) =>
     size: DataTypes.STRING,
     price: DataTypes.FLOAT,
     imageUrl: DataTypes.STRING,
+    publicId: DataTypes.STRING,
   });

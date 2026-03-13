@@ -4,7 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/auth/authSlice";
 import { loadItem } from "../../features/cart/cartSlice";
-import { login as loginService, getCurrentUser, refreshToken } from "../../services/auth.service";
+import {
+  login as loginService,
+  getCurrentUser,
+  refreshToken,
+} from "../../services/auth.service";
 import { getCart } from "../../services/cart.service";
 import { isValidPhone } from "../../utils/numberCheck";
 import PrimaryButton from "../../components/buttons/Button";
@@ -61,7 +65,7 @@ function Login() {
     e.preventDefault();
     setShowErrors(true);
     let isLogin = false;
-    if (errors.phone === '' && errors.password === '') {
+    if (errors.phone === "" && errors.password === "") {
       try {
         setLoadingNormal(true);
         // Gọi API đăng nhập
@@ -74,13 +78,13 @@ function Login() {
         const currentUser = await getCurrentUser();
         // Nếu không có lỗi, cập nhật state auth
         if (currentUser) {
-          dispatch(login(currentUser.data.dataUser));
+          dispatch(login(currentUser.data.data));
           // Lấy giỏ hàng của user
-          const cart = await getCart(currentUser.data.dataUser.userId);
+          const cart = await getCart(currentUser.data.data.userId);
           if (cart) {
-            dispatch(loadItem(cart.data));
+            dispatch(loadItem(cart.data.data));
           }
-        } 
+        }
         // Chuyển hướng về trang chủ
         await delay(1000);
         navigate("/");
@@ -91,20 +95,23 @@ function Login() {
             await refreshToken();
             // Refresh thành công → gọi lại /me
             const refreshedUser = await getCurrentUser();
-            dispatch(login(refreshedUser.data.dataUser));
+            dispatch(login(refreshedUser.data.data));
             // Chuyển hướng về trang chủ
             await delay(1000);
             navigate("/");
             return; // Không navigate về login nữa
           } catch (refreshErr) {
-            const msg = refreshErr.response?.data?.message || "Lỗi kết nối. Vui lòng thử lại.";
+            const msg =
+              refreshErr.response?.data?.message ||
+              "Lỗi kết nối. Vui lòng thử lại.";
             setServerError(msg);
             return;
           }
         }
         // Lỗi khác 401
         console.error("Lỗi khi lấy user:", err);
-        const msg = err.response.data.message || "Lỗi kết nối. Vui lòng thử lại.";
+        const msg =
+          err.response.data.message || "Lỗi kết nối. Vui lòng thử lại.";
         setServerError(msg);
       } finally {
         setLoadingNormal(false);
@@ -142,31 +149,38 @@ function Login() {
             required
           />
           {/* Hiển thị lỗi nếu có */}
-          { serverError && errors.phone === '' && errors.password === '' && (
-            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: "calc(39px)", left: "0" }}>
+          {serverError && errors.phone === "" && errors.password === "" && (
+            <p
+              className="absolute text-red-500 text-xs mt-1 left-0"
+              style={{ top: "calc(39px)", left: "0" }}
+            >
               {serverError}
             </p>
           )}
-          { errors && showErrors && (
-            <p className="absolute text-red-500 text-xs mt-1 left-0" style={{ top: "calc(39px)", left: "0" }}>
+          {errors && showErrors && (
+            <p
+              className="absolute text-red-500 text-xs mt-1 left-0"
+              style={{ top: "calc(39px)", left: "0" }}
+            >
               {errors.phone || errors.password}
             </p>
           )}
         </div>
         {/* Nút đăng nhập */}
-        <PrimaryButton 
-          height="40px" 
-          width="100%" 
-          text={isLoadingNormal ? "" : "Đăng nhập"} 
-          type="submit" 
+        <PrimaryButton
+          height="40px"
+          width="100%"
+          text={isLoadingNormal ? "" : "Đăng nhập"}
+          type="submit"
           disabled={isLoadingSpecial}
         >
-          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+          <div
+            className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingNormal ? "" : `${isLoadingSpecial ? "bg-white/50" : "hidden"}`}`}
           >
-            <Spinner 
-              size={"30px"} 
-              stroke={"5px"}  
+            <Spinner
+              size={"30px"}
+              stroke={"5px"}
               _hidden={isLoadingSpecial ? "hidden" : ""}
               color={"white"}
             />
@@ -179,37 +193,43 @@ function Login() {
         </span>
       </form>
       {/* Phần đường kẻ ngăn cách */}
-      <div className="flex items-center justify-center w-full" style={{ margin: "32px 0" }}>
+      <div
+        className="flex items-center justify-center w-full"
+        style={{ margin: "32px 0" }}
+      >
         <div className="line"></div>
-        <div className="text-[12px] text-[#DBDBDB] px-4 py-0">
-          Hoặc
-        </div>
+        <div className="text-[12px] text-[#DBDBDB] px-4 py-0">Hoặc</div>
         <div className="line"></div>
       </div>
       {/* Phần đăng nhập bằng tài khoản khác */}
       <div className="flex items-center justify-between w-full gap-4">
-        <FBButton setLoadingSpecial={setLoadingSpecial} disabled={isLoadingNormal}>
-          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+        <FBButton
+          setLoadingSpecial={setLoadingSpecial}
+          disabled={isLoadingNormal}
+        >
+          <div
+            className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"}`}
           >
-            <Spinner 
-              size={"30px"} 
-              stroke={"6px"}  
+            <Spinner
+              size={"30px"}
+              stroke={"6px"}
               _hidden={isLoadingNormal ? "hidden" : ""}
               color={"#ee4d2d"}
             />
-          </div>        
+          </div>
         </FBButton>
-        <GGButton 
-          disabled={isLoadingNormal} 
-          setLoadingSpecial={setLoadingSpecial} 
+        <GGButton
+          disabled={isLoadingNormal}
+          setLoadingSpecial={setLoadingSpecial}
         >
-          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+          <div
+            className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"}`}
           >
-            <Spinner 
-              size={"30px"} 
-              stroke={"6px"}  
+            <Spinner
+              size={"30px"}
+              stroke={"6px"}
               _hidden={isLoadingNormal ? "hidden" : ""}
               color={"#ee4d2d"}
             />

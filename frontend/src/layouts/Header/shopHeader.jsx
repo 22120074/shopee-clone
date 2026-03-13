@@ -39,12 +39,10 @@ function ShopHeader() {
           <div className="text-lg md:text-xl text-black ml-4 font-normal">
             {urlPath === "register"
               ? "Đăng ký trở thành Người bán Shopee"
-              : "Trở thành Người bán Shopee"}
+              : "Kênh người bán"}
           </div>
         </div>
-        <div className="flex items-center text-primaryColor">
-          <Link to="/">Bạn cần giúp đỡ?</Link>
-        </div>
+        <div className="flex items-center text-primaryColor"></div>
       </div>
     </header>
   );

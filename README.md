@@ -374,6 +374,10 @@ npm start
 docker-compose up --build -d
 
 docker-compose up -d --build backend
+docker-compose logs -f backend
+
+docker-compose up -d --build db
+docker-compose logs -f db
 
 ```
 

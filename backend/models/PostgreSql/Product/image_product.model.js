@@ -14,4 +14,5 @@ module.exports = (sequelize) =>
       allowNull: false,
     },
     imageUrl: DataTypes.STRING,
+    publicId: DataTypes.STRING,
   });

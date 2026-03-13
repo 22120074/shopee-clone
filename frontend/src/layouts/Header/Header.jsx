@@ -89,8 +89,8 @@ function Header() {
     try {
       const response = await checkShop(user.userId || user.googleID);
 
-      if (response.data.shop) {
-        dispatch(set(response.data.shop));
+      if (response.data.data) {
+        dispatch(set(response.data.data));
         window.open("/shop/dashboard", "_blank");
       } else {
         window.open("/shop/register", "_blank");

@@ -45,6 +45,7 @@ CREATE TABLE public."Attributes" (
     size character varying(255),
     price double precision,
     "imageUrl" character varying(255),
+    "publicId" character varying(255),
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL
 );
@@ -93,6 +94,7 @@ CREATE TABLE public."ImageProducts" (
     id uuid NOT NULL,
     "productId" uuid NOT NULL,
     "imageUrl" character varying(255),
+    "publicId" character varying(255),
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL
 );

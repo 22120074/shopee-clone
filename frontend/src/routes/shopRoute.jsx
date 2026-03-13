@@ -3,6 +3,7 @@ import ShopLayout from "../layouts/shopLayout";
 import SellerRegisterPage from "../pages/_shop/registerPage";
 import Dashboard from "../pages/_shop/dashboard";
 import ShopUnknown from "../pages/_shop/shopUnknown";
+import AddProduct from "../pages/_shop/_products/_add/addProduct";
 
 export const shopRoutes = (
   <>
@@ -17,7 +18,7 @@ export const shopRoutes = (
       <Route path="/shop/orders/return" element={<ShopUnknown />} />
       {/* Route /shop/products/ ------------------------------------------------*/}
       <Route path="/shop/products/all" element={<ShopUnknown />} />
-      <Route path="/shop/products/add" element={<ShopUnknown />} />
+      <Route path="/shop/products/add" element={<AddProduct />} />
       <Route path="/shop/products/settings" element={<ShopUnknown />} />
     </Route>
   </>

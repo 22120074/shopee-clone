@@ -29,7 +29,7 @@ function ShopSideBar() {
   }, [firstSegment, secondSegment]);
 
   return (
-    <div className="flex flex-col w-52 items-center justify-start gap-2 bg-white min-h-[600px] select-none p-4">
+    <div className="hidden lg:flex flex-col flex-shrink-0 w-52 items-center justify-start gap-2 bg-white min-h-[600px] select-none p-4">
       <div className="select-none w-full">
         <div
           className="flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor"

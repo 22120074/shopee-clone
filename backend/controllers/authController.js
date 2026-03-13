@@ -2,8 +2,15 @@ const { User, DataUser } = require("../models/Mongoose/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const redisClient = require('./../config/redisConfig');
-const nodemailer = require('nodemailer');
+const redisClient = require("./../config/redisConfig");
+const nodemailer = require("nodemailer");
+const {
+  BadRequest,
+  Conflict,
+  Unauthorized,
+  NotFound,
+} = require("../utils/appErrors");
+const { Created, Success } = require("../utils/responseHelper");
 
 exports.register = async (req, res, next) => {
   try {
@@ -11,17 +18,13 @@ exports.register = async (req, res, next) => {
 
     // 1. Kiểm tra dữ liệu đầu vào
     if (!phone || !password) {
-      return res
-        .status(400)
-        .json({ message: "Vui lòng điền đầy đủ thông tin." });
+      throw BadRequest("Vui lòng điền đầy đủ số điện thoại và mật khẩu.");
     }
 
     // 2. Kiểm tra xem user đã tồn tại chưa
     const existingUser = await User.findOne({ phone });
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "Số điện thoại đã được đăng ký." });
+      throw Conflict("Số điện thoại này đã được đăng ký.");
     }
 
     // 3. Mã hóa mật khẩu
@@ -50,7 +53,11 @@ exports.register = async (req, res, next) => {
     await newProfile.save();
 
     // 6. Trả về kết quả
-    return res.status(201).json({ message: "Đăng ký thành công!" });
+    return Created(
+      res,
+      { userId: newUser._id },
+      "Đăng ký tài khoản thành công!",
+    );
   } catch (error) {
     next(error); // Gọi middleware xử lý lỗi
   }
@@ -61,37 +68,31 @@ exports.login = async (req, res, next) => {
     const { phone, password } = req.body;
 
     if (!phone || !password) {
-      return res
-        .status(400)
-        .json({ message: "Vui lòng nhập đủ số điện thoại và mật khẩu." });
+      throw BadRequest("Vui lòng nhập đủ số điện thoại và mật khẩu.");
     }
 
     const user = await User.findOne({ phone });
     if (!user) {
-      return res
-        .status(401)
-        .json({ message: "Số điện thoại không tìm thấy." });
+      throw Unauthorized("Số điện thoại hoặc mật khẩu không chính xác.");
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ message: "Mật khẩu không khớp với tài khoản." });
+      throw Unauthorized("Số điện thoại hoặc mật khẩu không chính xác.");
     }
 
     // Tạo access token (1 ngày)
     const accessToken = jwt.sign(
       { userId: user._id, phone: user.phone },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     // Tạo refresh token (7 ngày)
     const refreshToken = jwt.sign(
       { userId: user._id, phone: user.phone },
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res
@@ -120,20 +121,21 @@ exports.getMe = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     let userData;
-    if (typeof userId === "string" && !mongoose.Types.ObjectId.isValid(userId)) {
+    if (
+      typeof userId === "string" &&
+      !mongoose.Types.ObjectId.isValid(userId)
+    ) {
       userData = await DataUser.findOne({ googleID: userId });
     } else {
       userData = await DataUser.findOne({ userId: userId });
     }
 
     if (!userData) {
-      return res
-        .status(404)
-        .json({ message: "Không tìm thấy dữ liệu người dùng" });
+      throw NotFound("Không tìm thấy dữ liệu người dùng.");
     }
 
     // Trả về toàn bộ dữ liệu trong document dataUser
-    res.json({ dataUser: userData });
+    return Success(res, userData, "Lấy thông tin người dùng thành công");
   } catch (error) {
     next(error);
   }
@@ -158,7 +160,7 @@ exports.refreshToken = (req, res) => {
   try {
     const refreshToken = req.cookies?.refresh_token;
     if (!refreshToken) {
-      return res.status(401).json({ message: "Không có refresh token" });
+      throw Unauthorized("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
     }
 
     // Xác thực refresh token
@@ -168,7 +170,7 @@ exports.refreshToken = (req, res) => {
     const newAccessToken = jwt.sign(
       { userId: decoded.userId, phone: decoded.phone },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     // Gửi access token mới vào cookie
@@ -181,12 +183,10 @@ exports.refreshToken = (req, res) => {
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 ngày
     });
 
-    return res.json({ message: "Access token mới đã được cấp" });
+    return Success(res, null, "Cấp lại access token thành công");
   } catch (err) {
     console.error("Lỗi refresh token:", err);
-    return res
-      .status(401)
-      .json({ message: "Refresh token không hợp lệ hoặc đã hết hạn" });
+    throw Unauthorized("Refresh token không hợp lệ hoặc đã hết hạn");
   }
 };
 
@@ -197,30 +197,30 @@ exports.getUserListRating = async (req, res, next) => {
       userList = [userList];
     }
     if (!userList || !Array.isArray(userList) || userList.length === 0) {
-      return res.status(400).json({ message: "Dữ liệu không hợp lệ" });
+      throw BadRequest("Dữ liệu không hợp lệ");
     }
     const ratings = await DataUser.find({ _id: { $in: userList } });
     const ratingsMap = new Map(ratings.map((r) => [r._id.toString(), r]));
     const result = userList.map((id) => ratingsMap.get(id));
 
-    return res.json({ ratings: result });
+    return Success(res, result, "Lấy danh sách đánh giá thành công");
   } catch (error) {
     next(error);
   }
 };
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS_APP
-  }
+    pass: process.env.EMAIL_PASS_APP,
+  },
 });
 
 exports.sendOtpEmail = async (req, res, next) => {
   try {
     const { email } = req.body;
-    if (!email) return res.status(400).json({ message: 'Bắt buộc phải có Email.' });
+    if (!email) throw BadRequest("Bắt buộc phải có Email.");
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -230,7 +230,7 @@ exports.sendOtpEmail = async (req, res, next) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Your OTP Code',
+      subject: "Your OTP Code",
       html: `
         <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
           <h2 style="color: #333;">🔒 Your OTP Code</h2>
@@ -238,11 +238,11 @@ exports.sendOtpEmail = async (req, res, next) => {
           <p style="font-size: 32px; font-weight: bold; color: #1a73e8; margin: 20px 0;">${otp}</p>
           <p style="font-size: 14px; color: #666;">This OTP expires in 5 minutes.</p>
         </div>
-      `
+      `,
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'OTP Email được gửi thành công.' });
+    return Success(res, null, "Mã OTP đã được gửi đến email của bạn.");
   } catch (error) {
     next(error);
   }
@@ -252,26 +252,26 @@ exports.vertifyOtpEmail = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
     if (!email || !otp) {
-      return res.status(400).json({ message: 'Bắt buộc phải có Email và OTP.' });
+      throw BadRequest("Bắt buộc phải có Email và OTP.");
     }
 
     // Kiểm tra OTP trong Redis
     const storedOtp = await redisClient.get(`otp:${email}`);
     if (!storedOtp) {
-      return res.status(400).json({ message: 'OTP không hợp lệ hoặc đã hết hạn.' });
+      throw BadRequest("OTP không hợp lệ hoặc đã hết hạn.");
     }
 
     // Trim OTP để bỏ " " thừa nếu có
     const cleanOtp = otp.trim();
 
     if (storedOtp !== cleanOtp) {
-      return res.status(400).json({ message: 'OTP không đúng.' });
+      throw BadRequest("OTP không đúng.");
     }
 
     // Xóa OTP đã xác thực
     await redisClient.del(`otp:${email}`);
 
-    res.status(200).json({ message: 'Xác thực OTP thành công.' });
+    return Success(res, null, "Xác thực OTP thành công.");
   } catch (error) {
     next(error);
   }

@@ -1,5 +1,6 @@
 const Shop = require("../models/Mongoose/Shop");
 const mongoose = require("mongoose");
+const { Conflict } = require("../utils/appErrors");
 
 const checkExistingShop = async (userId) => {
   try {
@@ -23,7 +24,7 @@ const addShop = async (userId, nameShop, addresses) => {
   try {
     const isExist = await checkExistingShop(userId);
     if (isExist) {
-      throw new Error("Người dùng này đã sở hữu một cửa hàng rồi!");
+      throw Conflict("Người dùng này đã sở hữu một cửa hàng rồi!");
     }
 
     const shopData = {

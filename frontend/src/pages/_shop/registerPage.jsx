@@ -49,7 +49,7 @@ function SellerRegisterPage() {
         nameShop,
         address,
       );
-      dispatch(set(response.data.shop));
+      dispatch(set(response.data.data));
       navigate("/shop/dashboard");
     } catch (error) {
       console.log("Lỗi khi đăng ký Shop: ", error);

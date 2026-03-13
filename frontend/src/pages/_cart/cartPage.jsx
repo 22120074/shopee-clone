@@ -44,7 +44,7 @@ function CartPage() {
     if (user?.userId) {
       const cart = await getCart(user.userId);
       if (cart) {
-        dispatch(loadItem(cart.data));
+        dispatch(loadItem(cart.data.data));
       }
     }
   }, [dispatch, user?.userId]);

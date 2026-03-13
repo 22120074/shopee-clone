@@ -1,10 +1,13 @@
 // middlewares/authMiddleware.js
 const jwt = require("jsonwebtoken");
+const { Unauthorized } = require("../utils/appErrors");
 
 exports.protect = (req, res, next) => {
   try {
     const token = req.cookies.access_token;
-    if (!token) return res.status(401).json({ message: "Bạn chưa đăng nhập." });
+    if (!token) {
+      throw Unauthorized("Phiên làm việc hết hạn. Vui lòng đăng nhập lại.");
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // Lưu payload vào req.user
@@ -12,8 +15,6 @@ exports.protect = (req, res, next) => {
 
     next();
   } catch (err) {
-    return res
-      .status(401)
-      .json({ message: "Token không hợp lệ hoặc đã hết hạn." });
+    throw Unauthorized("Token không hợp lệ hoặc đã hết hạn.");
   }
 };

@@ -5,12 +5,12 @@ function PrimaryButton({
   onClick,
   type = "button",
   disabled,
-  children
+  children,
 }) {
   return (
     <button
       type={type}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       style={{
         height: height,
         width: width,
@@ -19,7 +19,9 @@ function PrimaryButton({
         fontSize: "16px",
       }}
       disabled={disabled}
-      className="relative flex items-center justify-center bg-primaryColor"
+      className={`relative flex items-center justify-center bg-primaryColor transition-opacity duration-200 ${
+        disabled ? "opacity-60 cursor-not-allowed" : "hover:brightness-110"
+      }`}
     >
       {text}
       {children}
