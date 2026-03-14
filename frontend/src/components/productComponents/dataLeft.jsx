@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { handelexpiredToken } from "../../services/auth.helper";
+import { handlexpiredToken } from "../../services/auth.helper";
 import ImagePreview from "../ImagePreview";
 import {
   isLikedProduct,
@@ -21,10 +21,10 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
     async (productID) => {
       try {
         const response = await isLikedProduct(productID);
-        setLiked(response.data.data);
+        setLiked(response.data.data.liked);
       } catch (error) {
         console.error("Error fetching isLiked:", error);
-        handelexpiredToken(error, navigate, dispatch);
+        handlexpiredToken(error, navigate, dispatch);
       }
     },
     [navigate, dispatch],

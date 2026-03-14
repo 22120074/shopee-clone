@@ -28,9 +28,6 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Xử lý lỗi chung
-app.use(errorHandler);
-
 const authRoute = require("./routes/authRoute");
 app.use("/auth", authRoute);
 
@@ -48,6 +45,9 @@ app.use("/shop", shopRoute);
 
 const mediaRoute = require("./routes/mediaRoute");
 app.use("/media", mediaRoute);
+
+// Xử lý lỗi chung
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

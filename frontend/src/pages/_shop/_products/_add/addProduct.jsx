@@ -1,5 +1,6 @@
 import { useState, useEffect, useReducer } from "react";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import InsertListImgButton from "../../../../components/buttons/insertListImgButton";
 import PrimaryDashedButton from "../../../../components/buttons/primaryDashedBttn";
 import TextInput from "../../../../components/input/textInput";
@@ -13,6 +14,9 @@ import { uploadMultipleImages } from "../../../../services/media.service";
 import Spinner from "../../../../components/skeletons/spinnerButton";
 import DetailData from "../../../../components/shopComponents/product/detailData";
 import useIsWindow from "../../../../hooks/useIsWindow";
+import StackBar from "../../../../components/StackBar";
+import useToastQueue from "../../../../hooks/useToastQueue";
+import { handlexpiredToken } from "../../../../services/auth.helper";
 
 const categories = [
   "Thời Trang Nam",
@@ -138,7 +142,10 @@ function tableReducer(state, action) {
 export default function AddProduct() {
   const isDesktop = useIsWindow("(min-width: 1024px)");
   const isTablet = useIsWindow("(min-width: 768px) and (max-width: 1023px)");
+  const { toasts, addToast } = useToastQueue(3, 1500);
   const user = useSelector((state) => state.auth.currentUser);
+  const navigate = useNavigate();
+  const dispatchRedux = useDispatch();
 
   const steps = [
     "Thông tin cơ bản",
@@ -262,16 +269,16 @@ export default function AddProduct() {
     try {
       setIsLoading(true);
       const productData = {
-        name: name,
-        attributeName: attribute,
+        name: name.trim(),
+        attributeName: attribute.trim(),
         fromStore: user.userId || user.googleID,
-        category: category,
+        category: category.trim(),
       };
       const detailData = {
-        material: material,
-        origin: origin,
-        shipFrom: shipFrom,
-        description: detail,
+        material: material.trim(),
+        origin: origin.trim(),
+        shipFrom: shipFrom.trim(),
+        description: detail.trim(),
       };
 
       const uploadedImgs = await uploadMultipleImages(imgs);
@@ -280,8 +287,8 @@ export default function AddProduct() {
       const attributeData = Object.entries(attributeObject).flatMap(
         ([attrName, variants]) =>
           variants.map((variant) => ({
-            nameEach: attrName,
-            size: variant.size,
+            nameEach: attrName.trim(),
+            size: variant.size.trim(),
             price: parseFloat(variant.price) || 0,
             stock: parseInt(variant.stock, 10) || 0,
             imageUrl: variant.imgData || "",
@@ -295,9 +302,24 @@ export default function AddProduct() {
         attributes: finalAttributes,
       };
       const response = await createProduct(payload);
-      console.log(response);
+      if (response.data.success) {
+        addToast("Thêm sản phẩm thành công", "success", "check");
+      }
     } catch (error) {
-      console.log(error);
+      const statusCode = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+      if (statusCode && statusCode !== 500) {
+        await handlexpiredToken(error, navigate, dispatchRedux);
+        if (statusCode !== 401) {
+          addToast(serverMessage, "error", "error");
+        }
+      } else {
+        addToast(
+          "Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.",
+          "error",
+          "error",
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -353,6 +375,7 @@ export default function AddProduct() {
       className="relative w-full h-auto bg-backgroundGrayColor 
       grid grid-cols-1 lg:grid-cols-10 gap-2 p-2 md:p-4 lg:p-8 items-start"
     >
+      <StackBar toasts={toasts} width={"300px"} height={"80px"} />
       {/* Nội dung chính */}
       <main className="lg:col-span-8 flex flex-col gap-2">
         {/* ----------------------- Thông tin cơ bản ----------------------- */}

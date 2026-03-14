@@ -26,7 +26,7 @@ function Register() {
     password: "",
     confirmPassword: "",
   });
-  
+
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleChange = (e) => {
@@ -89,12 +89,14 @@ function Register() {
       await delay(1000);
       navigate("/auth/login");
     } catch (err) {
-      // Xử lý lỗi từ server
-      if (err.response && err.response.data && err.response.data.message) {
-        setServerError(err.response.data.message);
+      const statusCode = err.response?.status;
+      const serverMessage = err.response?.data?.message;
+      if (statusCode && statusCode !== 500) {
+        setServerError(serverMessage);
       } else {
-        setServerError("Lỗi kết nối. Vui lòng thử lại.");
+        setServerError("Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.");
       }
+      console.error("Full Error:", err);
     } finally {
       setLoadingNormal(false);
     }
@@ -120,7 +122,8 @@ function Register() {
           />
           {/* Thông báo lỗi nếu có */}
           {errors.phone && (
-            <p className="absolute text-red-500 text-xs mt-1 left-0"
+            <p
+              className="absolute text-red-500 text-xs mt-1 left-0"
               style={{ top: "calc(39px)", left: "0" }}
             >
               {errors.phone}
@@ -156,27 +159,31 @@ function Register() {
           )}
         </div>
         {/* Nút đăng ký */}
-        <PrimaryButton 
-          height="40px" 
-          width="100%" 
-          text={isLoadingNormal ? "" : "Đăng ký"} 
+        <PrimaryButton
+          height="40px"
+          width="100%"
+          text={isLoadingNormal ? "" : "Đăng ký"}
           type="submit"
           disabled={isLoadingSpecial}
         >
-          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+          <div
+            className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingNormal ? "" : `${isLoadingSpecial ? "bg-white/50" : "hidden"}`} `}
           >
-            <Spinner 
-              size={"30px"} 
-              stroke={"5px"}  
+            <Spinner
+              size={"30px"}
+              stroke={"5px"}
               _hidden={isLoadingSpecial ? "hidden" : ""}
               color={"white"}
             />
           </div>
-        </PrimaryButton>      
+        </PrimaryButton>
       </form>
       {/* Phần đường kẻ */}
-      <div className="flex items-center justify-center w-full" style={{ margin: "32px 0" }}>
+      <div
+        className="flex items-center justify-center w-full"
+        style={{ margin: "32px 0" }}
+      >
         <div className="line"></div>
         <div style={{ font: "12px", color: "#DBDBDB", padding: "0 16px" }}>
           Hoặc
@@ -185,28 +192,33 @@ function Register() {
       </div>
       {/* Phần đăng ký bằng tài khoản khác */}
       <div className="flex items-center justify-between w-full gap-4">
-        <FBButton setLoadingSpecial={setLoadingSpecial} disabled={isLoadingNormal}>
-          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+        <FBButton
+          setLoadingSpecial={setLoadingSpecial}
+          disabled={isLoadingNormal}
+        >
+          <div
+            className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"} `}
           >
-            <Spinner 
-              size={"30px"} 
-              stroke={"6px"}  
+            <Spinner
+              size={"30px"}
+              stroke={"6px"}
               _hidden={isLoadingNormal ? "hidden" : ""}
               color={"#ee4d2d"}
             />
           </div>
         </FBButton>
-        <GGButton 
-          disabled={isLoadingNormal} 
-          setLoadingSpecial={setLoadingSpecial} 
+        <GGButton
+          disabled={isLoadingNormal}
+          setLoadingSpecial={setLoadingSpecial}
         >
-          <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
+          <div
+            className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
             ${isLoadingSpecial || isLoadingNormal ? "bg-white/50" : "hidden"} `}
           >
-            <Spinner 
-              size={"30px"} 
-              stroke={"6px"}  
+            <Spinner
+              size={"30px"}
+              stroke={"6px"}
               _hidden={isLoadingNormal ? "hidden" : ""}
               color={"#ee4d2d"}
             />
