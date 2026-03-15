@@ -224,8 +224,7 @@ exports.sendOtpEmail = async (req, res, next) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Lưu OTP vào Redis với TTL 5 phút (300 giây)
-    await redisClient.set(`otp:${email}`, otp, { EX: 300 });
+    await redisClient.set(`otp:${email}`, otp, "EX", 300);
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -255,22 +254,17 @@ exports.vertifyOtpEmail = async (req, res, next) => {
       throw BadRequest("Bắt buộc phải có Email và OTP.");
     }
 
-    // Kiểm tra OTP trong Redis
     const storedOtp = await redisClient.get(`otp:${email}`);
     if (!storedOtp) {
       throw BadRequest("OTP không hợp lệ hoặc đã hết hạn.");
     }
 
-    // Trim OTP để bỏ " " thừa nếu có
     const cleanOtp = otp.trim();
-
     if (storedOtp !== cleanOtp) {
       throw BadRequest("OTP không đúng.");
     }
 
-    // Xóa OTP đã xác thực
     await redisClient.del(`otp:${email}`);
-
     return Success(res, null, "Xác thực OTP thành công.");
   } catch (error) {
     next(error);

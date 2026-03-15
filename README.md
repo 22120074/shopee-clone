@@ -77,6 +77,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - [x] Giá tiền thay đổi tùy theo phân loại
 - [x] Thông báo lỗi nếu có
 - [x] Thêm sản phẩm vào giỏ hàng
+- [x] Tạo sản phẩm mới lên sàn điện tử
 
 ### 🛒 Giỏ hàng
 
@@ -373,11 +374,17 @@ npm start
 # Build lại images trước khi chạy
 docker-compose up --build -d
 
+# Build lại images trước khi chạy backend
 docker-compose up -d --build backend
 docker-compose logs -f backend
 
+# Build lại images trước khi chạy db
 docker-compose up -d --build db
 docker-compose logs -f db
+
+# Vào redis
+docker exec -it my-redis redis-cli
+MONITOR
 
 ```
 
