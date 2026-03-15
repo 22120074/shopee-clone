@@ -7,7 +7,7 @@ const {
   updateAvatarAPI,
 } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
-const upload = require("../middleware/upload");
+const { uploadSingleMiddleware } = require("../middleware/errorHandle");
 
 router.patch("/update-email", protect, updateEmailAPI);
 router.patch("/update-phone", protect, updatePhoneAPI);
@@ -15,7 +15,7 @@ router.patch("/update-profile", protect, updateProfileAPI);
 router.patch(
   "/update-avatar",
   protect,
-  upload.single("avatar"),
+  uploadSingleMiddleware,
   updateAvatarAPI,
 );
 

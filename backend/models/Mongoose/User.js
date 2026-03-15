@@ -1,14 +1,14 @@
 // models/User.js
 const mongoose = require("mongoose");
 
-// Nếu người dùng đăng nhập bằng GG thì chỉ có dataUserScheme thôi, nhưng id sẽ là ggID gửi cho. 
+// Nếu người dùng đăng nhập bằng GG thì chỉ có dataUserScheme thôi, nhưng id sẽ là ggID gửi cho.
 
 const userSchema = new mongoose.Schema(
   {
     phone: {
       type: String,
       required: true,
-      unique: true, // Đảm bảo số điện thoại không trùng
+      unique: true,
       trim: true,
     },
     password: {
@@ -21,22 +21,21 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
-    collection: "users", // đặt tên collection rõ ràng
-  }
+    collection: "users",
+  },
 );
 
 const dataUserSchema = new mongoose.Schema(
   {
     userId: {
-      // tham chiếu đến _id của collection users
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      require: false
+      require: false,
     },
     googleID: {
       type: String,
       unique: true,
-      required: false
+      required: false,
     },
     phone: {
       type: String,
@@ -71,102 +70,21 @@ const dataUserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    // ... các trường khác nếu cần
+    publicId: {
+      type: String,
+      default: "",
+    },
     createdAt: {
       type: Date,
       default: Date.now,
     },
   },
   {
-    collection: "dataUser", // đặt tên collection rõ ràng
-  }
-);
-
-const productSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    }, // Tên sản phẩm
-
-    images: [String], // Mảng chứa nhiều URL hoặc tên file ảnh
-
-    favorite: {
-      type: Boolean,
-      default: false,
-    }, // Yêu thích (true/false)
-
-    likes: {
-      type: Number,
-      default: 0,
-    }, // Số lượt thích (số nguyên)
-
-    rating: {
-      type: Number,
-      default: 0,
-    }, // Điểm đánh giá (số thực)
-
-    ratingCount: {
-      type: Number,
-      default: 0,
-    }, // Số lượt đánh giá (số nguyên)
-
-    sold: {
-      type: Number,
-      default: 0,
-    }, // Số lượng đã bán (số nguyên)
-
-    discount: {
-      type: Number,
-      default: 0,
-    }, // Giảm giá (%) – ví dụ: 20 nghĩa là 20%
-
-    attributes: {
-      name: {
-        type: String,
-        required: true,
-      }, // Tên đặc tính, ví dụ: "color"
-
-      values: [
-        {
-          valueName: {
-            type: String,
-            required: true,
-          }, // Tên option, ví dụ: "Đen da lộn"
-
-          image: String, // URL hoặc tên file ảnh cho option đó
-          price: Number, // Giá tương ứng với option đó
-        },
-      ],
-    }, // Mảng Đặc tính, mỗi phần tử có name và mảng values
-
-    sizes: [Number], // Dãy số size, ví dụ [35, 36, 37, 38, 39]
-
-    fromStore: {
-      type: String, // Tên cửa hàng hoặc kho hàng
-      required: true,
-    },
-
-    details: {
-      stock: Number, // Thông tin kho: ví dụ “Còn 50 đôi”
-      material: String, // Chất liệu: ví dụ “Da lộn”
-      origin: String, // Xuất xứ: ví dụ “Việt Nam”
-      shippedFrom: String, // Gửi từ: ví dụ “Hà Nội”
-    },
-
-    description: {
-      type: String,
-    }, // Mô tả chi tiết sản phẩm (chuỗi text dài)
+    collection: "dataUser",
   },
-  {
-    timestamps: true,
-    collection: "dataProduct",
-    // Tự động thêm createdAt và updatedAt
-  }
 );
 
 const DataUser = mongoose.model("DataUser", dataUserSchema);
 const User = mongoose.model("User", userSchema);
-const Product = mongoose.model("Product", productSchema);
 
-module.exports = { User, DataUser, Product };
+module.exports = { User, DataUser };
