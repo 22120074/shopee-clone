@@ -98,6 +98,23 @@ const updateProfile = async (
   }
 };
 
+const getPublicId = async (userId) => {
+  try {
+    let userData;
+    if (
+      typeof userId === "string" &&
+      !mongoose.Types.ObjectId.isValid(userId)
+    ) {
+      userData = await DataUser.findOne({ googleID: userId }, { publicId: 1 });
+    } else {
+      userData = await DataUser.findOne({ userId: userId }, { publicId: 1 });
+    }
+    return userData?.publicId;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const updateAvatar = async (userId, file) => {
   try {
     let userData;
@@ -128,4 +145,5 @@ module.exports = {
   updatePhone,
   updateProfile,
   updateAvatar,
+  getPublicId,
 };

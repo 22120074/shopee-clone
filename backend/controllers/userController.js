@@ -3,10 +3,11 @@ const {
   updatePhone,
   updateProfile,
   updateAvatar,
-  removeOldAvatar,
+  getPublicId,
 } = require("../services/user.service");
 const { NotFound, BadRequest } = require("../utils/appErrors");
 const { Success, Created } = require("../utils/responseHelper");
+const { deleteSingleImage } = require("../services/media.service");
 
 exports.updateEmailAPI = async (req, res, next) => {
   try {
@@ -73,8 +74,11 @@ exports.updateAvatarAPI = async (req, res, next) => {
     if (!req.file) {
       throw BadRequest("Không có file nào được tải lên");
     }
-    const file = req.file;
-    const updatedUser = await updateAvatar(userId, file);
+    const publicId = await getPublicId(userId);
+    if (publicId) {
+      await deleteSingleImage(publicId);
+    }
+    const updatedUser = await updateAvatar(userId, req.file);
     if (!updatedUser) {
       throw NotFound("Người dùng không tồn tại");
     }
@@ -86,6 +90,9 @@ exports.updateAvatarAPI = async (req, res, next) => {
       "Cập nhật avatar thành công",
     );
   } catch (error) {
+    if (req.file && req.file.filename) {
+      await deleteSingleImage(req.file.filename);
+    }
     next(error);
   }
 };
