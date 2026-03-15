@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize(
   process.env.DATABASE_URL ||
-  "postgres://postgres:123456789@localhost:5432/Shoppe_DB",
+    "postgres://postgres:123456789@localhost:5432/Shoppe_DB",
   {
     logging: false,
   },
@@ -29,6 +29,8 @@ db.Video_Rating = require("./Rating/video.model")(sequelize);
 db.ImageProduct = require("./Product/image_product.model")(sequelize);
 db.Detail = require("./Product/detail.model")(sequelize);
 db.Like = require("./Product/like.model")(sequelize);
+db.Order = require("./Order/order.model")(sequelize);
+db.OrderItem = require("./Order/order_item.model")(sequelize);
 
 // =================================================================================
 
@@ -67,5 +69,12 @@ db.Image_Rating.belongsTo(db.Rating, { foreignKey: "ratingId" });
 
 db.Rating.hasMany(db.Video_Rating, { foreignKey: "ratingId" });
 db.Video_Rating.belongsTo(db.Rating, { foreignKey: "ratingId" });
+
+// Associations liên quan đến Order
+db.Order.hasMany(db.OrderItem, { foreignKey: "orderId" });
+db.OrderItem.belongsTo(db.Order, { foreignKey: "orderId" });
+
+db.Attribute.hasMany(db.OrderItem, { foreignKey: "attributeId" });
+db.OrderItem.belongsTo(db.Attribute, { foreignKey: "attributeId" });
 
 module.exports = db;

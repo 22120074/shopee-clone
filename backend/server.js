@@ -46,7 +46,9 @@ app.use("/shop", shopRoute);
 const mediaRoute = require("./routes/mediaRoute");
 app.use("/media", mediaRoute);
 
-// Xử lý lỗi chung
+const orderRoute = require("./routes/orderRoute");
+app.use("/order", orderRoute);
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
