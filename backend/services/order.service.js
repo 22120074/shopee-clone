@@ -3,6 +3,7 @@ const dbPostgre = require("../models/PostgreSql/index");
 const { Sequelize, Op } = require("sequelize");
 const { BadRequest, NotFound, InternalServer } = require("../utils/appErrors");
 
+const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
 const Stock = dbPostgre.Stock;
 const Order = dbPostgre.Order;
@@ -20,19 +21,30 @@ const createMultiItemOrder = async (userId, items) => {
     // --- BƯỚC 1: REDIS GATEKEEPER (GIỮ CHỖ) ---
     for (const item of items) {
       const redisKey = `stock:attr:${item.attributeId}`;
-      const result = await redisClient.reserveStock(
-        redisKey,
-        item.quantity,
-        ttl,
-      );
+      let result = await redisClient.reserveStock(redisKey, item.quantity, ttl);
+
+      if (result === -2) {
+        const stockData = await Stock.findOne({
+          where: { attributeID: item.attributeId },
+        });
+
+        if (!stockData)
+          throw NotFound(
+            `Không tìm thấy sản phẩm ${item.attributeId} trong kho.`,
+          );
+
+        await redisClient.set(redisKey, stockData.quantity, "EX", ttl);
+        result = await redisClient.reserveStock(redisKey, item.quantity, ttl);
+      }
 
       if (result === -1) {
         outOfStockItems.push(item.attributeId);
         continue;
       }
       if (result === -2)
-        throw InternalServer(`Dữ liệu cache lỗi cho mã ${item.attributeId}.`);
-
+        throw InternalServer(
+          `Lỗi đồng bộ hệ thống cho mã ${item.attributeId}.`,
+        );
       reservedItems.push(item);
     }
 
@@ -70,19 +82,29 @@ const createMultiItemOrder = async (userId, items) => {
 
         // 2.2. Lấy giá từ Attribute để tính tiền
         const attr = await Attribute.findByPk(item.attributeId, {
+          include: [
+            {
+              model: dbPostgre.Product,
+              attributes: ["discount"],
+            },
+          ],
           transaction: t,
         });
         if (!attr) throw NotFound("Thông tin sản phẩm không tồn tại.");
 
-        const itemPrice = attr.price * item.quantity;
+        const discount = attr.Product?.discount || 0;
+        const finalUnitPrice = attr.price * (1 - discount / 100);
+
+        const itemPrice = finalUnitPrice * item.quantity;
         totalOrderPrice += itemPrice;
 
         // 2.3. Chuẩn bị dữ liệu cho OrderItem (bao gồm fromStore)
         orderItemsToCreate.push({
           attributeId: item.attributeId,
           quantity: item.quantity,
-          fromStore: item.fromStore, // Lưu shop bán mặt hàng này
-          status: "PENDING", // Mặc định từ model, nhưng khai báo ở đây cho rõ ràng
+          purchasePrice: finalUnitPrice,
+          fromStore: item.fromStore,
+          status: "PENDING",
         });
       }
 
@@ -103,17 +125,21 @@ const createMultiItemOrder = async (userId, items) => {
     });
 
     // --- BƯỚC 3: ĐỒNG BỘ REDIS SAU KHI THÀNH CÔNG ---
-    for (const item of items) {
-      const currentStock = await Stock.findOne({
-        where: { attributeID: item.attributeId },
-      });
-      await redisClient.set(
-        `stock:attr:${item.attributeId}`,
-        currentStock.quantity,
-        "EX",
-        ttl,
-      );
-    }
+    const attributeIds = items.map((item) => item.attributeId);
+    const currentStocks = await Stock.findAll({
+      where: { attributeID: { [Op.in]: attributeIds } },
+    });
+
+    await Promise.all(
+      currentStocks.map((stock) => {
+        return redisClient.set(
+          `stock:attr:${stock.attributeID}`,
+          stock.quantity,
+          "EX",
+          ttl,
+        );
+      }),
+    );
 
     return finalOrder;
   } catch (error) {

@@ -386,6 +386,12 @@ docker-compose logs -f db
 docker exec -it my-redis redis-cli
 MONITOR
 
+# Show tiến trình docker
+docker ps
+
+# Show tiến trình db
+docker exec -it shoppe-db psql -U postgres -d Shoppe_DB -c "\dt *.*"
+
 ```
 
 ## 🔧 Cấu hình môi trường

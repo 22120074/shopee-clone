@@ -170,24 +170,39 @@ CREATE TABLE public."Ratings" (
 ALTER TABLE public."Ratings" OWNER TO postgres;
 
 --
--- Name: Shops; Type: TABLE; Schema: public; Owner: postgres
+-- Name: Orders; Type: TABLE; Schema: public; Owner: postgres
 --
 
--- CREATE TABLE public."Shops" (
---     id uuid NOT NULL,
---     "userId" character varying(255) NOT NULL,
---     "nameShop" character varying(255) NOT NULL,
---     address character varying(255),
---     phone character varying(255),
---     email character varying(255),
---     "avatarUrl" character varying(255) DEFAULT ''::character varying,
---     "bannerUrl" character varying(255) DEFAULT ''::character varying,
---     "createdAt" timestamp with time zone NOT NULL,
---     "updatedAt" timestamp with time zone NOT NULL
--- );
+CREATE TABLE public."Orders" (
+    id uuid NOT NULL,
+    "userId" character varying(255) NOT NULL,
+    "totalPrice" double precision NOT NULL,
+    status character varying(255) NOT NULL,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
 
 
--- ALTER TABLE public."Shops" OWNER TO postgres;
+ALTER TABLE public."Orders" OWNER TO postgres;
+
+--
+-- Name: OrderItems; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."OrderItems" (
+    id uuid NOT NULL,
+    "orderId" uuid NOT NULL,
+    "attributeId" uuid NOT NULL,
+    "fromStore" character varying(255) NOT NULL,
+    quantity integer NOT NULL,
+    "purchasePrice" double precision NOT NULL,
+    status character varying(255) DEFAULT 'PENDING'::character varying NOT NULL,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public."OrderItems" OWNER TO postgres;
 
 --
 -- Name: Solds; Type: TABLE; Schema: public; Owner: postgres
@@ -373,14 +388,6 @@ ac596245-87ad-4f50-b26a-70d195b2e409	68d59d4c60cd15ba0064115a	91481205-3905-4d41
 
 
 --
--- Data for Name: Shops; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
--- COPY public."Shops" (id, "userId", "nameShop", address, phone, email, "avatarUrl", "bannerUrl", "createdAt", "updatedAt") FROM stdin;
--- \.
-
-
---
 -- Data for Name: Solds; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -484,14 +491,6 @@ ALTER TABLE ONLY public."Ratings"
 
 
 --
--- Name: Shops Shops_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Shops"
-    ADD CONSTRAINT "Shops_pkey" PRIMARY KEY (id);
-
-
---
 -- Name: Solds Solds_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -513,6 +512,22 @@ ALTER TABLE ONLY public."Stocks"
 
 ALTER TABLE ONLY public."Video_Ratings"
     ADD CONSTRAINT "Video_Ratings_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Orders Orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Orders"
+    ADD CONSTRAINT "Orders_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: OrderItems OrderItems_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."OrderItems"
+    ADD CONSTRAINT "OrderItems_pkey" PRIMARY KEY (id);
 
 
 --
@@ -601,6 +616,22 @@ ALTER TABLE ONLY public."Stocks"
 
 ALTER TABLE ONLY public."Video_Ratings"
     ADD CONSTRAINT "Video_Ratings_ratingId_fkey" FOREIGN KEY ("ratingId") REFERENCES public."Ratings"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: OrderItems OrderItems_orderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."OrderItems"
+    ADD CONSTRAINT "OrderItems_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES public."Orders"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: OrderItems OrderItems_attributeId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."OrderItems"
+    ADD CONSTRAINT "OrderItems_attributeId_fkey" FOREIGN KEY ("attributeId") REFERENCES public."Attributes"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

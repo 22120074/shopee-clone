@@ -4,7 +4,7 @@ const { BadRequest } = require("../utils/appErrors");
 
 exports.createOrder = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { items } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
