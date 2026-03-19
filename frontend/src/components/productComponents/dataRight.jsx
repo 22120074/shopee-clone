@@ -155,6 +155,7 @@ function DataRight({
         attributes: product.attributes,
         stock: product.stockCounts,
         discount: product.discount,
+        fromStore: product.fromStore,
         quantity: value,
         selectedAttributes: {
           color: focusColor,

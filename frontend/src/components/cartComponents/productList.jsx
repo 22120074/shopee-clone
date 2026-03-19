@@ -1,401 +1,513 @@
-import { useState, useRef, useEffect } from 'react';
-import { updateQuantityItem, removeItem } from '../../features/cart/cartSlice';
-import { useDispatch } from 'react-redux';
-import DetailProductDropDown from '../../components/cartComponents/detailProductDropDown'
+import { useState, useRef, useEffect } from "react";
+import { updateQuantityItem, removeItem } from "../../features/cart/cartSlice";
+import { useDispatch } from "react-redux";
+import DetailProductDropDown from "../../components/cartComponents/detailProductDropDown";
 
-function ProductList ({ cartItems, addToast, isAllChecked, isChecked, setIsChecked, setTotalPrice, isPhone }) {
-    const dispatch = useDispatch();
-    // Dùng useState để lưu trạng thái dropdown cho từng sản phẩm
-    const [openDropdown, setOpenDropdown] = useState(null);
-    // Dùng useState để lưu trạng thái cho các input số lượng
-    const [quantityInputs, setQuantityInputs] = useState(cartItems.map((item) => item.quantity.toString()));
-    // Tạo ref để giữ timeout, mỗi popup một ref
-    const popupIncreaseTimeout = useRef(null);
-    const popupDecreaseTimeout = useRef(null);
+function ProductList({
+  cartItems,
+  addToast,
+  isAllChecked,
+  isChecked,
+  setIsChecked,
+  setTotalPrice,
+  isPhone,
+}) {
+  const dispatch = useDispatch();
+  // Dùng useState để lưu trạng thái dropdown cho từng sản phẩm
+  const [openDropdown, setOpenDropdown] = useState(null);
+  // Dùng useState để lưu trạng thái cho các input số lượng
+  const [quantityInputs, setQuantityInputs] = useState(
+    cartItems.map((item) => item.quantity.toString()),
+  );
+  // Tạo ref để giữ timeout, mỗi popup một ref
+  const popupIncreaseTimeout = useRef(null);
+  const popupDecreaseTimeout = useRef(null);
 
-    // Các hàm xử lí tăng, giảm số lượng; xóa sản phẩm rồi dùng dispatch(updateQuantityItem(id, quantity))
-    // Hàm xử lí input.onchange, xử lí input.onblur
-    const handleQuantityClick = (e) => {
-        const { action, id } = e.currentTarget.dataset;
-        if (action === 'increase') {
-            quantityIncrease(id);
-        } else if (action === 'decrease') {
-            quantityDecrease(id);
-        }
+  // Các hàm xử lí tăng, giảm số lượng; xóa sản phẩm rồi dùng dispatch(updateQuantityItem(id, quantity))
+  // Hàm xử lí input.onchange, xử lí input.onblur
+  const handleQuantityClick = (e) => {
+    const { action, id } = e.currentTarget.dataset;
+    if (action === "increase") {
+      quantityIncrease(id);
+    } else if (action === "decrease") {
+      quantityDecrease(id);
+    }
+  };
+
+  const quantityIncrease = (index) => {
+    const stock =
+      cartItems[index].stock.find(
+        (attr) =>
+          attr.attributeID === cartItems[index].selectedAttributes.attribute.id,
+      )?.count || 0;
+
+    if (quantityInputs[index] >= stock) {
+      // Clear timeout cũ
+      if (popupIncreaseTimeout.current)
+        clearTimeout(popupIncreaseTimeout.current);
+      // Debounce popup
+      popupIncreaseTimeout.current = setTimeout(() => {
+        // Hiển thị popup thông báo cho việc tăng số lượng quá giới hạn
+        addToast(
+          "Số lượng sản phẩm đã đạt giới hạn tối đa. Không thể tăng thêm.",
+          "error",
+          "warning",
+        );
+      }, 400);
+      return;
     }
 
-    const quantityIncrease = (index) => {
-        const stock = cartItems[index].stock.find(
-        attr => attr.attributeID === cartItems[index].selectedAttributes.attribute.id)?.count || 0;
+    setQuantityInputs((prevInputs) => {
+      const newInputs = [...prevInputs];
+      newInputs[index] = (parseInt(newInputs[index]) + 1).toString();
+      return newInputs;
+    });
 
-        if (quantityInputs[index] >= stock) {
-            // Clear timeout cũ
-            if (popupIncreaseTimeout.current) clearTimeout(popupIncreaseTimeout.current);
-            // Debounce popup
-            popupIncreaseTimeout.current = setTimeout(() => {
-                // Hiển thị popup thông báo cho việc tăng số lượng quá giới hạn
-                addToast('Số lượng sản phẩm đã đạt giới hạn tối đa. Không thể tăng thêm.', 'error', 'warning');
-            }, 400);
-            return;
-        }
+    if (popupIncreaseTimeout.current)
+      clearTimeout(popupIncreaseTimeout.current);
 
-        setQuantityInputs(prevInputs => {
-            const newInputs = [...prevInputs];
-            newInputs[index] = (parseInt(newInputs[index]) + 1).toString();
-            return newInputs;
-        });
+    popupIncreaseTimeout.current = setTimeout(() => {
+      addToast("Số lượng sản phẩm đã được cập nhật.", "success", "check");
+    }, 400);
 
-        // Clear timeout cũ
-        if (popupIncreaseTimeout.current) clearTimeout(popupIncreaseTimeout.current);
+    dispatch(
+      updateQuantityItem({
+        id: cartItems[index].selectedAttributes.attribute.id,
+        quantity: parseInt(quantityInputs[index]) + 1,
+      }),
+    );
+  };
 
-        // Debounce popup
-        popupIncreaseTimeout.current = setTimeout(() => {
-            // Hiển thị popup thông báo cho việc cập nhật số lượng
-            addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
-        }, 400);
+  const quantityDecrease = (index) => {
+    if (quantityInputs[index] <= 1) {
+      if (popupDecreaseTimeout.current)
+        clearTimeout(popupDecreaseTimeout.current);
 
-        dispatch(updateQuantityItem({
-            id: cartItems[index].selectedAttributes.attribute.id,
-            quantity: parseInt(quantityInputs[index]) + 1
-        }));
-    };
-
-    const quantityDecrease = (index) => {
-        if (quantityInputs[index] <= 1) {
-        if (popupDecreaseTimeout.current) clearTimeout(popupDecreaseTimeout.current);
-
-        popupDecreaseTimeout.current = setTimeout(() => {
-            // Hiển thị popup thông báo cho việc giảm số lượng quá 0
-            addToast('Số lượng sản phẩm nhỏ nhất là 1. Không thể giảm thêm.', 'error', 'warning');
-        }, 400);
-        return;
-        }
-
-        setQuantityInputs(prevInputs => {
-            const newInputs = [...prevInputs];
-            newInputs[index] = (parseInt(newInputs[index]) - 1).toString();
-            return newInputs;
-        });
-
-        if (popupDecreaseTimeout.current) clearTimeout(popupDecreaseTimeout.current);
-
-        popupDecreaseTimeout.current = setTimeout(() => {
-            // Hiển thị popup thông báo cho việc cập nhật số lượng
-            addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
-        }, 400);
-
-        dispatch(updateQuantityItem({
-            id: cartItems[index].selectedAttributes.attribute.id,
-            quantity: parseInt(quantityInputs[index]) - 1
-        }));
-    };
-
-    const handleQuantityChange = (e, index) => {
-        const newValue = e.target.value;
-        setQuantityInputs(prev => {
-            const updated = [...prev];
-            updated[index] = newValue; 
-            return updated;
-        });
-    };
-
-    const handleBlur = (e, index) => {
-        let value = quantityInputs[index];
-        // Tính số lượng sản phẩm còn trong kho dựa trên selectedAttributes
-        const stock = cartItems[index].stock.find(attr => attr.attributeID === cartItems[index].selectedAttributes.attribute.id)?.count || 0
-        if ( parseInt(value) > 0 ) {
-            if (parseInt(value) > stock) {
-                setQuantityInputs(prev => {
-                    const updated = [...prev];
-                    updated[index] = stock.toString();
-                    return updated;
-                });
-                dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: stock }));
-                // Hiển thị popup thông báo cho việc quá số lượng
-                addToast('Số lượng sản phẩm vượt quá giới hạn trong kho. Đã tự động điều chỉnh về giá trị tối đa.', 'error', 'warning');
-            } else {
-                setQuantityInputs(prev => {
-                    const updated = [...prev];
-                    updated[index] = value;
-                    return updated;
-                });
-                dispatch(updateQuantityItem({ id: cartItems[index].selectedAttributes.attribute.id, quantity: parseInt(value) }));
-                // Hiển thị popup thông báo cho việc cập nhật số lượng
-                addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
-            }
-        }
+      popupDecreaseTimeout.current = setTimeout(() => {
+        addToast(
+          "Số lượng sản phẩm nhỏ nhất là 1. Không thể giảm thêm.",
+          "error",
+          "warning",
+        );
+      }, 400);
+      return;
     }
 
-    // Hàm xử lí xóa sản phẩm bằng cách gọi dispatch(removeItem(id))
-    const handleRemoveItem = (id) => {
-        dispatch(removeItem(id));
-        // Hiển thị popup thông báo cho việc xóa sản phẩm
-        addToast('Sản phẩm đã được xóa khỏi giỏ hàng.', 'success', 'trash');
-    };
+    setQuantityInputs((prevInputs) => {
+      const newInputs = [...prevInputs];
+      newInputs[index] = (parseInt(newInputs[index]) - 1).toString();
+      return newInputs;
+    });
 
-    // Hàm xử lí Check một CheckBox
-    const handleCheckboxChange = (index) => {
-        setIsChecked(prev => {
-            const updated = [...prev];
-            updated[index] = !updated[index];
-            return updated;
+    if (popupDecreaseTimeout.current)
+      clearTimeout(popupDecreaseTimeout.current);
+
+    popupDecreaseTimeout.current = setTimeout(() => {
+      addToast("Số lượng sản phẩm đã được cập nhật.", "success", "check");
+    }, 400);
+
+    dispatch(
+      updateQuantityItem({
+        id: cartItems[index].selectedAttributes.attribute.id,
+        quantity: parseInt(quantityInputs[index]) - 1,
+      }),
+    );
+  };
+
+  const handleQuantityChange = (e, index) => {
+    const newValue = e.target.value;
+    setQuantityInputs((prev) => {
+      const updated = [...prev];
+      updated[index] = newValue;
+      return updated;
+    });
+  };
+
+  const handleBlur = (e, index) => {
+    let value = quantityInputs[index];
+    // Tính số lượng sản phẩm còn trong kho dựa trên selectedAttributes
+    const stock =
+      cartItems[index].stock.find(
+        (attr) =>
+          attr.attributeID === cartItems[index].selectedAttributes.attribute.id,
+      )?.count || 0;
+    if (parseInt(value) > 0) {
+      if (parseInt(value) > stock) {
+        setQuantityInputs((prev) => {
+          const updated = [...prev];
+          updated[index] = stock.toString();
+          return updated;
         });
-        setTotalPrice(prevTotal => {
-            const itemPrice = cartItems[index].quantity * (cartItems[index].selectedAttributes.attribute.price * (100 - cartItems[index].discount) / 100);
-            return isChecked[index] ? prevTotal - itemPrice : prevTotal + itemPrice;
+        dispatch(
+          updateQuantityItem({
+            id: cartItems[index].selectedAttributes.attribute.id,
+            quantity: stock,
+          }),
+        );
+        addToast(
+          "Số lượng sản phẩm vượt quá giới hạn trong kho. Đã tự động điều chỉnh về giá trị tối đa.",
+          "error",
+          "warning",
+        );
+      } else {
+        setQuantityInputs((prev) => {
+          const updated = [...prev];
+          updated[index] = value;
+          return updated;
         });
-    };
+        dispatch(
+          updateQuantityItem({
+            id: cartItems[index].selectedAttributes.attribute.id,
+            quantity: parseInt(value),
+          }),
+        );
+        addToast("Số lượng sản phẩm đã được cập nhật.", "success", "check");
+      }
+    }
+  };
 
-    // Dùng useEffect để đồng bộ trạng thái checkbox với isAllChecked
-    useEffect(() => {
-        if (isAllChecked) {
-            setIsChecked(cartItems.map(() => true));
-            setTotalPrice(cartItems.reduce((total, item) => {
-                return total + item.quantity * (item.selectedAttributes.attribute.price * (100 - item.discount) / 100);
-            }, 0));
-        } else {
-            setIsChecked(cartItems.map(() => false));
-            setTotalPrice(0);
-        }
-    }, [isAllChecked, cartItems, setIsChecked, setTotalPrice]);
+  // Hàm xử lí xóa sản phẩm bằng cách gọi dispatch(removeItem(id))
+  const handleRemoveItem = (id) => {
+    dispatch(removeItem(id));
+    addToast("Sản phẩm đã được xóa khỏi giỏ hàng.", "success", "trash");
+  };
 
-    return (
-        cartItems.map((attribute, index) => (
-            <div key={index} className={`bg-white h-auto max-w-[1200px] mx-auto border-b border-gray-200 items-center mt-4
-                ${isPhone ? 'w-full flex h-full pl-2 pr-3 py-3 gap-3' : 'grid [grid-template-columns:1fr_150px_150px_150px_150px] px-10'}`}               
-            >
-                { isPhone ? (
-                    <>
-                        {/* Checkbox */}
-                        <input type="checkbox" className="flex-shrink-0 relative inline-block appearance-none w-[16px] h-[16px] border border-[#DBDBDB] 
+  // Hàm xử lí Check một CheckBox
+  const handleCheckboxChange = (index) => {
+    setIsChecked((prev) => {
+      const updated = [...prev];
+      updated[index] = !updated[index];
+      return updated;
+    });
+    setTotalPrice((prevTotal) => {
+      const itemPrice =
+        cartItems[index].quantity *
+        ((cartItems[index].selectedAttributes.attribute.price *
+          (100 - cartItems[index].discount)) /
+          100);
+      return isChecked[index] ? prevTotal - itemPrice : prevTotal + itemPrice;
+    });
+  };
+
+  // Dùng useEffect để đồng bộ trạng thái checkbox với isAllChecked
+  useEffect(() => {
+    if (isAllChecked) {
+      setIsChecked(cartItems.map(() => true));
+      setTotalPrice(
+        cartItems.reduce((total, item) => {
+          return (
+            total +
+            item.quantity *
+              ((item.selectedAttributes.attribute.price *
+                (100 - item.discount)) /
+                100)
+          );
+        }, 0),
+      );
+    } else {
+      setIsChecked(cartItems.map(() => false));
+      setTotalPrice(0);
+    }
+  }, [isAllChecked, cartItems, setIsChecked, setTotalPrice]);
+
+  return cartItems.map((attribute, index) => (
+    <div
+      key={index}
+      className={`bg-white h-auto max-w-[1200px] mx-auto border-b border-gray-200 items-center mt-4
+                ${isPhone ? "w-full flex h-full pl-2 pr-3 py-3 gap-3" : "grid [grid-template-columns:1fr_150px_150px_150px_150px] px-10"}`}
+    >
+      {isPhone ? (
+        <>
+          {/* Checkbox */}
+          <input
+            type="checkbox"
+            className="flex-shrink-0 relative inline-block appearance-none w-[16px] h-[16px] border border-[#DBDBDB] 
                             rounded-sm checked:bg-primaryColor checked:border-primaryColor"
-                            checked={isChecked[index]}
-                            onChange={() => handleCheckboxChange(index)}
-                        />
-                        {/* Ảnh sản phẩm */}
-                        <div className='flex-shrink-0 rounded-sm'
-                            style={{
-                                width: '80px',
-                                height: '80px',
-                                backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center'
-                            }}>
-                        </div>
-                        {/* Tên sản phẩm, phân loại sản phẩm, ( giá tiền, điều chỉnh số lượng ) */}
-                        <div className="flex-1 flex flex-col items-start h-[80px] justify-between">
-                            <div className='relative flex items-start w-full justify-between'>
-                                <div className="w-[180px] line-clamp-1 text-sm font-normal text-start">
-                                    {attribute.name}
-                                </div>
-                                <div className='absolute w-auto top-4 left-0'>
-                                    <div className='inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2
-                                        bg-lessgrayColor px-1 rounded-sm'
-                                        onClick={() => setOpenDropdown(openDropdown === index ? null : index)}
-                                    >
-                                        <div className='text-xs capitalize text-grayTextColor w-auto whitespace-normal'>
-                                            {attribute.selectedAttributes.color}
-                                            { attribute.selectedAttributes.size !== null ? ', ' : '' }
-                                            {attribute.selectedAttributes.size}
-                                        </div>
-                                        <i className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
-                                            ${openDropdown === index ? 'rotate-180' : 'rotate-0'}`}>
-                                        </i>
-                                    </div>
-                                    {/* Phần dropdown */}
-                                    <DetailProductDropDown openDropdown={openDropdown} index={index} />
-                                </div>
-                                <button className='flex justify-center text-sm font-medium text-primaryTextColor'
-                                    onClick={() => handleRemoveItem(attribute.selectedAttributes.attribute.id)}
-                                >
-                                    Xóa
-                                </button>
-                            </div>
-                            <div className='flex items-end w-full justify-between'>
-                                <div className='flex items-center justify-start text-sm font-normal gap-1 mt-5'>
-                                    <div className='whitespace-nowrap text-primaryTextColor font-medium'>
-                                        <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                                        {(attribute.selectedAttributes.attribute.price * (100 - 10) / 100).toLocaleString('vi-VN')}
-                                    </div>
-                                    { attribute.discount > 0 && (
-                                        <div className='relative text-[#929292] whitespace-nowrap'>
-                                            <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                                            { attribute.selectedAttributes.attribute.price.toLocaleString('vi-VN') }
-                                            <div className='absolute top-[50%] right-0 w-full h-[1px] bg-black'></div>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='flex justify-end items-center h-4 text-inherit w-full rounded-sm overflow-hidden text-sm'>
-                                    <button className={`w-6 h-full flex items-center justify-center
+            checked={isChecked[index]}
+            onChange={() => handleCheckboxChange(index)}
+          />
+          {/* Ảnh sản phẩm */}
+          <div
+            className="flex-shrink-0 rounded-sm"
+            style={{
+              width: "80px",
+              height: "80px",
+              backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          ></div>
+          {/* Tên sản phẩm, phân loại sản phẩm, ( giá tiền, điều chỉnh số lượng ) */}
+          <div className="flex-1 flex flex-col items-start h-[80px] justify-between">
+            <div className="relative flex items-start w-full justify-between">
+              <div className="w-[180px] line-clamp-1 text-sm font-normal text-start">
+                {attribute.name}
+              </div>
+              <div className="absolute w-auto top-4 left-0">
+                <div
+                  className="inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2
+                                        bg-lessgrayColor px-1 rounded-sm"
+                  onClick={() =>
+                    setOpenDropdown(openDropdown === index ? null : index)
+                  }
+                >
+                  <div className="text-xs capitalize text-grayTextColor w-auto whitespace-normal">
+                    {attribute.selectedAttributes.color}
+                    {attribute.selectedAttributes.size !== null ? ", " : ""}
+                    {attribute.selectedAttributes.size}
+                  </div>
+                  <i
+                    className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
+                                            ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                  ></i>
+                </div>
+                {/* Phần dropdown */}
+                <DetailProductDropDown
+                  openDropdown={openDropdown}
+                  index={index}
+                />
+              </div>
+              <button
+                className="flex justify-center text-sm font-medium text-primaryTextColor"
+                onClick={() =>
+                  handleRemoveItem(attribute.selectedAttributes.attribute.id)
+                }
+              >
+                Xóa
+              </button>
+            </div>
+            <div className="flex items-end w-full justify-between">
+              <div className="flex items-center justify-start text-sm font-normal gap-1 mt-5">
+                <div className="whitespace-nowrap text-primaryTextColor font-medium">
+                  <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                  {(
+                    (attribute.selectedAttributes.attribute.price *
+                      (100 - (attribute.discount || 0))) /
+                    100
+                  ).toLocaleString("vi-VN")}
+                </div>
+                {attribute.discount > 0 && (
+                  <div className="relative text-[#929292] whitespace-nowrap">
+                    <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                    {attribute.selectedAttributes.attribute.price.toLocaleString(
+                      "vi-VN",
+                    )}
+                    <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-end items-center h-4 text-inherit w-full rounded-sm overflow-hidden text-sm">
+                <button
+                  className={`w-6 h-full flex items-center justify-center
                                         border border-[#CCCCCC] text-xs rounded-tl-sm rounded-bl-sm
                                         `}
-                                        onClick={handleQuantityClick}
-                                        data-action="decrease"
-                                        data-id={index}
-                                    >
-                                        <i className="fa-solid fa-minus"></i>
-                                    </button>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        value={quantityInputs[index]}
-                                        onChange={e => handleQuantityChange(e, index)}
-                                        onBlur={e => handleBlur(e, index)}
-                                        onKeyDown={(e) => {
-                                        if (
-                                            !(
-                                            (e.key >= '0' && e.key <= '9') || 
-                                            ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
-                                            )
-                                        ) {
-                                            e.preventDefault();
-                                        }
-                                        }}
-                                        className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
+                  onClick={handleQuantityClick}
+                  data-action="decrease"
+                  data-id={index}
+                >
+                  <i className="fa-solid fa-minus"></i>
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  value={quantityInputs[index]}
+                  onChange={(e) => handleQuantityChange(e, index)}
+                  onBlur={(e) => handleBlur(e, index)}
+                  onKeyDown={(e) => {
+                    if (
+                      !(
+                        (e.key >= "0" && e.key <= "9") ||
+                        [
+                          "Backspace",
+                          "Delete",
+                          "ArrowLeft",
+                          "ArrowRight",
+                          "Tab",
+                        ].includes(e.key)
+                      )
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
                                         [&::-webkit-outer-spin-button]:appearance-none 
                                         [&::-webkit-inner-spin-button]:appearance-none
                                         focus:outline-none
                                         bg-transparent
                                         border-y border-[#CCCCCC]
                                         `}
-                                    />
-                                    <button className={`w-6 h-full flex items-center justify-center
+                />
+                <button
+                  className={`w-6 h-full flex items-center justify-center
                                         border border-[#CCCCCC] text-xs rounded-tr-sm rounded-br-sm
                                         `}
-                                        onClick={handleQuantityClick}
-                                        data-action="increase"
-                                        data-id={index}
-                                    >
-                                        <i className="fa-solid fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                <>
-                    {/* Bên trái: checkbox, ảnh, tên, phân loại */}
-                    <div className='flex items-center h-full gap-4 my-[36px]'>
-                        {/* Checkbox */}
-                        <input type="checkbox" className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
+                  onClick={handleQuantityClick}
+                  data-action="increase"
+                  data-id={index}
+                >
+                  <i className="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Bên trái: checkbox, ảnh, tên, phân loại */}
+          <div className="flex items-center h-full gap-4 my-[36px]">
+            {/* Checkbox */}
+            <input
+              type="checkbox"
+              className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
                             checked:bg-primaryColor checked:border-primaryColor"
-                            checked={isChecked[index]}
-                            onChange={() => handleCheckboxChange(index)}
-                        />
-                        {/* Ảnh và tên sản phẩm */}
-                        <div className='flex items-center h-full gap-2'>
-                            {/* Ảnh sản phẩm */}
-                            <div className='rounded-sm'
-                            style={{
-                                width: '80px',
-                                height: '80px',
-                                backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center'
-                            }}>
-                            </div>
-                            {/* Tên sản phẩm */}
-                            <div className="flex items-start h-[80px]">
-                                <div className="w-[200px] line-clamp-2 text-sm font-normal text-start">
-                                    {attribute.name}
-                                </div>
-                            </div>
-                        </div>
-                        {/* Phân loại sản phẩm */}
-                        <div className='relative'>
-                            <div className='text-sm capitalize text-moregrayTextColor font-medium flex gap-2'>
-                                phân loại hàng: 
-                                <button className='inline-block' onClick={() => setOpenDropdown(openDropdown === index ? null : index)}>
-                                    <i className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
-                                    ${openDropdown === index ? 'rotate-180' : 'rotate-0'}`}>
-                                    </i>
-                                </button>
-                            </div>
-                            <div className='text-sm capitalize text-grayTextColor w-[140px] whitespace-normal'>
-                                {attribute.selectedAttributes.color}
-                                { attribute.selectedAttributes.size !== null ? ', ' : '' }
-                                {attribute.selectedAttributes.size}
-                            </div>
-                            {/* Phần dropdown */}
-                            <DetailProductDropDown openDropdown={openDropdown} index={index} />
-                        </div>
-                    </div>
-                    {/* Bên phải: 4 thông tin sản phẩm */}
-                    {/* Đơn giá */}
-                    <div className='flex justify-center text-sm font-normal gap-2'>
-                        { attribute.discount > 0 && (
-                            <div className='relative text-[#929292] whitespace-nowrap'>
-                                <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                                { attribute.selectedAttributes.attribute.price.toLocaleString('vi-VN') }
-                                <div className='absolute top-[50%] right-0 w-full h-[1px] bg-black'></div>
-                            </div>
-                        )}
-                        <div className='whitespace-nowrap'>
-                            <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                            {(attribute.selectedAttributes.attribute.price * (100 - 10) / 100).toLocaleString('vi-VN')}
-                        </div>
-                    </div>
-                    {/* Số lượng */}
-                    <div className='flex justify-center items-center h-8  text-inherit w-full'>
-                        <button className={`w-[30px] h-full flex items-center justify-center
+              checked={isChecked[index]}
+              onChange={() => handleCheckboxChange(index)}
+            />
+            {/* Ảnh và tên sản phẩm */}
+            <div className="flex items-center h-full gap-2">
+              {/* Ảnh sản phẩm */}
+              <div
+                className="rounded-sm"
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              ></div>
+              {/* Tên sản phẩm */}
+              <div className="flex items-start h-[80px]">
+                <div className="w-[200px] line-clamp-2 text-sm font-normal text-start">
+                  {attribute.name}
+                </div>
+              </div>
+            </div>
+            {/* Phân loại sản phẩm */}
+            <div className="relative">
+              <div className="text-sm capitalize text-moregrayTextColor font-medium flex gap-2">
+                phân loại hàng:
+                <button
+                  className="inline-block"
+                  onClick={() =>
+                    setOpenDropdown(openDropdown === index ? null : index)
+                  }
+                >
+                  <i
+                    className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
+                                    ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                  ></i>
+                </button>
+              </div>
+              <div className="text-sm capitalize text-grayTextColor w-[140px] whitespace-normal">
+                {attribute.selectedAttributes.color}
+                {attribute.selectedAttributes.size !== null ? ", " : ""}
+                {attribute.selectedAttributes.size}
+              </div>
+              {/* Phần dropdown */}
+              <DetailProductDropDown
+                openDropdown={openDropdown}
+                index={index}
+              />
+            </div>
+          </div>
+          {/* Bên phải: 4 thông tin sản phẩm */}
+          {/* Đơn giá */}
+          <div className="flex justify-center text-sm font-normal gap-2">
+            {attribute.discount > 0 && (
+              <div className="relative text-[#929292] whitespace-nowrap">
+                <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                {attribute.selectedAttributes.attribute.price.toLocaleString(
+                  "vi-VN",
+                )}
+                <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
+              </div>
+            )}
+            <div className="whitespace-nowrap">
+              <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+              {(
+                (attribute.selectedAttributes.attribute.price *
+                  (100 - (attribute.discount || 0))) /
+                100
+              ).toLocaleString("vi-VN")}
+            </div>
+          </div>
+          {/* Số lượng */}
+          <div className="flex justify-center items-center h-8  text-inherit w-full">
+            <button
+              className={`w-[30px] h-full flex items-center justify-center
                             border border-[#CCCCCC] text-xs
                             `}
-                            onClick={handleQuantityClick}
-                            data-action="decrease"
-                            data-id={index}
-                        >
-                            <i className="fa-solid fa-minus"></i>
-                        </button>
-                        <input
-                            type="number"
-                            min="1"
-                            value={quantityInputs[index]}
-                            onChange={e => handleQuantityChange(e, index)}
-                            onBlur={e => handleBlur(e, index)}
-                            onKeyDown={(e) => {
-                            if (
-                                !(
-                                (e.key >= '0' && e.key <= '9') || 
-                                ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
-                                )
-                            ) {
-                                e.preventDefault();
-                            }
-                            }}
-                            className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
+              onClick={handleQuantityClick}
+              data-action="decrease"
+              data-id={index}
+            >
+              <i className="fa-solid fa-minus"></i>
+            </button>
+            <input
+              type="number"
+              min="1"
+              value={quantityInputs[index]}
+              onChange={(e) => handleQuantityChange(e, index)}
+              onBlur={(e) => handleBlur(e, index)}
+              onKeyDown={(e) => {
+                if (
+                  !(
+                    (e.key >= "0" && e.key <= "9") ||
+                    [
+                      "Backspace",
+                      "Delete",
+                      "ArrowLeft",
+                      "ArrowRight",
+                      "Tab",
+                    ].includes(e.key)
+                  )
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
                             [&::-webkit-outer-spin-button]:appearance-none 
                             [&::-webkit-inner-spin-button]:appearance-none
                             focus:outline-none
                             bg-transparent
                             border-y border-[#CCCCCC]
                             `}
-                        />
-                        <button className={`w-[30px] h-full flex items-center justify-center
+            />
+            <button
+              className={`w-[30px] h-full flex items-center justify-center
                             border border-[#CCCCCC] text-xs
                             `}
-                            onClick={handleQuantityClick}
-                            data-action="increase"
-                            data-id={index}
-                        >
-                            <i className="fa-solid fa-plus"></i>
-                        </button>
-                    </div>
-                    {/* Số tiền */}
-                    <div className='flex justify-center text-sm font-normal text-primaryTextColor'>
-                        <i className="fa-solid fa-dong-sign text-[10px] relative top-[7px] right-[1px]"></i>
-                        {(attribute.quantity * (attribute.selectedAttributes.attribute.price * (100 - 10) / 100)).toLocaleString('vi-VN')}
-                    </div>
-                    {/* Thao tác */}
-                    <button className='flex justify-center text-sm font-normal'
-                        onClick={() => handleRemoveItem(attribute.selectedAttributes.attribute.id)}
-                    >
-                        Xóa
-                    </button>
-                </>
-                )}
-            </div>
-        ))
-    )
+              onClick={handleQuantityClick}
+              data-action="increase"
+              data-id={index}
+            >
+              <i className="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          {/* Số tiền */}
+          <div className="flex justify-center text-sm font-normal text-primaryTextColor">
+            <i className="fa-solid fa-dong-sign text-[10px] relative top-[7px] right-[1px]"></i>
+            {(
+              attribute.quantity *
+              ((attribute.selectedAttributes.attribute.price *
+                (100 - (attribute.discount || 0))) /
+                100)
+            ).toLocaleString("vi-VN")}
+          </div>
+          {/* Thao tác */}
+          <button
+            className="flex justify-center text-sm font-normal"
+            onClick={() =>
+              handleRemoveItem(attribute.selectedAttributes.attribute.id)
+            }
+          >
+            Xóa
+          </button>
+        </>
+      )}
+    </div>
+  ));
 }
 
 export default ProductList;
