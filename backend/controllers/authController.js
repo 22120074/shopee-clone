@@ -101,7 +101,7 @@ exports.login = async (req, res, next) => {
         // Đổi để test trên điện thoại với localhost
         secure: false,
         sameSite: "Lax",
-        domain: "20.197.21.221",
+        path: "/",
         // secure: process.env.NODE_ENV === 'production',
         maxAge: 1 * 24 * 60 * 60 * 1000, // 1 ngày
       })
@@ -109,7 +109,7 @@ exports.login = async (req, res, next) => {
         httpOnly: true,
         secure: false,
         sameSite: "Lax",
-        domain: "20.197.21.221",
+        path: "/",
         // secure: process.env.NODE_ENV === 'production',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
       })
