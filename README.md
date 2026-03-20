@@ -392,6 +392,18 @@ docker ps
 # Show tiến trình db
 docker exec -it shoppe-db psql -U postgres -d Shoppe_DB -c "\dt *.*"
 
+ssh azureuser@20.197.21.221
+
+ssh -i <path_to_key> azureuser@IP
+
+exit
+clear
+
+cd ~/my-app
+
+sudo systemctl restart nginx
+sudo nginx -t
+
 ```
 
 ## 🔧 Cấu hình môi trường

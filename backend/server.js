@@ -16,9 +16,16 @@ app.use(cookieParser());
 app.use(express.json());
 
 // 1. CORS: cho phép frontend (http://localhost:3000) gửi cookie
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000", "http://192.168.137.1:3000"],
+//     credentials: true,
+//   }),
+// );
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://192.168.137.1:3000"],
+    origin: true, // Cho phép mọi nguồn (vì lúc này Proxy đã làm trung gian)
     credentials: true,
   }),
 );
