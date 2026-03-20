@@ -99,15 +99,15 @@ exports.login = async (req, res, next) => {
       .cookie("access_token", accessToken, {
         httpOnly: true,
         // Đổi để test trên điện thoại với localhost
-        secure: true,
-        sameSite: "None",
+        secure: false,
+        sameSite: "Lax",
         // secure: process.env.NODE_ENV === 'production',
         maxAge: 1 * 24 * 60 * 60 * 1000, // 1 ngày
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "None",
+        secure: false,
+        sameSite: "Lax",
         // secure: process.env.NODE_ENV === 'production',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
       })
