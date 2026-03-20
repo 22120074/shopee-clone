@@ -1,13 +1,24 @@
+require("dotenv").config();
 const { Sequelize } = require("sequelize");
 
+const isProduction = process.env.POSTGRES_URL_DELOY;
+
 const sequelize = new Sequelize(
-  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL_DELOY ||
     "postgres://postgres:123456789@localhost:5432/Shoppe_DB",
   {
     logging: false,
+    dialect: "postgres",
+    dialectOptions: isProduction
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
   },
 );
-
 const db = {};
 
 db.Sequelize = Sequelize;

@@ -104,15 +104,21 @@ function DataRight({
     setFocusAttribute(found);
 
     if (focusSize) {
-      const validAttributes = product?.attributes.filter(
-        (attr) => attr.size === focusSize,
-      );
+      const validAttributes = product?.attributes.filter((attr) => {
+        const stockQuantity =
+          product?.stockCounts.find((s) => s.attributeID === attr.id)
+            ?.quantity || 0;
+        return attr.size === focusSize && stockQuantity > 0;
+      });
       setValidAttribute(validAttributes);
     }
     if (focusColor) {
-      const validSizes = product?.attributes.filter(
-        (attr) => attr.nameEach === focusColor,
-      );
+      const validSizes = product?.attributes.filter((attr) => {
+        const stockQuantity =
+          product?.stockCounts.find((s) => s.attributeID === attr.id)
+            ?.quantity || 0;
+        return attr.nameEach === focusColor && stockQuantity > 0;
+      });
       setValidSize(validSizes);
     }
   }, [focusColor, focusSize, product, reducedSizes]);
