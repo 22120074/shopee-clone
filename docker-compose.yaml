@@ -1,24 +1,24 @@
 services:
-  db:
-    image: postgres:16
-    container_name: shoppe-db
-    restart: always
-    env_file:
-      - ./backend/.env
-    environment:
-      - POSTGRES_DB=Shoppe_DB
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123456789
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./database:/docker-entrypoint-initdb.d
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  # db:
+  #   image: postgres:16
+  #   container_name: shoppe-db
+  #   restart: always
+  #   env_file:
+  #     - ./backend/.env
+  #   environment:
+  #     - POSTGRES_DB=Shoppe_DB
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=123456789
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - ./database:/docker-entrypoint-initdb.d
+  #     - pgdata:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
 
   redis:
     image: redis:latest
@@ -44,10 +44,6 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:123456789@db:5432/Shoppe_DB
       - REDIS_URL=redis://redis:6379
-    volumes:
-      - "D:/Mon_Hoc/Shopee_Database/Images:/app/assets/images"
-      - "D:/Mon_Hoc/Shopee_Database/Videos:/app/assets/videos"
-      - "D:/Mon_Hoc/Shopee_Database/Uploads:/app/assets/uploads"
 
 volumes:
   pgdata:
