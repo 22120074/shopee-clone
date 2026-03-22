@@ -17,6 +17,7 @@ import StackBar from "../../components/StackBar";
 import { checkShop } from "../../services/shop.service";
 import { logout } from "../../services/auth.service";
 import { set } from "../../features/shop/shopSlice";
+import { useGetCartQuery } from "../../features/api/cartQuery";
 
 function Header() {
   const isDesktop = useIsWindow("(min-width: 1024px)");
@@ -40,6 +41,16 @@ function Header() {
   // dùng useState để quản lí animation
   const [openUserDropdown, setOpenUserDropdown] = useState("closed");
   const [openCartDropdown, setOpenCartDropdown] = useState("closed");
+
+  const { refetch: refetchCart } = useGetCartQuery(undefined, {
+    skip: !user,
+  });
+
+  useEffect(() => {
+    if (user) {
+      refetchCart();
+    }
+  }, [user, refetchCart]);
 
   const handleLogout = async () => {
     try {

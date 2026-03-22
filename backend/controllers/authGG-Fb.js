@@ -6,7 +6,7 @@ const { Unauthorized } = require("../utils/appErrors");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-exports.googleLogin = async (req, res) => {
+exports.googleLogin = async (req, res, next) => {
   const { code } = req.body;
 
   try {

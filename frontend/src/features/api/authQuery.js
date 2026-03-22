@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as AuthService from "../../services/auth.service";
-import { login } from "../features/auth/authSlice";
+import { login } from "../auth/authSlice";
 
 const handleAxiosRequest = async (apiCall) => {
   try {

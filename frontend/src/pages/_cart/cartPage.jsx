@@ -42,7 +42,7 @@ function CartPage() {
 
   const fetchCart = useCallback(async () => {
     if (user?.userId) {
-      const cart = await getCart(user.userId);
+      const cart = await getCart();
       if (cart) {
         dispatch(loadItem(cart.data.data));
       }

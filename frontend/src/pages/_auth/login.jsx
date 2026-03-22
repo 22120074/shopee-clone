@@ -11,7 +11,6 @@ import { useLoginMutation } from "../../features/api/authQuery";
 
 function Login() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   // State để quản lý loading bình thường và loading khi đăng nhập GG, lỗi server
   const [login, { isLoading: isLoadingNormal }] = useLoginMutation();
   const [isLoadingSpecial, setLoadingSpecial] = useState(false);
@@ -27,8 +26,6 @@ function Login() {
   });
   // State để quản lí ẩn hiện lỗi form
   const [showErrors, setShowErrors] = useState(false);
-
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   // Hàm xử lý post của form
   const handleChange = (e) => {
@@ -63,7 +60,6 @@ function Login() {
           password: formData.password,
         }).unwrap();
         // Chuyển hướng về trang chủ
-        await delay(1000);
         navigate("/");
       } catch (err) {
         console.error("Đăng nhập thất bại:", err);

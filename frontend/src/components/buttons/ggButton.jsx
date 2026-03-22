@@ -1,54 +1,19 @@
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loadItem } from "../../features/cart/cartSlice";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
-import {
-  loginGG,
-  getCurrentUser,
-  refreshToken,
-} from "../../services/auth.service";
-import { getCart } from "../../services/cart.service";
-import { login as loginRedux } from "../../features/auth/authSlice";
+import { useLoginGGMutation } from "../../features/api/authQuery";
 
 function GGButton({ disabled, setLoadingSpecial, children }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [loginGG] = useLoginGGMutation();
 
   const login = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       try {
-        await loginGG({ codeResponse });
-        // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng
-        const currentUser = await getCurrentUser();
-        // Nếu không có lỗi, cập nhật state auth
-        if (currentUser && currentUser.data?.data) {
-          dispatch(loginRedux(currentUser.data.data));
-          const cart = await getCart(
-            currentUser.data.data.userId || currentUser.data.data.googleID,
-          );
-          if (cart) {
-            dispatch(loadItem(cart.data.data));
-          }
-        }
-        // Chuyển hướng về trang chủ
+        await loginGG({ codeResponse }).unwrap();
         navigate("/");
       } catch (err) {
-        if (err.response?.status === 401) {
-          try {
-            // Gọi API refresh
-            await refreshToken();
-            // Refresh thành công → gọi lại /me
-            const refreshedUser = await getCurrentUser();
-            dispatch(loginRedux(refreshedUser.data.data));
-            return; // Không navigate về login nữa
-          } catch (refreshErr) {
-            // Refresh thất bại → quay về login
-            navigate("/auth/login");
-            return;
-          }
-        }
         console.error("Login failed:", err.response?.data || err.message);
       } finally {
         setLoadingSpecial(false);
