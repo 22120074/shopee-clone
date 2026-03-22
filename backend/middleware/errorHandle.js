@@ -23,6 +23,7 @@ exports.errorHandler = (err, req, res, next) => {
   const response = {
     success: false,
     message: message,
+    statusCode: statusCode,
   };
   if (data) {
     response.data = data;

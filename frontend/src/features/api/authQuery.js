@@ -32,7 +32,7 @@ export const authQuery = createApi({
 
               return { data: retryRes.data.data };
             } catch (refreshErr) {
-              return { error: error.response?.data };
+              return { error: refreshErr.response?.data || "Unauthorized" };
             }
           }
           return { error: error.response?.data };
@@ -54,7 +54,10 @@ export const authQuery = createApi({
 
     register: builder.mutation({
       queryFn: (userData) =>
-        handleAxiosRequest(() => AuthService.register(userData)),
+        handleAxiosRequest(() => {
+          console.log(userData);
+          return AuthService.register(userData);
+        }),
     }),
 
     loginGG: builder.mutation({

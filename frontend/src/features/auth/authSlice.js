@@ -44,20 +44,6 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
-        authQuery.endpoints.login.matchFulfilled,
-        (state, { payload }) => {
-          state.currentUser = payload;
-          localStorage.setItem("user", JSON.stringify(payload));
-        },
-      )
-      .addMatcher(
-        authQuery.endpoints.loginGG.matchFulfilled,
-        (state, { payload }) => {
-          state.currentUser = payload;
-          localStorage.setItem("user", JSON.stringify(payload));
-        },
-      )
-      .addMatcher(
         authQuery.endpoints.getCurrentUser.matchFulfilled,
         (state, { payload }) => {
           state.currentUser = payload;

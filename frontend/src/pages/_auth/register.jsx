@@ -2,16 +2,17 @@ import "../../css/auth.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../services/auth.service"; // Import hàm đăng ký từ service
 import Spinner from "../../components/skeletons/spinnerButton";
 import PrimaryButton from "../../components/buttons/Button";
 import GGButton from "../../components/buttons/ggButton";
 import FBButton from "../../components/buttons/fbButton";
+import { useRegisterMutation } from "../../features/api/authQuery";
 
 function Register() {
   const navigate = useNavigate();
 
-  const [isLoadingNormal, setLoadingNormal] = useState(false);
+  const [register, { isLoading: isLoadingNormal }, isError, error] =
+    useRegisterMutation();
   const [isLoadingSpecial, setLoadingSpecial] = useState(false);
   const [serverError, setServerError] = useState("");
 
@@ -26,8 +27,6 @@ function Register() {
     password: "",
     confirmPassword: "",
   });
-
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,25 +79,20 @@ function Register() {
       return;
     }
     try {
-      setLoadingNormal(true);
       await register({
         phone: formData.phone,
         password: formData.password,
-      });
-      // Chuyển hướng (ví dụ về trang Login sau 1s)
-      await delay(1000);
+      }).unwrap();
       navigate("/auth/login");
     } catch (err) {
-      const statusCode = err.response?.status;
-      const serverMessage = err.response?.data?.message;
+      const statusCode = err.statusCode;
+      const serverMessage = err.message;
       if (statusCode && statusCode !== 500) {
         setServerError(serverMessage);
       } else {
         setServerError("Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.");
       }
       console.error("Full Error:", err);
-    } finally {
-      setLoadingNormal(false);
     }
   };
 

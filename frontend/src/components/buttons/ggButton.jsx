@@ -11,7 +11,7 @@ function GGButton({ disabled, setLoadingSpecial, children }) {
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       try {
-        await loginGG({ codeResponse }).unwrap();
+        await loginGG(codeResponse).unwrap();
         navigate("/");
       } catch (err) {
         console.error("Login failed:", err.response?.data || err.message);

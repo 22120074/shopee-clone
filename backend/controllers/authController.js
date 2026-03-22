@@ -59,7 +59,7 @@ exports.register = async (req, res, next) => {
       "Đăng ký tài khoản thành công!",
     );
   } catch (error) {
-    next(error); // Gọi middleware xử lý lỗi
+    next(error);
   }
 };
 
