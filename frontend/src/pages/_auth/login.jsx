@@ -2,25 +2,18 @@ import "../../css/auth.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../../features/auth/authSlice";
-import { loadItem } from "../../features/cart/cartSlice";
-import {
-  login as loginService,
-  getCurrentUser,
-  refreshToken,
-} from "../../services/auth.service";
-import { getCart } from "../../services/cart.service";
 import { isValidPhone } from "../../utils/numberCheck";
 import PrimaryButton from "../../components/buttons/Button";
 import Spinner from "../../components/skeletons/spinnerButton";
 import GGButton from "../../components/buttons/ggButton";
 import FBButton from "../../components/buttons/fbButton";
+import { useLoginMutation } from "../../features/api/authQuery";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // State để quản lý loading bình thường và loading khi đăng nhập GG, lỗi server
-  const [isLoadingNormal, setLoadingNormal] = useState(false);
+  const [login, { isLoading: isLoadingNormal }] = useLoginMutation();
   const [isLoadingSpecial, setLoadingSpecial] = useState(false);
   const [serverError, setServerError] = useState("");
   // State để quản lý form và lỗi form
@@ -59,62 +52,24 @@ function Login() {
     }));
   };
 
-  // const API_URL = process.env.REACT_APP_API_URL; // giờ sẽ là 'http://localhost:5000'
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShowErrors(true);
-    let isLogin = false;
     if (errors.phone === "" && errors.password === "") {
       try {
-        setLoadingNormal(true);
         // Gọi API đăng nhập
-        await loginService({
+        await login({
           phone: formData.phone,
           password: formData.password,
-        });
-        // Nếu đăng nhập thành công, sẽ trả về thông tin người dùng
-        isLogin = true;
-        const currentUser = await getCurrentUser();
-        // Nếu không có lỗi, cập nhật state auth
-        if (currentUser) {
-          dispatch(login(currentUser.data.data));
-          // Lấy giỏ hàng của user
-          const cart = await getCart(currentUser.data.data.userId);
-          if (cart) {
-            dispatch(loadItem(cart.data.data));
-          }
-        }
+        }).unwrap();
         // Chuyển hướng về trang chủ
         await delay(1000);
         navigate("/");
       } catch (err) {
-        if (err.response?.status === 401 && isLogin) {
-          try {
-            // Gọi API refresh
-            await refreshToken();
-            // Refresh thành công → gọi lại /me
-            const refreshedUser = await getCurrentUser();
-            dispatch(login(refreshedUser.data.data));
-            // Chuyển hướng về trang chủ
-            await delay(1000);
-            navigate("/");
-            return; // Không navigate về login nữa
-          } catch (refreshErr) {
-            const msg =
-              refreshErr.response?.data?.message ||
-              "Lỗi kết nối. Vui lòng thử lại.";
-            setServerError(msg);
-            return;
-          }
-        }
-        // Lỗi khác 401
-        console.error("Lỗi khi lấy user:", err);
+        console.error("Đăng nhập thất bại:", err);
         const msg =
-          err.response.data.message || "Lỗi kết nối. Vui lòng thử lại.";
+          err?.message || "Số điện thoại hoặc mật khẩu không chính xác.";
         setServerError(msg);
-      } finally {
-        setLoadingNormal(false);
       }
     }
   };

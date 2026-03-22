@@ -345,7 +345,7 @@ function DataRight({
                 onMouseEnter={() => setSelectedImage(attribute.imageUrl)}
                 onMouseLeave={() => setSelectedImage(null)}
               >
-                {attribute.imageUrl !== "" && (
+                {attribute.imageUrl !== "" && attribute.imageUrl !== null && (
                   <div
                     className="hidden md:block"
                     style={{

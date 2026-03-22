@@ -14,6 +14,7 @@ import DataRatingProduct from "../../components/productComponents/dataRating";
 function ProductPage() {
   const isPhone = useIsWindow("(max-width: 768px)");
   const isIPad = useIsWindow("(min-width: 769px) and (max-width: 1024px)");
+  const { isLoggingOut } = useSelector((state) => state.auth);
 
   // Sử dụng useParams để lấy productName từ URL
   // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
@@ -67,6 +68,7 @@ function ProductPage() {
   }, [product]);
 
   useEffect(() => {
+    if (isLoggingOut || !user) return;
     const syncCart = async () => {
       await createOrupdateCart({
         userId: user.userId || user.googleID,
@@ -75,9 +77,7 @@ function ProductPage() {
         totalPrice: totalPrice,
       });
     };
-    if (user?.userId || user?.googleID) {
-      syncCart();
-    }
+    syncCart();
   }, [items, user?.userId, user?.googleID, totalQuantity, totalPrice]);
 
   return (

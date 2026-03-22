@@ -4,7 +4,10 @@ import useToastQueue from "../../hooks/useToastQueue";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { userImageUrlFormat } from "../../utils/stringFormat";
-import { logout as logoutRedux } from "../../features/auth/authSlice";
+import {
+  logout as logoutRedux,
+  setLoggingOut,
+} from "../../features/auth/authSlice";
 import { clearAllItem } from "../../features/cart/cartSlice";
 import { createOrupdateCart } from "../../services/cart.service";
 import emptyCart from "../../assets/Empty-bro.svg";
@@ -40,6 +43,7 @@ function Header() {
 
   const handleLogout = async () => {
     try {
+      dispatch(setLoggingOut(true));
       if (items.length > 0) {
         await createOrupdateCart({
           userId: user.userId || user.googleID,

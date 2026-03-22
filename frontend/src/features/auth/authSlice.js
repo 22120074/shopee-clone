@@ -1,21 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
+import { authQuery } from "../api/authQuery";
 
 const savedUser = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
   currentUser: savedUser || null,
+  isLoggingOut: false,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    login: (state, action) => {
-      state.currentUser = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+    setLoggingOut: (state, action) => {
+      state.isLoggingOut = action.payload;
     },
     logout: (state) => {
       state.currentUser = null;
+      state.isLoggingOut = false;
       localStorage.removeItem("user");
       localStorage.removeItem("cart");
     },
@@ -39,7 +41,44 @@ const authSlice = createSlice({
       localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        authQuery.endpoints.login.matchFulfilled,
+        (state, { payload }) => {
+          state.currentUser = payload;
+          localStorage.setItem("user", JSON.stringify(payload));
+        },
+      )
+      .addMatcher(
+        authQuery.endpoints.loginGG.matchFulfilled,
+        (state, { payload }) => {
+          state.currentUser = payload;
+          localStorage.setItem("user", JSON.stringify(payload));
+        },
+      )
+      .addMatcher(
+        authQuery.endpoints.getCurrentUser.matchFulfilled,
+        (state, { payload }) => {
+          state.currentUser = payload;
+          localStorage.setItem("user", JSON.stringify(payload));
+        },
+      )
+      .addMatcher(authQuery.endpoints.logout.matchFulfilled, (state) => {
+        state.currentUser = null;
+        localStorage.removeItem("user");
+        localStorage.removeItem("cart");
+      });
+  },
 });
 
-export const { login, logout, updateEmail_Redux, updatePhone_Redux, updateProfile_Redux, updateAvatar_Redux } = authSlice.actions;
+export const {
+  login,
+  logout,
+  updateEmail_Redux,
+  updatePhone_Redux,
+  updateProfile_Redux,
+  updateAvatar_Redux,
+  setLoggingOut,
+} = authSlice.actions;
 export default authSlice.reducer;

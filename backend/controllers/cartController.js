@@ -58,7 +58,7 @@ module.exports.createOrUpdateCart = async (req, res, next) => {
 };
 
 module.exports.getCart = async (req, res, next) => {
-  const { userId } = req.query;
+  const { userId } = req.user.userId;
   try {
     let cart;
     if (

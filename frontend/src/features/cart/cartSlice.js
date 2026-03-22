@@ -1,4 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { cartQuery } from "../api/cartQuery";
+
+const saveToLocalStorage = (state) => {
+  localStorage.setItem(
+    "cart",
+    JSON.stringify({
+      items: state.items,
+      totalQuantity: state.totalQuantity,
+      totalPrice: state.totalPrice,
+    }),
+  );
+};
 
 const savedCart = JSON.parse(localStorage.getItem("cart"));
 
@@ -123,6 +135,27 @@ const cartSlice = createSlice({
       state.totalPrice = 0;
       localStorage.removeItem("cart");
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        cartQuery.endpoints.getCart.matchFulfilled,
+        (state, { payload }) => {
+          state.items = payload?.items || [];
+          state.totalQuantity = payload?.totalQuantity || 0;
+          state.totalPrice = payload?.totalPrice || 0;
+          saveToLocalStorage(state);
+        },
+      )
+      .addMatcher(
+        cartQuery.endpoints.createOrupdateCart.matchFulfilled,
+        (state, { payload }) => {
+          state.items = payload?.items || [];
+          state.totalQuantity = payload?.totalQuantity || 0;
+          state.totalPrice = payload?.totalPrice || 0;
+          saveToLocalStorage(state);
+        },
+      );
   },
 });
 
