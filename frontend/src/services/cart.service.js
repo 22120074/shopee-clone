@@ -9,6 +9,11 @@ export const createOrupdateCart = (cartData) => {
 export const getCart = () => {
   return axios.get(`${process.env.REACT_APP_API_URL}/cart/getCart`, {
     withCredentials: true,
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
   });
 };
 

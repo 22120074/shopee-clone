@@ -67,19 +67,6 @@ function ProductPage() {
     }
   }, [product]);
 
-  useEffect(() => {
-    if (isLoggingOut || !user) return;
-    const syncCart = async () => {
-      await createOrupdateCart({
-        userId: user.userId || user.googleID,
-        items: items,
-        totalQuantity: totalQuantity,
-        totalPrice: totalPrice,
-      });
-    };
-    syncCart();
-  }, [items, user?.userId, user?.googleID, totalQuantity, totalPrice]);
-
   return (
     <div className="w-full bg-backgroundGrayColor h-auto">
       {/* Toast Queue để hiển thị thông báo thành công*/}

@@ -1,20 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { cartQuery } from "../api/cartQuery";
 
-const saveToLocalStorage = (state) => {
-  localStorage.setItem(
-    "cart",
-    JSON.stringify({
-      items: state.items,
-      totalQuantity: state.totalQuantity,
-      totalPrice: state.totalPrice,
-    }),
-  );
-};
-
-const savedCart = JSON.parse(localStorage.getItem("cart"));
-
-const initialState = savedCart || {
+const initialState = {
   items: [],
   totalQuantity: 0,
   totalPrice: 0,
@@ -39,14 +26,6 @@ const cartSlice = createSlice({
       state.totalQuantity += item.quantity || 1;
       state.totalPrice +=
         (item.selectedAttributes.attribute.price || 0) * (item.quantity || 1);
-      localStorage.setItem(
-        "cart",
-        JSON.stringify({
-          items: state.items,
-          totalQuantity: state.totalQuantity,
-          totalPrice: state.totalPrice,
-        }),
-      );
     },
     removeItem(state, action) {
       const id = action.payload;
@@ -62,14 +41,6 @@ const cartSlice = createSlice({
           (i) => i.selectedAttributes.attribute.id !== id,
         );
       }
-      localStorage.setItem(
-        "cart",
-        JSON.stringify({
-          items: state.items,
-          totalQuantity: state.totalQuantity,
-          totalPrice: state.totalPrice,
-        }),
-      );
     },
     removeListItem(state, action) {
       const listId = action.payload;
@@ -85,14 +56,6 @@ const cartSlice = createSlice({
           acc + item.selectedAttributes.attribute.price * item.quantity,
         0,
       );
-      localStorage.setItem(
-        "cart",
-        JSON.stringify({
-          items: state.items,
-          totalQuantity: state.totalQuantity,
-          totalPrice: state.totalPrice,
-        }),
-      );
     },
     updateQuantityItem(state, action) {
       const { id, quantity } = action.payload;
@@ -106,20 +69,11 @@ const cartSlice = createSlice({
           existingItem.selectedAttributes.attribute.price;
         existingItem.quantity = quantity;
       }
-      localStorage.setItem(
-        "cart",
-        JSON.stringify({
-          items: state.items,
-          totalQuantity: state.totalQuantity,
-          totalPrice: state.totalPrice,
-        }),
-      );
     },
     clearAllItem(state) {
       state.items = [];
       state.totalQuantity = 0;
       state.totalPrice = 0;
-      localStorage.removeItem("cart");
     },
   },
   extraReducers: (builder) => {
@@ -130,7 +84,6 @@ const cartSlice = createSlice({
           state.items = payload?.items || [];
           state.totalQuantity = payload?.totalQuantity || 0;
           state.totalPrice = payload?.totalPrice || 0;
-          saveToLocalStorage(state);
         },
       )
       .addMatcher(
@@ -139,7 +92,6 @@ const cartSlice = createSlice({
           state.items = payload?.items || [];
           state.totalQuantity = payload?.totalQuantity || 0;
           state.totalPrice = payload?.totalPrice || 0;
-          saveToLocalStorage(state);
         },
       );
   },

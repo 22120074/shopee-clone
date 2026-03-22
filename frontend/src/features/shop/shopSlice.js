@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { shopQuery } from "../api/shopQuery";
 
 const savedShop = JSON.parse(localStorage.getItem("shop"));
 
@@ -10,14 +11,26 @@ const shopSlice = createSlice({
   name: "shop",
   initialState,
   reducers: {
-    set: (state, action) => {
-      state.currentShop = action.payload;
-      localStorage.setItem("shop", JSON.stringify(action.payload));
-    },
     clear: (state, action) => {
       state.currentShop = null;
       localStorage.removeItem("shop");
     },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      shopQuery.endpoints.checkShop.matchFulfilled,
+      (state, { payload }) => {
+        state.currentShop = payload;
+        localStorage.setItem("shop", JSON.stringify(payload));
+      },
+    );
+    builder.addMatcher(
+      shopQuery.endpoints.registerShop.matchFulfilled,
+      (state, { payload }) => {
+        state.currentShop = payload;
+        localStorage.setItem("shop", JSON.stringify(payload));
+      },
+    );
   },
 });
 

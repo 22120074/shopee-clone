@@ -13,7 +13,8 @@ export const handleAxiosRequest = async (apiCall) => {
       } catch (refreshErr) {
         if (
           !window.location.pathname.includes("/auth/login") &&
-          window.location.pathname !== "/"
+          window.location.pathname !== "/" &&
+          !window.location.pathname.includes("/product")
         ) {
           window.location.href = "/auth/login";
         }

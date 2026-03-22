@@ -4,20 +4,14 @@ import useToastQueue from "../../hooks/useToastQueue";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { userImageUrlFormat } from "../../utils/stringFormat";
-import {
-  logout as logoutRedux,
-  setLoggingOut,
-} from "../../features/auth/authSlice";
 import { clearAllItem } from "../../features/cart/cartSlice";
-import { createOrupdateCart } from "../../services/cart.service";
 import emptyCart from "../../assets/Empty-bro.svg";
 import PrimaryButton from "../../components/buttons/Button";
 import useIsWindow from "../../hooks/useIsWindow";
 import StackBar from "../../components/StackBar";
-import { checkShop } from "../../services/shop.service";
-import { logout } from "../../services/auth.service";
-import { set } from "../../features/shop/shopSlice";
-import { useGetCartQuery } from "../../features/api/cartQuery";
+import { useGetCartQuery, cartQuery } from "../../features/api/cartQuery";
+import { useLogoutMutation, authQuery } from "../../features/api/authQuery";
+import { useCheckShopQuery } from "../../features/api/shopQuery";
 
 function Header() {
   const isDesktop = useIsWindow("(min-width: 1024px)");
@@ -32,8 +26,6 @@ function Header() {
 
   // Lấy thông tin giỏ hàng từ Redux store
   const items = useSelector((state) => state.cart.items);
-  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-  const totalPrice = useSelector((state) => state.cart.totalPrice);
 
   // Lấy thông tin location từ URL
   const urlPath = location.pathname === "/cart" ? "cart" : "";
@@ -42,30 +34,18 @@ function Header() {
   const [openUserDropdown, setOpenUserDropdown] = useState("closed");
   const [openCartDropdown, setOpenCartDropdown] = useState("closed");
 
-  const { refetch: refetchCart } = useGetCartQuery(undefined, {
-    skip: !user,
-  });
-
-  useEffect(() => {
-    if (user) {
-      refetchCart();
-    }
-  }, [user, refetchCart]);
+  const [logout] = useLogoutMutation();
+  const { refetch: checkShop } = useCheckShopQuery(
+    user?.userId || user?.googleID,
+    {
+      skip: !user,
+    },
+  );
 
   const handleLogout = async () => {
     try {
-      dispatch(setLoggingOut(true));
-      if (items.length > 0) {
-        await createOrupdateCart({
-          userId: user.userId || user.googleID,
-          items: items,
-          totalQuantity: totalQuantity,
-          totalPrice: totalPrice,
-        });
-        dispatch(clearAllItem());
-      }
-      await logout();
-      dispatch(logoutRedux());
+      await logout().unwrap();
+      dispatch(clearAllItem());
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -102,10 +82,8 @@ function Header() {
     e.preventDefault();
 
     try {
-      const response = await checkShop(user.userId || user.googleID);
-
-      if (response.data.data) {
-        dispatch(set(response.data.data));
+      const shop = await checkShop();
+      if (shop) {
         window.open("/shop/dashboard", "_blank");
       } else {
         window.open("/shop/register", "_blank");

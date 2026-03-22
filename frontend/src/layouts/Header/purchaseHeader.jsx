@@ -1,25 +1,18 @@
 import "../../css/header.css";
 import { useDispatch, useSelector } from "react-redux";
 import useToastQueue from "../../hooks/useToastQueue";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { userImageUrlFormat } from "../../utils/stringFormat";
-import { logout as logoutRedux } from "../../features/auth/authSlice";
-import { clearAllItem } from "../../features/cart/cartSlice";
-import { createOrupdateCart } from "../../services/cart.service";
-import emptyCart from "../../assets/Empty-bro.svg";
-import PrimaryButton from "../../components/buttons/Button";
 import useIsWindow from "../../hooks/useIsWindow";
 import StackBar from "../../components/StackBar";
-import { checkShop } from "../../services/shop.service";
-import { logout } from "../../services/auth.service";
-import { set } from "../../features/shop/shopSlice";
+import { useLogoutMutation } from "../../features/api/authQuery";
+import { useCheckShopQuery } from "../../features/api/shopQuery";
 
 export default function PurchaseHeader() {
   const isDesktop = useIsWindow("(min-width: 1024px)");
   const location = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { toasts, addToast } = useToastQueue(3, 1500);
 
   // Lấy thông tin người dùng từ Redux store
@@ -29,10 +22,17 @@ export default function PurchaseHeader() {
   // dùng useState để quản lí animation
   const [openUserDropdown, setOpenUserDropdown] = useState("closed");
 
+  const [logout] = useLogoutMutation();
+  const { refetch: checkShop } = useCheckShopQuery(
+    user?.userId || user?.googleID,
+    {
+      skip: !user,
+    },
+  );
+
   const handleLogout = async () => {
     try {
-      await logout();
-      dispatch(logoutRedux());
+      await logout().unwrap();
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -58,10 +58,8 @@ export default function PurchaseHeader() {
     e.preventDefault();
 
     try {
-      const response = await checkShop(user.userId || user.googleID);
-
-      if (response.data.data) {
-        dispatch(set(response.data.data));
+      const shop = await checkShop();
+      if (shop) {
         window.open("/shop/dashboard", "_blank");
       } else {
         window.open("/shop/register", "_blank");

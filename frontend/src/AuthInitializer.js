@@ -1,7 +1,13 @@
 import { useGetCurrentUserQuery } from "../src/features/api/authQuery";
+import { useGetCartQuery } from "./features/api/cartQuery";
 
 const AuthInitializer = ({ children }) => {
-  useGetCurrentUserQuery();
+  const { data: user } = useGetCurrentUserQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  useGetCartQuery(undefined, {
+    skip: !user,
+  });
   return children;
 };
 

@@ -3,6 +3,11 @@ import axios from "axios";
 export const getCurrentUser = () => {
   return axios.get(`${process.env.REACT_APP_API_URL}/auth/me`, {
     withCredentials: true,
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
   });
 };
 
