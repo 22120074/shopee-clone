@@ -11,8 +11,7 @@ import { useRegisterMutation } from "../../features/api/authQuery";
 function Register() {
   const navigate = useNavigate();
 
-  const [register, { isLoading: isLoadingNormal }, isError, error] =
-    useRegisterMutation();
+  const [register, { isLoading: isLoadingNormal }] = useRegisterMutation();
   const [isLoadingSpecial, setLoadingSpecial] = useState(false);
   const [serverError, setServerError] = useState("");
 
@@ -85,14 +84,7 @@ function Register() {
       }).unwrap();
       navigate("/auth/login");
     } catch (err) {
-      const statusCode = err.statusCode;
-      const serverMessage = err.message;
-      if (statusCode && statusCode !== 500) {
-        setServerError(serverMessage);
-      } else {
-        setServerError("Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.");
-      }
-      console.error("Full Error:", err);
+      setServerError(err.message);
     }
   };
 

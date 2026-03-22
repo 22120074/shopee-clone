@@ -54,15 +54,12 @@ function Login() {
     setShowErrors(true);
     if (errors.phone === "" && errors.password === "") {
       try {
-        // Gọi API đăng nhập
         await login({
           phone: formData.phone,
           password: formData.password,
         }).unwrap();
-        // Chuyển hướng về trang chủ
         navigate("/");
       } catch (err) {
-        console.error("Đăng nhập thất bại:", err);
         const msg =
           err?.message || "Số điện thoại hoặc mật khẩu không chính xác.";
         setServerError(msg);

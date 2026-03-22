@@ -1,16 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as AuthService from "../../services/auth.service";
-import { login } from "../auth/authSlice";
-
-const handleAxiosRequest = async (apiCall) => {
-  try {
-    const response = await apiCall();
-    return { data: response.data.data };
-  } catch (error) {
-    const errorPayload = error.response?.data || { message: error.message };
-    return { error: errorPayload };
-  }
-};
+import { handleAxiosRequest } from "../../utils/axiosHandle";
 
 export const authQuery = createApi({
   reducerPath: "authQuery",
@@ -18,26 +8,7 @@ export const authQuery = createApi({
   tagTypes: ["User"],
   endpoints: (builder) => ({
     getCurrentUser: builder.query({
-      queryFn: async (arg, api) => {
-        try {
-          const res = await AuthService.getCurrentUser();
-          return { data: res.data.data };
-        } catch (error) {
-          if (error.response?.status === 401) {
-            try {
-              await AuthService.refreshToken();
-              const retryRes = await AuthService.getCurrentUser();
-
-              api.dispatch(login(retryRes.data.data));
-
-              return { data: retryRes.data.data };
-            } catch (refreshErr) {
-              return { error: refreshErr.response?.data || "Unauthorized" };
-            }
-          }
-          return { error: error.response?.data };
-        }
-      },
+      queryFn: () => handleAxiosRequest(AuthService.getCurrentUser),
       providesTags: ["User"],
     }),
 
@@ -54,10 +25,7 @@ export const authQuery = createApi({
 
     register: builder.mutation({
       queryFn: (userData) =>
-        handleAxiosRequest(() => {
-          console.log(userData);
-          return AuthService.register(userData);
-        }),
+        handleAxiosRequest(() => AuthService.register(userData)),
     }),
 
     loginGG: builder.mutation({

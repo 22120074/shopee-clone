@@ -1,15 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as CartService from "../../services/cart.service";
-
-const handleAxiosRequest = async (apiCall) => {
-  try {
-    const response = await apiCall();
-    return { data: response.data.data };
-  } catch (error) {
-    const errorPayload = error.response?.data || { message: error.message };
-    return { error: errorPayload };
-  }
-};
+import { handleAxiosRequest } from "../../utils/axiosHandle";
 
 export const cartQuery = createApi({
   reducerPath: "cartQuery",
