@@ -1,10 +1,13 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { createOrUpdateCart, getCart } = require('../controllers/cartController');
-const { protect } = require('../middleware/authMiddleware');
+const {
+  createOrUpdateCart,
+  getCart,
+} = require("../controllers/cartController");
+const { protect, noCacheMiddleware } = require("../middleware/authMiddleware");
 
-router.post('/addCart', protect, createOrUpdateCart);
-router.get('/getCart', protect, getCart);
+router.post("/addCart", protect, createOrUpdateCart);
+router.get("/getCart", noCacheMiddleware, protect, getCart);
 // router.put('/updateCart', createOrUpdateCart);
 // router.delete('/deleteCart', )
 
