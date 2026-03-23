@@ -99,7 +99,7 @@ function PhoneVertify() {
       const data = await updatePhone({
         userId: user?.userId || user?.googleID,
         newPhone: phone,
-      });
+      }).unwrap();
       if (data) {
         setCurrentStep(3);
         navigate("/user/account/profile");

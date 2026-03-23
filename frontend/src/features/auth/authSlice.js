@@ -23,21 +23,18 @@ const authSlice = createSlice({
       .addMatcher(
         userQuery.endpoints.updateEmail.matchFulfilled,
         (state, { payload }) => {
-          console.log("Payload: ", payload);
-          state.currentUser.email = payload;
+          state.currentUser.email = payload.email;
         },
       )
       .addMatcher(
         userQuery.endpoints.updatePhone.matchFulfilled,
         (state, { payload }) => {
-          console.log("Payload: ", payload);
-          state.currentUser.phone = payload;
+          state.currentUser.phone = payload.phone;
         },
       )
       .addMatcher(
         userQuery.endpoints.updateProfile.matchFulfilled,
         (state, { payload }) => {
-          console.log("Payload: ", payload);
           state.currentUser.displayName = payload.displayName;
           state.currentUser.name = payload.name;
           state.currentUser.gender = payload.gender;

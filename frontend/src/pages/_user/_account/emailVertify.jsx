@@ -86,7 +86,9 @@ function EmailVertify() {
     try {
       await sendOtpEmail(user.email).unwrap();
       setCurrentStep(2);
-      focusInputOtp();
+      setTimeout(() => {
+        focusInputOtp();
+      }, 0);
     } catch (error) {
       console.error("Error sending OTP email:", error);
     }
