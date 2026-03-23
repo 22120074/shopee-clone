@@ -11,7 +11,7 @@ export const getOneProduct = (productID) => {
     `${process.env.REACT_APP_API_URL}/product/getDataProduct?productID=${productID}`,
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 };
 
@@ -21,22 +21,22 @@ export const isLikedProduct = (productID) => {
     {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
-    }
+    },
   );
 };
 
-export const likeProduct = (productID, userID, token) => {
+export const likeProduct = (productID, userID) => {
   return axios.post(
     `${process.env.REACT_APP_API_URL}/product/like`,
     { productID, userID },
     {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
-    }
+    },
   );
 };
 
-export const unlikeProduct = (productID, userID, token) => {
+export const unlikeProduct = (productID, userID) => {
   return axios.delete(`${process.env.REACT_APP_API_URL}/product/unlike`, {
     data: { productID, userID },
     headers: { "Content-Type": "application/json" },
@@ -49,7 +49,7 @@ export const getProductReviews = (productID, limit = 6, page = 1, typeSort) => {
     `${process.env.REACT_APP_API_URL}/product/reviews?productID=${productID}&limit=${limit}&page=${page}&typeSort=${typeSort}`,
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 };
 
@@ -58,6 +58,6 @@ export const getEachNumofTypeRating = (productID) => {
     `${process.env.REACT_APP_API_URL}/product/eachNumReviews?productID=${productID}`,
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 };

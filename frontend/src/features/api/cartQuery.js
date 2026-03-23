@@ -8,7 +8,7 @@ export const cartQuery = createApi({
   tagTypes: ["Cart", "User"],
   endpoints: (builder) => ({
     getCart: builder.query({
-      queryFn: () => handleAxiosRequest(() => CartService.getCart()),
+      queryFn: () => handleAxiosRequest(CartService.getCart),
       providesTags: ["Cart", "User"],
     }),
 

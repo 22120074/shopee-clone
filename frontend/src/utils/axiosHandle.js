@@ -3,6 +3,7 @@ import * as AuthService from "../services/auth.service";
 export const handleAxiosRequest = async (apiCall) => {
   try {
     const response = await apiCall();
+    console.log("apiCall", apiCall);
     return { data: response.data.data };
   } catch (error) {
     if (error.response?.status === 401) {

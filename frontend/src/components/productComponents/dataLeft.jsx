@@ -4,31 +4,23 @@ import { useNavigate } from "react-router-dom";
 import { handlexpiredToken } from "../../services/auth.helper";
 import ImagePreview from "../ImagePreview";
 import {
-  isLikedProduct,
-  likeProduct,
-  unlikeProduct,
-} from "../../services/product.service";
+  useIsLikedProductQuery,
+  useLikeProductMutation,
+  useUnlikeProductMutation,
+} from "../../features/api/productQuery";
 
 function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // Sử dụng useOptimistic để lưu số lượng lượt thích
-  const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(product?.likes || 0);
 
   // Hàm kiểm tra xem người dùng đã thích sản phẩm hay chưa
-  const fetchisLiked = useCallback(
-    async (productID) => {
-      try {
-        const response = await isLikedProduct(productID);
-        setLiked(response.data.data.liked);
-      } catch (error) {
-        console.error("Error fetching isLiked:", error);
-        handlexpiredToken(error, navigate, dispatch);
-      }
-    },
-    [navigate, dispatch],
-  );
+  const { data: liked } = useIsLikedProductQuery(product?.id, {
+    refetchOnMountOrArgChange: true,
+  });
+  const [likeProduct] = useLikeProductMutation();
+  const [unlikeProduct] = useUnlikeProductMutation();
 
   // Sử dụng useEffect để cập nhật số lượt thích khi product thay đổi
   useEffect(() => {
@@ -37,33 +29,21 @@ function LeftData({ product, user, selectedImage, isPhone, isIPad }) {
     }
   }, [product]);
 
-  // Sử dụng useEffect để gọi hàm fetchisLiked khi component được render hoặc khi product hoặc user thay đổi
-  useEffect(() => {
-    if (user && product) {
-      fetchisLiked(product?.id);
-    }
-  }, [product, user, fetchisLiked]);
-
   // Hàm xử lý khi người dùng nhấn nút thích
   const handleLike = async () => {
     try {
-      if (!user) {
-        navigate("/auth/login");
-        return;
-      }
-      // Giả sử mỗi lần nhấn like sẽ tăng 1 lượt thích
       if (liked) {
         setLikes((prev) => prev - 1);
-        setLiked(false);
-        if (!user.userId) await unlikeProduct(product.id, user.googleID);
-        else await unlikeProduct(product.id, user.userId);
+        if (!user.userId)
+          await unlikeProduct({ productID: product.id, userID: user.googleID });
+        else
+          await unlikeProduct({ productID: product.id, userID: user.userId });
         return;
       } else {
         setLikes((prev) => prev + 1);
-        setLiked(true);
-        // console.log(typeof(user.userId));
-        if (!user.userId) await likeProduct(product.id, user.googleID);
-        else await likeProduct(product.id, user.userId);
+        if (!user.userId)
+          await likeProduct({ productID: product.id, userID: user.googleID });
+        else await likeProduct({ productID: product.id, userID: user.userId });
       }
     } catch (error) {
       console.error("Lỗi khi Like/Unlike sản phẩm", error);

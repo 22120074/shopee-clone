@@ -2,7 +2,7 @@ import "../css/home.css";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import CarouselSlider from "../components/CarouselSlide";
-import TrendingProducts from "./TrendingProducts";
+import TrendingProducts from "../components/home/TrendingProducts";
 import useIsWindow from "../hooks/useIsWindow";
 
 function Home() {

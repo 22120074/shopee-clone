@@ -33,7 +33,9 @@ function CartPage() {
   // Dùng useState để lưu trạng thái tùy chọn của footer
   const [isChangeFooter, setIsChangeFooter] = useState(false);
 
-  const { isLoading } = useGetCartQuery();
+  const { isLoading } = useGetCartQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   return (
     <div className="w-full bg-backgroundGrayColor pt-5 h-screen md:h-auto pb-10">

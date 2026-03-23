@@ -48,7 +48,7 @@ module.exports.isLikedProduct = async (req, res, next) => {
     const userId = req.user.userId;
     const { productID } = req.query;
     const liked = await isLikedByUser(productID, userId);
-    return Success(res, { liked }, "Kiểm tra yêu thích thành công");
+    return Success(res, liked, "Kiểm tra yêu thích thành công");
   } catch (error) {
     next(error);
   }

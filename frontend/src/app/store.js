@@ -7,6 +7,7 @@ import { cartQuery } from "../features/api/cartQuery";
 import { cartSyncConfig } from "../features/api/config/cartConfig";
 import { shopQuery } from "../features/api/shopQuery";
 import { userQuery } from "../features/api/userQuery";
+import { productQuery } from "../features/api/productQuery";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     [cartQuery.reducerPath]: cartQuery.reducer,
     [shopQuery.reducerPath]: shopQuery.reducer,
     [userQuery.reducerPath]: userQuery.reducer,
+    [productQuery.reducerPath]: productQuery.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -25,5 +27,6 @@ export const store = configureStore({
       cartQuery.middleware,
       shopQuery.middleware,
       userQuery.middleware,
+      productQuery.middleware,
     ),
 });
