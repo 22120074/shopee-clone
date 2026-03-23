@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { updateUserAvatar } from "../../services/user.service";
+import { useUpdateAvatarMutation } from "../../features/api/userQuery";
 import Spinner from "../skeletons/spinnerButton";
 
-function FileSubmitButton({ user, addToast, dispatch, updateAvatar_Redux }) {
+function FileSubmitButton({ addToast }) {
   // UseState để quản lý trạng thái mở/đóng của modal
   const [isOpen, setIsOpen] = useState(false);
   // UseState để quản lý animation khi mở/đóng modal
@@ -11,9 +11,8 @@ function FileSubmitButton({ user, addToast, dispatch, updateAvatar_Redux }) {
   const fileInputRef = useRef(null);
   // UseState để quản lý file, URL được chọn, Cơ chế lưu: [URL], [File Object]
   const [selectedFile, setSelectedFile] = useState(null);
-  const [url, setUrl] = useState("");
-  // const [typeSave, setTypeSave] = useState(0); // 1: URL, 2: File Object
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [updateAvatar, { isLoading }] = useUpdateAvatarMutation();
 
   useEffect(() => {
     if (isOpen) setIsAnimating(true);
@@ -45,7 +44,6 @@ function FileSubmitButton({ user, addToast, dispatch, updateAvatar_Redux }) {
     }
     // Xử lí tệp hợp lệ (ví dụ: tải lên server hoặc hiển thị ảnh)
     setSelectedFile(file);
-    // setTypeSave(2); // 2: File Object
   };
 
   // 1. Xử lí Input File khi người dùng chọn tệp
@@ -78,19 +76,14 @@ function FileSubmitButton({ user, addToast, dispatch, updateAvatar_Redux }) {
   // 3. Xử lí Submit - Ưu tiên Url
   const handleSubmit = async () => {
     try {
-      setIsLoading(true);
-      const response = await updateUserAvatar(selectedFile);
-
-      if (response) {
-        dispatch(updateAvatar_Redux(response.data.data.avatarUrl));
+      const data = await updateAvatar(selectedFile).unwrap();
+      if (data) {
         addToast("Cập nhật ảnh đại diện thành công!", "success", "check");
         setSelectedFile(null);
-        setUrl("");
       }
     } catch (error) {
       console.error("Error updating avatar:", error);
     } finally {
-      setIsLoading(false);
       setIsOpen(false);
     }
   };

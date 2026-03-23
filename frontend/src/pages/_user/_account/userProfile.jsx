@@ -3,15 +3,11 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { emailHidden, userImageUrlFormat } from "../../../utils/stringFormat";
 import { hiddenPhone } from "../../../utils/numberFormat";
-import { updateUserProfile } from "../../../services/user.service";
-import {
-  updateProfile_Redux,
-  updateAvatar_Redux,
-} from "../../../features/auth/authSlice";
 import "./../../../css/offElement.css";
 import PrimaryButton from "../../../components/buttons/Button";
 import Spinner from "../../../components/skeletons/spinnerButton";
 import FileSubmitButton from "../../../components/userComponents/fileSubmitButton";
+import { useUpdateProfileMutation } from "../../../features/api/userQuery";
 
 function UserProfile() {
   const dispatch = useDispatch();
@@ -44,8 +40,8 @@ function UserProfile() {
   const dayRef = useRef(null);
   const monthRef = useRef(null);
   const yearRef = useRef(null);
-  // UseState để lưu trạng thái loading
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -90,31 +86,19 @@ function UserProfile() {
 
   const handleSubmitForm = async () => {
     try {
-      setIsLoading(true);
       const date = new Date(year, month - 1, day);
-      console.log(date);
-      const response = await updateUserProfile(
-        user?.userId || user?.googleID,
-        displayNameForm,
-        nameForm,
-        genderForm,
-        date,
-      );
-      if (response) {
-        dispatch(
-          updateProfile_Redux({
-            displayName: displayNameForm,
-            name: nameForm,
-            gender: genderForm,
-            dateOfBirth: date,
-          }),
-        );
+      const data = await updateProfile({
+        userId: user?.userId || user?.googleID,
+        displayName: displayNameForm,
+        name: nameForm,
+        gender: genderForm,
+        date: date,
+      }).unwrap();
+      if (data) {
         addToast("Cập nhật hồ sơ thành công!", "success", "check");
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -429,12 +413,7 @@ function UserProfile() {
               className="user_avatar w-24 h-24 object-cover"
             />
           </div>
-          <FileSubmitButton
-            user={user}
-            addToast={addToast}
-            dispatch={dispatch}
-            updateAvatar_Redux={updateAvatar_Redux}
-          />
+          <FileSubmitButton addToast={addToast} />
           <div className="flex flex-col items-center justify-center">
             <span className="text-moregrayTextColor text-base text-center px-4">
               Dung lượng tối đa 1MB.

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { authQuery } from "../api/authQuery";
+import { userQuery } from "../api/userQuery";
 
 const initialState = {
   currentUser: null,
@@ -8,23 +9,6 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    updateEmail_Redux: (state, action) => {
-      state.currentUser.email = action.payload;
-    },
-    updatePhone_Redux: (state, action) => {
-      state.currentUser.phone = action.payload;
-    },
-    updateProfile_Redux: (state, action) => {
-      state.currentUser.displayName = action.payload.displayName;
-      state.currentUser.name = action.payload.name;
-      state.currentUser.gender = action.payload.gender;
-      state.currentUser.dateOfBirth = action.payload.dateOfBirth;
-    },
-    updateAvatar_Redux: (state, action) => {
-      state.currentUser.avatarUrl = action.payload;
-    },
-  },
   extraReducers: (builder) => {
     builder
       .addMatcher(
@@ -35,7 +19,37 @@ const authSlice = createSlice({
       )
       .addMatcher(authQuery.endpoints.logout.matchFulfilled, (state) => {
         state.currentUser = null;
-      });
+      })
+      .addMatcher(
+        userQuery.endpoints.updateEmail.matchFulfilled,
+        (state, { payload }) => {
+          console.log("Payload: ", payload);
+          state.currentUser.email = payload;
+        },
+      )
+      .addMatcher(
+        userQuery.endpoints.updatePhone.matchFulfilled,
+        (state, { payload }) => {
+          console.log("Payload: ", payload);
+          state.currentUser.phone = payload;
+        },
+      )
+      .addMatcher(
+        userQuery.endpoints.updateProfile.matchFulfilled,
+        (state, { payload }) => {
+          console.log("Payload: ", payload);
+          state.currentUser.displayName = payload.displayName;
+          state.currentUser.name = payload.name;
+          state.currentUser.gender = payload.gender;
+          state.currentUser.dateOfBirth = payload.date;
+        },
+      )
+      .addMatcher(
+        userQuery.endpoints.updateAvatar.matchFulfilled,
+        (state, { payload }) => {
+          state.currentUser.avatarUrl = payload.avatarUrl;
+        },
+      );
   },
 });
 

@@ -20,7 +20,13 @@ exports.updateEmailAPI = async (req, res, next) => {
     if (!updatedUser) {
       throw NotFound("Người dùng không tồn tại");
     }
-    return Success(res, null, "Cập nhật email thành công");
+    return Success(
+      res,
+      {
+        email: updatedUser.email,
+      },
+      "Cập nhật email thành công",
+    );
   } catch (error) {
     next(error);
   }
@@ -37,7 +43,13 @@ exports.updatePhoneAPI = async (req, res, next) => {
     if (!updatedUser) {
       throw NotFound("Người dùng không tồn tại");
     }
-    return Success(res, null, "Cập nhật số điện thoại thành công");
+    return Success(
+      res,
+      {
+        phone: updatedUser.phone,
+      },
+      "Cập nhật số điện thoại thành công",
+    );
   } catch (error) {
     next(error);
   }
@@ -62,7 +74,16 @@ exports.updateProfileAPI = async (req, res, next) => {
     if (!updatedUser) {
       throw NotFound("Người dùng không tồn tại");
     }
-    return Success(res, null, "Cập nhật hồ sơ thành công");
+    return Success(
+      res,
+      {
+        displayName: updatedUser.displayName,
+        name: updatedUser.name,
+        gender: updatedUser.gender,
+        date: updatedUser.dateOfBirth,
+      },
+      "Cập nhật hồ sơ thành công",
+    );
   } catch (error) {
     next(error);
   }
