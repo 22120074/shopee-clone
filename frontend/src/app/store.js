@@ -8,6 +8,8 @@ import { cartSyncConfig } from "../features/api/config/cartConfig";
 import { shopQuery } from "../features/api/shopQuery";
 import { userQuery } from "../features/api/userQuery";
 import { productQuery } from "../features/api/productQuery";
+import { mediaQuery } from "../features/api/mediaQuery";
+import { shopProductQuery } from "../features/api/shopProductQuery";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +21,8 @@ export const store = configureStore({
     [shopQuery.reducerPath]: shopQuery.reducer,
     [userQuery.reducerPath]: userQuery.reducer,
     [productQuery.reducerPath]: productQuery.reducer,
+    [mediaQuery.reducerPath]: mediaQuery.reducer,
+    [shopProductQuery.reducerPath]: shopProductQuery.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -28,5 +32,7 @@ export const store = configureStore({
       shopQuery.middleware,
       userQuery.middleware,
       productQuery.middleware,
+      mediaQuery.middleware,
+      shopProductQuery.middleware,
     ),
 });

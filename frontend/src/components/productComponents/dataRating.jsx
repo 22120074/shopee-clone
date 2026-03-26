@@ -1,10 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import {
-  getProductReviews,
-  getEachNumofTypeRating,
-} from "../../services/product.service";
-import { getUserRating } from "../../services/cart.service";
+import { getProductReviews } from "../../services/product.service";
 import {
   formatNumber,
   formatDate,
@@ -15,139 +12,101 @@ import VideoHls from "./../VideoHls";
 import NormalButton from "../../components/buttons/NormalButton";
 import ListRatingSkeleton from "../skeletons/listRatingSkeleton";
 import Pagination from "../Pagination";
+import {
+  useGetProductReviewsQuery,
+  useGetEachNumofTypeRatingQuery,
+  useGetUserRatingQuery,
+} from "../../features/api/productQuery";
 
 function DataRatingProduct({ product, rating, isPhone }) {
   const ratingRef = useRef(null);
   // Sử dụng useState để quản lý trạng thái của reviews và media hiển thị, index slide, index page, total pages, sort option,
   // số lượng đánh giá theo loại, trạng thái dropdown thông tin người dùng, label đã chọn trong dropdown
-  const [reviews, setReviews] = useState([]);
-  const [dataUserList, setDataUserList] = useState([]);
-  const [loadingUserList, setLoadingUserList] = useState(true);
   const [showMedia, setShowMedia] = useState(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
   const [sortOption, setSortOption] = useState("all");
-  // 1: all
-  // 2: 5, 3: 4, 4: 3, 5: 2, 6: 1
-  // 7: hasImage, hasVideo
-  const [eachNumReview, setEachNumReview] = useState({
-    all: 0,
-    withMedia: 0,
-    5: 0,
-    4: 0,
-    3: 0,
-    2: 0,
-    1: 0,
-  });
+
   const [isOpenDropPhone, setIsOpenDropPhone] = useState(false);
   const [selected, setSelected] = useState("Tất cả");
 
-  // useEffect(() => {
-  //     console.log("1: ", currentPageIndex);
-  // }, [currentPageIndex]);
-
-  const fetchReviews = useCallback(
-    async (id, limit, page, sortOption) => {
-      try {
-        let response = await getProductReviews(id, limit, page, sortOption);
-        if (sortOption === "all") {
-          setReviews(response.data.data.reviews.rows);
-          setTotalPages(response.data.data.totalPages);
-          setCurrentPageIndex(response.data.data.currentPage - 1);
-        } else if (sortOption === "image_video") {
-          setReviews(response.data.data.rows);
-          setTotalPages(response.data.data.totalPages);
-          setCurrentPageIndex(response.data.data.currentPage - 1);
-        } else {
-          if (response.data.data.rows.length === 0 && page > 1) {
-            response = await getProductReviews(
-              id,
-              limit,
-              Math.ceil(eachNumReview[parseInt(sortOption)] / limit),
-              sortOption,
-            );
-            if (response.data.data.currentPage !== 0) {
-              setCurrentPageIndex(parseInt(response.data.data.currentPage - 1));
-            } else {
-              setCurrentPageIndex(parseInt(response.data.data.currentPage));
-            }
-          } else {
-            setCurrentPageIndex(response.data.data.currentPage - 1);
-          }
-          setReviews(response.data.data.rows);
-          setTotalPages(response.data.data.totalPages);
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy đánh giá sản phẩm:", error);
-      }
+  const { data: eachNumReviewData } = useGetEachNumofTypeRatingQuery(
+    product?.id,
+    {
+      skip: !product?.id,
+      refetchOnMountOrArgChange: true,
     },
-    [eachNumReview],
   );
 
-  const fetchEachNumReview = async (id) => {
-    try {
-      const response = await getEachNumofTypeRating(id);
-      setEachNumReview({
-        all: response.data.data.all.count,
-        withMedia: response.data.data.withMedia,
-        5: response.data.data[5] ? response.data.data[5] : 0,
-        4: response.data.data[4] ? response.data.data[4] : 0,
-        3: response.data.data[3] ? response.data.data[3] : 0,
-        2: response.data.data[2] ? response.data.data[2] : 0,
-        1: response.data.data[1] ? response.data.data[1] : 0,
-      });
-    } catch (error) {
-      console.error("Lỗi khi lấy số lượng đánh giá theo loại:", error);
+  // 1: all
+  // 2: 5, 3: 4, 4: 3, 5: 2, 6: 1
+  // 7: hasImage, hasVideo
+  const eachNumReview = useMemo(() => {
+    if (!eachNumReviewData) {
+      return { all: 0, withMedia: 0, 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
     }
-  };
+    return {
+      all: eachNumReviewData.all?.count || 0,
+      withMedia: eachNumReviewData.withMedia || 0,
+      5: eachNumReviewData[5] || 0,
+      4: eachNumReviewData[4] || 0,
+      3: eachNumReviewData[3] || 0,
+      2: eachNumReviewData[2] || 0,
+      1: eachNumReviewData[1] || 0,
+    };
+  }, [eachNumReviewData]);
 
-  const fetchDataUserList = async (userIds) => {
-    try {
-      const response = await getUserRating({ data: userIds });
-      setDataUserList(response.data.data);
-    } catch (error) {
-      console.error("Lỗi khi lấy thông tin người dùng:", error);
+  const {
+    data: reviewData,
+    isLoading: isLoadingReviews,
+    isFetching: isFetchingReviews,
+  } = useGetProductReviewsQuery(
+    {
+      productID: product?.id,
+      limit: 6,
+      page: currentPageIndex + 1,
+      typeSort: sortOption,
+    },
+    {
+      skip: !product?.id,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  const { reviews, totalPages } = useMemo(() => {
+    if (!reviewData) return { reviews: [], totalPages: 0 };
+
+    if (sortOption === "all") {
+      return {
+        reviews: reviewData.reviews?.rows || [],
+        totalPages: reviewData.totalPages || 0,
+      };
+    } else {
+      return {
+        reviews: reviewData.rows || [],
+        totalPages: reviewData.totalPages || 0,
+      };
     }
-  };
+  }, [reviewData, sortOption]);
 
-  // Sử dụng useEffect để để lấy các đánh giá, và số lượng đánh giá theo loại
-  useEffect(() => {
-    if (product) {
-      fetchEachNumReview(product.id);
-    }
-  }, [product]);
+  const {
+    data: userRatingData,
+    isLoading: isLoadingUserRating,
+    isFetching: isFetchingUserRating,
+  } = useGetUserRatingQuery(reviews?.map((review) => review.dataUserId) || [], {
+    skip: !reviews || reviews.length === 0,
+    refetchOnMountOrArgChange: true,
+  });
 
-  useEffect(() => {
-    if (product && sortOption === "all" && currentPageIndex === 0) {
-      fetchReviews(product.id, 6, 1, sortOption);
-    }
-  }, [product, sortOption, currentPageIndex, fetchReviews]);
-
-  // Sử dụng useEffect để lấy thông tin người dùng của các đánh giá
-  useEffect(() => {
-    setLoadingUserList(true);
-    if (reviews.length > 0) {
-      const userIds = reviews.map((review) => review.dataUserId);
-      // console.log("userIds", userIds);
-      fetchDataUserList(userIds);
-    }
-    const timer = setTimeout(() => {
-      setLoadingUserList(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [reviews]);
-
-  // Hàm xử lý khi chuyển trang
   const handlePageChange = (page) => {
     if (page < 0 || page >= totalPages) return;
-    fetchReviews(product.id, 6, page + 1, sortOption);
+    setCurrentPageIndex(page);
     ratingRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSort = (typeSort, page) => {
-    fetchReviews(product.id, 6, page, typeSort);
+  const handleSort = (typeSort) => {
     setSortOption(typeSort);
+    setCurrentPageIndex(0);
     ratingRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -315,7 +274,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 }`}
                 onClick={() => {
                   setSelected(`Tất cả (${eachNumReview.all})`);
-                  handleSort("all", currentPageIndex + 1);
+                  handleSort("all");
                   setIsOpenDropPhone(false);
                 }}
               >
@@ -327,7 +286,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 }`}
                 onClick={() => {
                   setSelected(`5 sao (${eachNumReview[5]})`);
-                  handleSort("5", currentPageIndex + 1);
+                  handleSort("5");
                   setIsOpenDropPhone(false);
                 }}
               >
@@ -339,7 +298,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 }`}
                 onClick={() => {
                   setSelected(`4 sao (${eachNumReview[4]})`);
-                  handleSort("4", currentPageIndex + 1);
+                  handleSort("4");
                   setIsOpenDropPhone(false);
                 }}
               >
@@ -351,7 +310,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 }`}
                 onClick={() => {
                   setSelected(`3 sao (${eachNumReview[3]})`);
-                  handleSort("3", currentPageIndex + 1);
+                  handleSort("3");
                   setIsOpenDropPhone(false);
                 }}
               >
@@ -363,7 +322,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 }`}
                 onClick={() => {
                   setSelected(`2 sao (${eachNumReview[2]})`);
-                  handleSort("2", currentPageIndex + 1);
+                  handleSort("2");
                   setIsOpenDropPhone(false);
                 }}
               >
@@ -375,7 +334,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 }`}
                 onClick={() => {
                   setSelected(`1 sao (${eachNumReview[1]})`);
-                  handleSort("1", currentPageIndex + 1);
+                  handleSort("1");
                   setIsOpenDropPhone(false);
                 }}
               >
@@ -387,7 +346,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 }`}
                 onClick={() => {
                   setSelected(`Hình ảnh/Video (${eachNumReview.withMedia})`);
-                  handleSort("image_video", currentPageIndex + 1);
+                  handleSort("image_video");
                   setIsOpenDropPhone(false);
                 }}
               >
@@ -404,7 +363,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
             height={"32px"}
             text={`Tất cả (${eachNumReview.all})`}
             pageIndex={currentPageIndex + 1}
-            onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}
+            onClick={(ts) => handleSort(ts)}
           />
           <NormalButton
             typeSort={"5"}
@@ -413,7 +372,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
             height={"32px"}
             text={`5 sao (${eachNumReview[5]})`}
             pageIndex={currentPageIndex + 1}
-            onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}
+            onClick={(ts) => handleSort(ts)}
           />
           <NormalButton
             typeSort={"4"}
@@ -422,7 +381,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
             height={"32px"}
             text={`4 sao (${eachNumReview[4]})`}
             pageIndex={currentPageIndex + 1}
-            onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}
+            onClick={(ts) => handleSort(ts)}
           />
           <NormalButton
             typeSort={"3"}
@@ -431,7 +390,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
             height={"32px"}
             text={`3 sao (${eachNumReview[3]})`}
             pageIndex={currentPageIndex + 1}
-            onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}
+            onClick={(ts) => handleSort(ts)}
           />
           <NormalButton
             typeSort={"2"}
@@ -440,7 +399,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
             height={"32px"}
             text={`2 sao (${eachNumReview[2]})`}
             pageIndex={currentPageIndex + 1}
-            onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}
+            onClick={(ts) => handleSort(ts)}
           />
           <NormalButton
             typeSort={"1"}
@@ -458,16 +417,19 @@ function DataRatingProduct({ product, rating, isPhone }) {
             height={"32px"}
             text={`Hình ảnh/Video (${eachNumReview.withMedia})`}
             pageIndex={currentPageIndex + 1}
-            onClick={(ts, pageIndex) => handleSort(ts, pageIndex)}
+            onClick={(ts) => handleSort(ts)}
           />
         </div>
       </div>
       {/* Phần hiển thị các đánh giá cụ thể */}
-      {loadingUserList ? (
+      {isLoadingReviews ||
+      isFetchingReviews ||
+      isLoadingUserRating ||
+      isFetchingUserRating ? (
         <ListRatingSkeleton />
-      ) : reviews.length > 0 &&
-        dataUserList.length > 0 &&
-        reviews.length === dataUserList.length ? (
+      ) : reviews?.length > 0 &&
+        userRatingData?.length > 0 &&
+        reviews?.length === userRatingData?.length ? (
         <div className="flex flex-col gap-4 w-full mt-4">
           {reviews.map((review, idx) => (
             <div
@@ -482,7 +444,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 <div className="w-[32px] h-[32px] rounded-full overflow-hidden">
                   <img
                     src={
-                      userImageUrlFormat(dataUserList[idx]?.avatarUrl) ||
+                      userImageUrlFormat(userRatingData[idx]?.avatarUrl) ||
                       "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
                     }
                     alt="avatar"
@@ -495,8 +457,8 @@ function DataRatingProduct({ product, rating, isPhone }) {
                 {/* Phần tên, điểm, ngày giờ đánh giá */}
                 <div className="flex flex-col items-start justify-start text-xs gap-2">
                   <div className="">
-                    {dataUserList[idx]?.name ||
-                      formatNumber(dataUserList[idx]?.phone)}
+                    {userRatingData[idx]?.name ||
+                      formatNumber(userRatingData[idx]?.phone)}
                   </div>
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map((i) => (
@@ -573,7 +535,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
           Chưa có đánh giá nào
         </div>
       )}
-      {reviews.length > 0 && dataUserList.length > 0 && (
+      {reviews?.length > 0 && userRatingData?.length > 0 && (
         <Pagination
           totalPages={totalPages}
           currentPage={currentPageIndex}

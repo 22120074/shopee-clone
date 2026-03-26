@@ -3,20 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import InsertListImgButton from "../../../../components/buttons/insertListImgButton";
 import PrimaryDashedButton from "../../../../components/buttons/primaryDashedBttn";
-import TextInput from "../../../../components/input/textInput";
 import CardAttribute from "../../../../components/shopComponents/cardAttribute";
 import PrimaryButton from "../../../../components/buttons/Button";
 import TableAttribute from "../../../../components/shopComponents/tableAttribute";
 import Stack from "../../../../components/layout/stack";
 import VerticalStepProgress from "../../../../components/verticalStepProgress";
-import { createProduct } from "../../../../services/shopProduct.service";
-import { uploadMultipleImages } from "../../../../services/media.service";
 import Spinner from "../../../../components/skeletons/spinnerButton";
 import DetailData from "../../../../components/shopComponents/product/detailData";
 import useIsWindow from "../../../../hooks/useIsWindow";
 import StackBar from "../../../../components/StackBar";
 import useToastQueue from "../../../../hooks/useToastQueue";
 import { handlexpiredToken } from "../../../../services/auth.helper";
+import { useUploadMultipleImagesMutation } from "../../../../features/api/mediaQuery";
+import { useCreateProductMutation } from "../../../../features/api/shopProductQuery";
 
 const categories = [
   "Thời Trang Nam",
@@ -153,7 +152,6 @@ export default function AddProduct() {
     "Thông tin bán hàng",
   ];
   const [currentStep, setCurrentStep] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Thông tin cơ bản
   const [imgs, setImgs] = useState([]);
@@ -188,6 +186,11 @@ export default function AddProduct() {
     stock,
     attributeObject,
   } = tableState;
+
+  const [uploadMultipleImages, { isLoading: isLoadingUpload }] =
+    useUploadMultipleImagesMutation();
+  const [createProduct, { isLoading: isLoadingCreate }] =
+    useCreateProductMutation();
 
   const setAttribute = (payload) =>
     dispatch({ type: "SET_FIELD", field: "attribute", payload });
@@ -227,10 +230,9 @@ export default function AddProduct() {
 
     if (uploadQueue.length > 0) {
       // Truyền mảng fileObj lên Cloudinary
-      const response = await uploadMultipleImages(
-        uploadQueue.map((item) => item.fileObj),
-      );
-      const results = response.data.data;
+      const results = await uploadMultipleImages({
+        imgs: uploadQueue.map((item) => item.fileObj),
+      }).unwrap();
 
       // Lưu kết quả upload vào từ điển theo tên màu
       uploadQueue.forEach((item, index) => {
@@ -267,7 +269,6 @@ export default function AddProduct() {
 
   const handlePostData = async () => {
     try {
-      setIsLoading(true);
       const productData = {
         name: name.trim(),
         attributeName: attribute.trim(),
@@ -281,8 +282,7 @@ export default function AddProduct() {
         description: detail.trim(),
       };
 
-      const uploadedImgs = await uploadMultipleImages(imgs);
-      const imagesData = uploadedImgs.data.data;
+      const imagesData = await uploadMultipleImages({ imgs }).unwrap();
 
       const attributeData = Object.entries(attributeObject).flatMap(
         ([attrName, variants]) =>
@@ -301,27 +301,16 @@ export default function AddProduct() {
         detail: detailData,
         attributes: finalAttributes,
       };
-      const response = await createProduct(payload);
-      if (response.data.success) {
+      const data = await createProduct({ payload }).unwrap();
+      if (data) {
         addToast("Thêm sản phẩm thành công", "success", "check");
       }
     } catch (error) {
-      const statusCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      if (statusCode && statusCode !== 500) {
-        await handlexpiredToken(error, navigate, dispatchRedux);
-        if (statusCode !== 401) {
-          addToast(serverMessage, "error", "error");
-        }
-      } else {
-        addToast(
-          "Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.",
-          "error",
-          "error",
-        );
-      }
-    } finally {
-      setIsLoading(false);
+      addToast(
+        error.message || "Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.",
+        "error",
+        "warning",
+      );
     }
   };
 
@@ -625,12 +614,12 @@ export default function AddProduct() {
         >
           <div
             className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
-            ${isLoading ? "bg-white/50" : "hidden"}`}
+            ${isLoadingUpload || isLoadingCreate ? "bg-white/50" : "hidden"}`}
           >
             <Spinner
               size={"30px"}
               stroke={"5px"}
-              _hidden={!isLoading ? "hidden" : ""}
+              _hidden={!(isLoadingUpload || isLoadingCreate) ? "hidden" : ""}
               color={"white"}
             />
           </div>

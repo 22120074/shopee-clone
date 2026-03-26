@@ -1,6 +1,10 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as ProductService from "../../services/product.service";
-import { handleAxiosRequest } from "../../utils/axiosHandle";
+import { getUserRating } from "../../services/cart.service";
+import {
+  handleAxiosRequest,
+  handleAxiosRequestWithLoginNavigate,
+} from "../../utils/axiosHandle";
 
 export const productQuery = createApi({
   reducerPath: "productQuery",
@@ -36,7 +40,9 @@ export const productQuery = createApi({
 
     likeProduct: builder.mutation({
       queryFn: ({ productID, userID }) =>
-        handleAxiosRequest(() => ProductService.likeProduct(productID, userID)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          ProductService.likeProduct(productID, userID),
+        ),
       invalidatesTags: (result, error, { productID }) => [
         { type: "Like", id: productID },
       ],
@@ -44,7 +50,7 @@ export const productQuery = createApi({
 
     unlikeProduct: builder.mutation({
       queryFn: ({ productID, userID }) =>
-        handleAxiosRequest(() =>
+        handleAxiosRequestWithLoginNavigate(() =>
           ProductService.unlikeProduct(productID, userID),
         ),
       invalidatesTags: (result, error, { productID }) => [
@@ -71,6 +77,14 @@ export const productQuery = createApi({
         { type: "Product", id: productID },
       ],
     }),
+
+    getUserRating: builder.query({
+      queryFn: (userIds) =>
+        handleAxiosRequest(() => getUserRating({ data: userIds })),
+      providesTags: (result, error, userIds) => [
+        { type: "Review", id: userIds },
+      ],
+    }),
   }),
 });
 
@@ -82,4 +96,5 @@ export const {
   useUnlikeProductMutation,
   useGetProductReviewsQuery,
   useGetEachNumofTypeRatingQuery,
+  useGetUserRatingQuery,
 } = productQuery;

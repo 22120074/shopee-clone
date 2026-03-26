@@ -1,7 +1,6 @@
 function NormalButton({
   typeSort,
   sortOption,
-  pageIndex,
   height,
   min_width,
   text,
@@ -20,7 +19,7 @@ function NormalButton({
   return (
     <button
       type={type}
-      onClick={() => onClick(typeSort, pageIndex)}
+      onClick={() => onClick(typeSort)}
       style={{
         height: height,
         minWidth: min_width,

@@ -9,20 +9,34 @@ import DataDetailProduct from "../../components/productComponents/dataDetailProd
 import StackBar from "../../components/StackBar";
 import DataRatingProduct from "../../components/productComponents/dataRating";
 import ProductPageSkeleton from "../../components/skeletons/productPageSkeleton";
-import { useGetOneProductQuery } from "../../features/api/productQuery";
+import {
+  useGetOneProductQuery,
+  useIsLikedProductQuery,
+} from "../../features/api/productQuery";
 
 function ProductPage() {
   const isPhone = useIsWindow("(max-width: 768px)");
   const isIPad = useIsWindow("(min-width: 769px) and (max-width: 1024px)");
-  // Sử dụng useParams để lấy productName từ URL
-  // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
-  const { productName } = useParams();
-  const { data: product, isLoading } = useGetOneProductQuery(productName, {
-    refetchOnMountOrArgChange: true,
-  });
 
   // sử dụng useSelector để lấy thông tin người dùng
   const user = useSelector((state) => state.auth.currentUser);
+
+  // Sử dụng useParams để lấy productName từ URL
+  // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
+  const { productName } = useParams();
+  const { data: product, isLoading: isLoadingProduct } = useGetOneProductQuery(
+    productName,
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+  const { data: likedData, isLoading: isLoadingLiked } = useIsLikedProductQuery(
+    product?.id,
+    {
+      skip: !product?.id,
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   // Sử dụng useToastQueue để hiển thị thông báo
   const { toasts, addToast } = useToastQueue(3, 1500);
@@ -49,7 +63,7 @@ function ProductPage() {
     <div className="w-full bg-backgroundGrayColor h-auto">
       {/* Toast Queue để hiển thị thông báo thành công*/}
       <StackBar toasts={toasts} width={"300px"} height={"80px"} />
-      {isLoading ? (
+      {isLoadingProduct || isLoadingLiked ? (
         <ProductPageSkeleton />
       ) : (
         <>
@@ -88,6 +102,7 @@ function ProductPage() {
                 selectedImage={selectedImage}
                 isPhone={isPhone}
                 isIPad={isIPad}
+                likedData={likedData}
               />
               {/* Nữa bên phải chứa thông tin đơn hàng */}
               <RightData

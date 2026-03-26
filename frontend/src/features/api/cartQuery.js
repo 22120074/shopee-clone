@@ -1,6 +1,9 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as CartService from "../../services/cart.service";
-import { handleAxiosRequest } from "../../utils/axiosHandle";
+import {
+  handleAxiosRequest,
+  handleAxiosRequestWithLoginNavigate,
+} from "../../utils/axiosHandle";
 
 export const cartQuery = createApi({
   reducerPath: "cartQuery",
@@ -14,7 +17,9 @@ export const cartQuery = createApi({
 
     createOrupdateCart: builder.mutation({
       queryFn: (cartData) =>
-        handleAxiosRequest(() => CartService.createOrupdateCart(cartData)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          CartService.createOrupdateCart(cartData),
+        ),
       invalidatesTags: ["Cart"],
     }),
   }),
