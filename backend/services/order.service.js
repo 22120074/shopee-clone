@@ -2,6 +2,9 @@ const redisClient = require("../config/redisConfig");
 const dbPostgre = require("../models/PostgreSql/index");
 const { Sequelize, Op } = require("sequelize");
 const { BadRequest, NotFound, InternalServer } = require("../utils/appErrors");
+const moment = require("moment");
+const crypto = require("crypto");
+const qs = require("qs");
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
@@ -154,6 +157,114 @@ const createMultiItemOrder = async (userId, items) => {
   }
 };
 
+// Hàm hỗ trợ sắp xếp object
+const sortObject = (obj) => {
+  let sorted = {};
+  let str = [];
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      str.push(encodeURIComponent(key));
+    }
+  }
+  str.sort();
+  for (key = 0; key < str.length; key++) {
+    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+  }
+  return sorted;
+};
+
+const createPaymentUrl = (req) => {
+  let date = new Date();
+  let createDate = moment(date).format("YYYYMMDDHHmmss");
+
+  let tmnCode = process.env.VNP_TMN_CODE;
+  let secretKey = process.env.VNP_HASH_SECRET;
+  let vnpUrl = process.env.VNP_URL;
+  let returnUrl = process.env.VNP_RETURN_URL;
+
+  let orderId = moment(date).format("DDHHmmss"); // Mã đơn hàng tạm thời
+  let amount = req.body.amount; // Số tiền từ frontend
+  let bankCode = req.body.bankCode || ""; // Ví dụ: 'VNBANK'
+
+  let vnp_Params = {};
+  vnp_Params["vnp_Version"] = "2.1.0";
+  vnp_Params["vnp_Command"] = "pay";
+  vnp_Params["vnp_TmnCode"] = tmnCode;
+  vnp_Params["vnp_Locale"] = "vn";
+  vnp_Params["vnp_CurrCode"] = "VND";
+  vnp_Params["vnp_TxnRef"] = orderId;
+  vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderId;
+  vnp_Params["vnp_OrderType"] = "other";
+  vnp_Params["vnp_Amount"] = amount * 100; // VNPAY tính theo đơn vị đồng, không phải nghìn đồng
+  vnp_Params["vnp_ReturnUrl"] = returnUrl;
+  vnp_Params["vnp_IpAddr"] = req.body.ipAddr || "127.0.0.1";
+  vnp_Params["vnp_CreateDate"] = createDate;
+  if (bankCode !== null && bankCode !== "") {
+    vnp_Params["vnp_BankCode"] = bankCode;
+  }
+
+  // Sắp xếp các tham số theo alphabet (bắt buộc)
+  vnp_Params = sortObject(vnp_Params);
+
+  let signData = qs.stringify(vnp_Params, { encode: false });
+  let hmac = crypto.createHmac("sha512", secretKey);
+  let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+
+  vnp_Params["vnp_SecureHash"] = signed;
+  console.log("=== VNPAY DEBUG ===");
+  console.log("1. Raw Params:", vnp_Params);
+  console.log("2. Sign Data (Chuỗi trước khi băm):", signData);
+  console.log("3. Secret Key đang dùng:", secretKey);
+  console.log("4. Mã băm sinh ra:", signed);
+  return vnpUrl + "?" + qs.stringify(vnp_Params, { encode: false });
+};
+
+const verifyReturnUrl = (vnp_Params) => {
+  let secureHash = vnp_Params["vnp_SecureHash"];
+
+  // Xóa các key liên quan đến chữ ký trước khi hash lại
+  delete vnp_Params["vnp_SecureHash"];
+  delete vnp_Params["vnp_SecureHashType"];
+
+  // Sắp xếp lại object (Dùng lại hàm sortObject bạn đã có)
+  vnp_Params = sortObject(vnp_Params);
+
+  let secretKey = process.env.VNP_HASH_SECRET;
+  let signData = querystring.stringify(vnp_Params, { encode: false });
+
+  let hmac = crypto.createHmac("sha512", secretKey);
+  let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+
+  // So sánh chữ ký VNPAY gửi về và chữ ký ta tự tính toán
+  return secureHash === signed;
+};
+
+const getOrderById = async (orderId) => {
+  try {
+    const order = await Order.findByPk(orderId);
+    return order;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// 2. Hàm cập nhật trạng thái đơn hàng
+const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    const updatedOrder = await Order.update(
+      { status: newStatus },
+      { where: { id: orderId } },
+    );
+    return updatedOrder;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createMultiItemOrder,
+  createPaymentUrl,
+  verifyReturnUrl,
+  getOrderById,
+  updateOrderStatus,
 };
