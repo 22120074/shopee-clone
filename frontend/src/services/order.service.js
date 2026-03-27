@@ -9,3 +9,13 @@ export const createOrder = (items) => {
     },
   );
 };
+
+export const createVnpayUrl = (payload) => {
+  return axios.post(
+    `${process.env.REACT_APP_API_URL}/order/create-url`,
+    payload,
+    {
+      withCredentials: true,
+    },
+  );
+};

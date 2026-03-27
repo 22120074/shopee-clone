@@ -6,7 +6,7 @@ import ProductList from "../../components/purchaseComponents/productList";
 import FooterPurchase from "../../components/purchaseComponents/footerPurchase";
 import useIsWindow from "../../hooks/useIsWindow";
 import PurchaseSelection from "../../components/purchaseComponents/purchaseSelection";
-import { createOrder } from "../../services/order.service";
+import { createOrder, createVnpayUrl } from "../../services/order.service";
 import { removeListItem } from "../../features/cart/cartSlice";
 import { createOrupdateCart } from "../../services/cart.service";
 import useToastQueue from "../../hooks/useToastQueue";
@@ -63,9 +63,9 @@ export default function PurchasePage() {
   const handlePurchase = async () => {
     try {
       setIsOrdering(true);
+      const orderItems = transformCartToOrderItems(buyItems);
+      console.log("Order Items: ", orderItems);
       if (paymentMethod === "cod") {
-        const orderItems = transformCartToOrderItems(buyItems);
-        console.log("Order Items: ", orderItems);
         if (paymentMethod === "cod") {
           const responseCod = await createOrder(orderItems);
           if (responseCod.data.success) {
@@ -77,8 +77,25 @@ export default function PurchasePage() {
             navigate("/");
           }
         }
+      } else if (paymentMethod === "vnpay") {
+        setIsOrdering(true);
+        const responseVnpay = await createOrder(orderItems);
+        const totalPrice = responseVnpay.data.data.totalPrice;
+        const orderId = responseVnpay.data.data.orderId;
+
+        const payload = {
+          amount: parseInt(totalPrice),
+          bankCode: "", // Bỏ trống để user tự chọn ngân hàng trên VNPAY, hoặc truyền 'VNBANK'
+        };
+
+        const responseVnpayUrl = await createVnpayUrl(payload);
+        const paymentUrl = responseVnpayUrl.data.data.url;
+        if (paymentUrl) {
+          window.location.href = paymentUrl;
+        }
       }
     } catch (error) {
+      console.error("Lỗi tạo link thanh toán:", error);
       if (error.statusCode === 400) {
         addToast(
           "Một số sản phẩm trong giỏ hàng hiện đã hết hàng. Vui lòng kiểm tra lại!",
