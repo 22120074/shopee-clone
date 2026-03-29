@@ -185,6 +185,11 @@ const createPaymentUrl = (req) => {
   let orderId = moment(date).format("DDHHmmss"); // Mã đơn hàng tạm thời
   let amount = req.body.amount; // Số tiền từ frontend
   let bankCode = req.body.bankCode || ""; // Ví dụ: 'VNBANK'
+  let ipAddr =
+    req.headers["x-forwarded-for"] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    req.connection.socket.remoteAddress;
 
   let vnp_Params = {};
   vnp_Params["vnp_Version"] = "2.1.0";
@@ -197,7 +202,7 @@ const createPaymentUrl = (req) => {
   vnp_Params["vnp_OrderType"] = "other";
   vnp_Params["vnp_Amount"] = amount * 100; // VNPAY tính theo đơn vị đồng, không phải nghìn đồng
   vnp_Params["vnp_ReturnUrl"] = returnUrl;
-  vnp_Params["vnp_IpAddr"] = req.body.ipAddr || "127.0.0.1";
+  vnp_Params["vnp_IpAddr"] = ipAddr;
   vnp_Params["vnp_CreateDate"] = createDate;
   if (bankCode !== null && bankCode !== "") {
     vnp_Params["vnp_BankCode"] = bankCode;
@@ -210,7 +215,7 @@ const createPaymentUrl = (req) => {
   let hmac = crypto.createHmac("sha512", secretKey);
   let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
-  vnp_Params["vnp_SecureHash"] = signed;
+  vnp_Params["vnp_SecureHash"] = signed.toUpperCase();
   return vnpUrl + "?" + qs.stringify(vnp_Params, { encode: false });
 };
 
