@@ -211,11 +211,6 @@ const createPaymentUrl = (req) => {
   let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
   vnp_Params["vnp_SecureHash"] = signed;
-  console.log("=== VNPAY DEBUG ===");
-  console.log("1. Raw Params:", vnp_Params);
-  console.log("2. Sign Data (Chuỗi trước khi băm):", signData);
-  console.log("3. Secret Key đang dùng:", secretKey);
-  console.log("4. Mã băm sinh ra:", signed);
   return vnpUrl + "?" + qs.stringify(vnp_Params, { encode: false });
 };
 
@@ -230,7 +225,7 @@ const verifyReturnUrl = (vnp_Params) => {
   vnp_Params = sortObject(vnp_Params);
 
   let secretKey = process.env.VNP_HASH_SECRET;
-  let signData = querystring.stringify(vnp_Params, { encode: false });
+  let signData = qs.stringify(vnp_Params, { encode: false });
 
   let hmac = crypto.createHmac("sha512", secretKey);
   let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");

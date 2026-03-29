@@ -393,8 +393,8 @@ docker ps
 docker exec -it shoppe-db psql -U postgres -d Shoppe_DB -c "\dt *.*"
 
 ssh azureuser@20.197.21.221
-
 ssh -i <path_to_key> azureuser@IP
+ssh -i D:\Mon_Hoc\BE.Redis_key.pem azureuser@20.197.21.221
 
 exit
 clear
