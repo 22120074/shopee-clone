@@ -27,6 +27,9 @@ exports.createOrder = async (req, res, next) => {
 
 exports.createVNPayUrl = async (req, res, next) => {
   try {
+    console.log("=== [VNPAY CONTROLLER] START CREATE URL ===");
+    console.log("1. Received Request Body:", JSON.stringify(req.body, null, 2));
+    console.log("2. User ID from Token:", req.user.userId);
     const { amount } = req.body;
 
     if (!amount || amount <= 0) {
@@ -50,6 +53,11 @@ exports.createVNPayUrl = async (req, res, next) => {
 // [GET] Xử lý URL trả về sau khi thanh toán xong (Dành cho Frontend)
 exports.vnpayReturn = async (req, res, next) => {
   try {
+    console.log("=== [VNPAY RETURN] START PROCESSING RETURN URL ===");
+    console.log(
+      "1. Received Query Params:",
+      JSON.stringify(req.query, null, 2),
+    );
     let vnp_Params = req.query;
 
     // Hàm này sẽ kiểm tra chữ ký bảo mật (xem phần Service bổ sung bên dưới)

@@ -160,14 +160,16 @@ const createMultiItemOrder = async (userId, items) => {
 // Hàm hỗ trợ sắp xếp object
 function sortObject(obj) {
   let sorted = {};
-  let keys = Object.keys(obj).sort();
-
-  for (let i = 0; i < keys.length; i++) {
-    let key = keys[i];
-    let value = obj[key];
-    if (value !== null && value !== undefined && value !== "") {
-      sorted[key] = value;
+  let str = [];
+  let key;
+  for (key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      str.push(encodeURIComponent(key));
     }
+  }
+  str.sort();
+  for (key = 0; key < str.length; key++) {
+    sorted[decodeURIComponent(str[key])] = obj[decodeURIComponent(str[key])];
   }
   return sorted;
 }
@@ -189,6 +191,9 @@ const createPaymentUrl = (req) => {
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
+  if (ipAddr.includes("::ffff:")) {
+    ipAddr = ipAddr.replace("::ffff:", "");
+  }
 
   let vnp_Params = {};
   vnp_Params["vnp_Version"] = "2.1.0";
