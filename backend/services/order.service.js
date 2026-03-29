@@ -158,21 +158,20 @@ const createMultiItemOrder = async (userId, items) => {
 };
 
 // Hàm hỗ trợ sắp xếp object
-function sortObject(obj) {
+const sortObject = (obj) => {
   let sorted = {};
   let str = [];
-  let key;
-  for (key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
       str.push(encodeURIComponent(key));
     }
   }
   str.sort();
   for (key = 0; key < str.length; key++) {
-    sorted[decodeURIComponent(str[key])] = obj[decodeURIComponent(str[key])];
+    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
   }
   return sorted;
-}
+};
 
 const createPaymentUrl = (req) => {
   let date = new Date();
@@ -191,9 +190,6 @@ const createPaymentUrl = (req) => {
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
-  if (ipAddr.includes("::ffff:")) {
-    ipAddr = ipAddr.replace("::ffff:", "");
-  }
 
   let vnp_Params = {};
   vnp_Params["vnp_Version"] = "2.1.0";
