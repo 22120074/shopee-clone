@@ -158,20 +158,19 @@ const createMultiItemOrder = async (userId, items) => {
 };
 
 // Hàm hỗ trợ sắp xếp object
-const sortObject = (obj) => {
+function sortObject(obj) {
   let sorted = {};
-  let str = [];
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      str.push(encodeURIComponent(key));
+  let keys = Object.keys(obj).sort();
+
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i];
+    let value = obj[key];
+    if (value !== null && value !== undefined && value !== "") {
+      sorted[key] = value;
     }
   }
-  str.sort();
-  for (key = 0; key < str.length; key++) {
-    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
-  }
   return sorted;
-};
+}
 
 const createPaymentUrl = (req) => {
   let date = new Date();
