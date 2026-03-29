@@ -408,11 +408,14 @@ sudo nginx -t
 
 Ngân hàng: NCB
 
-Số thẻ: 9704198526191432198
+Số thẻ:
+9704198526191432198
 
-Tên chủ thẻ: NGUYEN VAN A
+Tên chủ thẻ:
+NGUYEN VAN A
 
-Ngày phát hành: 07/15
+Ngày phát hành:
+07/15
 
 Mật khẩu OTP: 123456 (Nhập sau khi bấm xác nhận thanh toán)
 

@@ -37,8 +37,10 @@ exports.createVNPayUrl = async (req, res, next) => {
     }
 
     // Lấy IP thực của client thay vì hardcode 127.0.0.1
-    req.body.ipAddr =
-      req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    // req.body.ipAddr =
+    //   req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+    req.body.ipAddr = "113.185.79.164";
 
     // Gọi hàm ở tầng service bạn đã viết
     const paymentUrl = createPaymentUrl(req);
