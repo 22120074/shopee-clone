@@ -162,12 +162,14 @@ const sortObject = (obj) => {
   let sorted = {};
   let str = [];
   for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    // Sửa đúng dòng này: Mượn hàm hasOwnProperty từ Object gốc
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       str.push(encodeURIComponent(key));
     }
   }
   str.sort();
-  for (key = 0; key < str.length; key++) {
+  for (let key = 0; key < str.length; key++) {
+    // Thêm 'let' để tránh lỗi scope
     sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
   }
   return sorted;
