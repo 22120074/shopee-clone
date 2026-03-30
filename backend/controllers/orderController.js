@@ -41,15 +41,16 @@ exports.createVNPayUrl = async (req, res, next) => {
     }
 
     // Lấy IP thực của client thay vì hardcode 127.0.0.1
-    // req.body.ipAddr =
-    //   req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    let ipAddr = req.headers["x-forwarded-for"] || req.ip || "127.0.0.1";
+    if (ipAddr.includes(",")) ipAddr = ipAddr.split(",")[0].trim();
+    if (ipAddr.includes("::ffff:")) ipAddr = ipAddr.replace("::ffff:", "");
 
-    req.body.ipAddr = "113.185.79.164";
+    req.body.ipAddr = ipAddr;
 
-    // Gọi hàm ở tầng service bạn đã viết
+    // req.body.ipAddr = "113.185.79.164";
+
     const paymentUrl = createPaymentUrl(req);
 
-    // Trả về URL để Frontend thực hiện redirect
     return Success(res, { url: paymentUrl }, "Tạo link thanh toán thành công!");
   } catch (error) {
     next(error);

@@ -184,15 +184,28 @@ const createPaymentUrl = (req) => {
   let vnpUrl = process.env.VNP_URL;
   let returnUrl = process.env.VNP_RETURN_URL;
 
-  let orderId = req.body.orderId; // Mã đơn hàng tạm thời
-  let amount = req.body.amount; // Số tiền từ frontend
-  let bankCode = req.body.bankCode || ""; // Ví dụ: 'VNBANK'
-  let ipAddr =
-    req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  let orderId = req.body.orderId; // Mã đơn hàng thật từ DB
+  let amount = req.body.amount;
+  let bankCode = req.body.bankCode || "";
+
+  let ipAddr = req.body.ipAddr || req.ip || "127.0.0.1";
+
+  // 1. Nếu Nginx trả về nhiều IP (cách nhau bằng dấu phẩy), chỉ lấy IP đầu tiên
+  if (typeof ipAddr === "string" && ipAddr.includes(",")) {
+    ipAddr = ipAddr.split(",")[0].trim();
+  }
+
+  // 2. Chuyển IPv6 sang IPv4 (nếu có)
   if (ipAddr && ipAddr.includes("::ffff:")) {
     ipAddr = ipAddr.replace("::ffff:", "");
   }
-  req.body.ipAddr = ipAddr || "127.0.0.1";
+
+  // 3. Fallback an toàn trực tiếp vào biến ipAddr
+  ipAddr = ipAddr || "127.0.0.1";
+
+  // (In ra để lát check log xem IP lấy được đã chuẩn IPv4 chưa)
+  console.log("👉 [DEBUG] FINAL IP SENT TO VNPAY createPaymentUrl:", ipAddr);
+  // --- KẾT THÚC FIX LOGIC LẤY IP ---
 
   let vnp_Params = {};
   vnp_Params["vnp_Version"] = "2.1.0";
@@ -203,17 +216,22 @@ const createPaymentUrl = (req) => {
   vnp_Params["vnp_TxnRef"] = orderId;
   vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderId;
   vnp_Params["vnp_OrderType"] = "other";
-  vnp_Params["vnp_Amount"] = amount * 100; // VNPAY tính theo đơn vị đồng, không phải nghìn đồng
+  vnp_Params["vnp_Amount"] = amount * 100;
   vnp_Params["vnp_ReturnUrl"] = returnUrl;
+
+  // Truyền ipAddr đã được làm sạch xuống đây
   vnp_Params["vnp_IpAddr"] = ipAddr;
   vnp_Params["vnp_CreateDate"] = createDate;
+
   if (bankCode !== null && bankCode !== "") {
     vnp_Params["vnp_BankCode"] = bankCode;
   }
 
-  // Sắp xếp các tham số theo alphabet (bắt buộc)
+  // Sắp xếp các tham số theo alphabet
   vnp_Params = sortObject(vnp_Params);
 
+  // Lưu ý: Vì hàm sortObject của Duy ĐÃ encode giá trị bên trong nó rồi,
+  // nên qs.stringify KHÔNG được encode nữa (encode: false) -> Bạn làm đúng rồi!
   let signData = qs.stringify(vnp_Params, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
   let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
