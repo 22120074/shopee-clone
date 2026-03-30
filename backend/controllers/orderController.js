@@ -30,10 +30,14 @@ exports.createVNPayUrl = async (req, res, next) => {
     console.log("=== [VNPAY CONTROLLER] START CREATE URL ===");
     console.log("1. Received Request Body:", JSON.stringify(req.body, null, 2));
     console.log("2. User ID from Token:", req.user.userId);
-    const { amount } = req.body;
+    const { amount, orderId } = req.body;
 
     if (!amount || amount <= 0) {
       throw BadRequest("Số tiền thanh toán không hợp lệ.");
+    }
+
+    if (!orderId) {
+      throw BadRequest("Mã đơn hàng không hợp lệ.");
     }
 
     // Lấy IP thực của client thay vì hardcode 127.0.0.1

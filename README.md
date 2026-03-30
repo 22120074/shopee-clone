@@ -401,6 +401,9 @@ clear
 
 cd ~/my-app
 
+# Để sửa file
+sudo nano ...
+
 sudo systemctl restart nginx
 sudo nginx -t
 

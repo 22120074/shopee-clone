@@ -184,7 +184,7 @@ const createPaymentUrl = (req) => {
   let vnpUrl = process.env.VNP_URL;
   let returnUrl = process.env.VNP_RETURN_URL;
 
-  let orderId = moment(date).format("DDHHmmss"); // Mã đơn hàng tạm thời
+  let orderId = req.body.orderId; // Mã đơn hàng tạm thời
   let amount = req.body.amount; // Số tiền từ frontend
   let bankCode = req.body.bankCode || ""; // Ví dụ: 'VNBANK'
   let ipAddr =
