@@ -81,10 +81,11 @@ export default function PurchasePage() {
         setIsOrdering(true);
         const responseVnpay = await createOrder(orderItems);
         const totalPrice = responseVnpay.data.data.totalPrice;
-        const orderId = responseVnpay.data.data.orderId;
+        const orderId = responseVnpay.data.data.id;
 
         const payload = {
           amount: parseInt(totalPrice),
+          orderId: orderId,
           bankCode: "", // Bỏ trống để user tự chọn ngân hàng trên VNPAY, hoặc truyền 'VNBANK'
         };
 
