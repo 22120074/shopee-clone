@@ -10,6 +10,8 @@ dotenv.config();
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // Đọc cookie từ request
 app.use(cookieParser());
 // Đọc body JSON

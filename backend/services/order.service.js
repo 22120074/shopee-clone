@@ -188,10 +188,11 @@ const createPaymentUrl = (req) => {
   let amount = req.body.amount; // Số tiền từ frontend
   let bankCode = req.body.bankCode || ""; // Ví dụ: 'VNBANK'
   let ipAddr =
-    req.headers["x-forwarded-for"] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    req.connection.socket.remoteAddress;
+    req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  if (ipAddr && ipAddr.includes("::ffff:")) {
+    ipAddr = ipAddr.replace("::ffff:", "");
+  }
+  req.body.ipAddr = ipAddr || "127.0.0.1";
 
   let vnp_Params = {};
   vnp_Params["vnp_Version"] = "2.1.0";
