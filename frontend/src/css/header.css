@@ -1,193 +1,204 @@
 /* Đường kẻ dọc ở giữa thẻ li */
 .li_borderleft::after {
-    content: "";
-    border: 1px solid #f58377;
-    position: absolute;
-    top: calc(50% - 6px);
-    right: 0px;
-    height: 14px;
+  content: "";
+  border: 1px solid #f58377;
+  position: absolute;
+  top: calc(50% - 6px);
+  right: 0px;
+  height: 14px;
 }
 /* Outline bên ngoài thanh tìm kiếm */
 .navbar_input-wrapper {
-    position: relative;
-    border-radius: 3px;
+  position: relative;
+  border-radius: 3px;
 }
 
 .navbar_input-wrapper::after {
-    content: "";
-    position: absolute;
-    top: -6px;
-    left: -5px;
-    width: calc(100% + 12px - 60px - 13px);
-    height: calc(100% + 12px);
-    border: 2px solid transparent;
-    pointer-events: none;
-    border-radius: 2px;
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -5px;
+  width: calc(100% + 12px - 60px - 13px);
+  height: calc(100% + 12px);
+  border: 2px solid transparent;
+  pointer-events: none;
+  border-radius: 2px;
 }
 
 .navbar_input-wrapper:focus-within::after {
-    border-color: black;
+  border-color: black;
 }
 
 .navbar_input {
-    outline: none;
+  outline: none;
 }
 /* Outline bên ngoài thanh tìm kiếm ở /cart */
 .navbar_input-wrapper_cart::after {
-    content: "";
-    position: absolute;
-    top: -8px;
-    left: -7px;
-    width: calc(100% - 80px + 12px + 2px);
-    height: calc(100% + 16px);
-    border: 2px solid transparent;
-    pointer-events: none;
-    border-radius: 2px;
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -7px;
+  width: calc(100% - 80px + 12px + 2px);
+  height: calc(100% + 16px);
+  border: 2px solid transparent;
+  pointer-events: none;
+  border-radius: 2px;
 }
 
 .navbar_input-wrapper_cart:focus-within::after {
-    border-color: black;
+  border-color: black;
 }
 
 /* Biểu tượng giỏ hàng */
 .navbar_cart {
-    width: auto;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    margin: auto 66px;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: auto 66px;
 }
 
 /* Tên người dùng và ảnh đại diện */
 .user_wrapper {
-    position: relative;
+  position: relative;
 }
 
 .user_wrapper::after {
-    content: "";
+  content: "";
+  width: 80px;
+  height: 10px;
+  top: calc(100%);
+  right: calc(0);
+  position: absolute;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@media (min-width: 740px) {
+  .user_wrapper::after {
+    width: 90px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .user_wrapper::after {
     width: 115px;
-    height: 10px;
-    top: calc(100%);
-    right: calc(0);
-    position: absolute;
-    background-color: transparent;
-    cursor: pointer;
+  }
 }
 
 @keyframes dropdownIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.4);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes dropdownOut {
-    0% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: scale(0.4);
-    }
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
 }
 
 .user_dropdown {
-    background-color: white;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 3px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    z-index: 10;
-    font-size: 16px;
-    width: auto;
-    top: calc(100% + 10px);
-    right: calc(0px + 10px);
-    transform-origin: calc(100%  - 60px) top;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  font-size: 16px;
+  width: auto;
+  top: calc(100% + 10px);
+  right: calc(0px + 10px);
+  transform-origin: calc(100% - 60px) top;
 }
 
 .user_dropdown.open {
-    display: block;
-    animation: dropdownIn 0.3s ease-in-out forwards;
+  display: block;
+  animation: dropdownIn 0.3s ease-in-out forwards;
 }
 
 .user_dropdown.close {
-    display: block;
-    animation: dropdownOut 0.2s ease-in-out forwards;
+  display: block;
+  animation: dropdownOut 0.2s ease-in-out forwards;
 }
 
 .user_dropdown.closed {
-    display: none;
+  display: none;
 }
 
-
 .user_dropdown-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 16px;
 }
 
 .user_dropdown-item_link {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-decoration: none;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-decoration: none;
+  width: 100%;
 }
 
 .user_dropdown::before {
-    content: "";
-    border-color: transparent transparent #ffffff transparent;
-    top: -17px;
-    right: 37px;
-    border-width: 10px 20px;
-    border-style: solid;
-    position: absolute;
+  content: "";
+  border-color: transparent transparent #ffffff transparent;
+  top: -17px;
+  right: 37px;
+  border-width: 10px 20px;
+  border-style: solid;
+  position: absolute;
 }
 
 .cart_dropdown {
-    top: calc(34px);
-    right: -17px;
-    transform-origin: calc(100% - 30px) top;
+  top: calc(34px);
+  right: -17px;
+  transform-origin: calc(100% - 30px) top;
 }
 
 .cart_dropdown.open {
-    display: block;
-    animation: dropdownIn 0.3s linear forwards;
+  display: block;
+  animation: dropdownIn 0.3s linear forwards;
 }
 
 .cart_dropdown.close {
-    display: block;
-    animation: dropdownOut 0.2s ease-in-out forwards;
+  display: block;
+  animation: dropdownOut 0.2s ease-in-out forwards;
 }
 
 .cart_dropdown.closed {
-    display: none;
+  display: none;
 }
 
 .cart_dropdown::before {
-    content: "";
-    border-color: transparent transparent #ffffff transparent;
-    top: -17px;
-    right: 11px;
-    border-width: 10px 18px;
-    border-style: solid;
-    position: absolute;
+  content: "";
+  border-color: transparent transparent #ffffff transparent;
+  top: -17px;
+  right: 11px;
+  border-width: 10px 18px;
+  border-style: solid;
+  position: absolute;
 }
 
 .navbar_cart::after {
-    content: "";
-    width: 50px;
-    height: 20px;
-    top: calc(100%);
-    right: -12px;
-    position: absolute;
-    background-color: transparent;
-    cursor: pointer;
+  content: "";
+  width: 50px;
+  height: 20px;
+  top: calc(100%);
+  right: -12px;
+  position: absolute;
+  background-color: transparent;
+  cursor: pointer;
 }

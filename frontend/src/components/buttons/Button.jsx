@@ -12,14 +12,14 @@ function PrimaryButton({
       type={type}
       onClick={disabled ? undefined : onClick}
       style={{
-        height: height,
-        width: width,
+        minHeight: height,
+        maxWidth: width,
         borderRadius: "3px",
         color: "white",
         fontSize: "16px",
       }}
       disabled={disabled}
-      className={`relative flex items-center justify-center bg-primaryColor transition-opacity duration-200 ${
+      className={`relative flex flex-1 w-full h-full items-center justify-center bg-primaryColor transition-opacity duration-200 ${
         disabled ? "opacity-60 cursor-not-allowed" : "hover:brightness-110"
       }`}
     >

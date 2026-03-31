@@ -9,8 +9,7 @@ import emptyCart from "../../assets/Empty-bro.svg";
 import PrimaryButton from "../../components/buttons/Button";
 import useIsWindow from "../../hooks/useIsWindow";
 import StackBar from "../../components/StackBar";
-import { useGetCartQuery, cartQuery } from "../../features/api/cartQuery";
-import { useLogoutMutation, authQuery } from "../../features/api/authQuery";
+import { useLogoutMutation } from "../../features/api/authQuery";
 import { useCheckShopQuery } from "../../features/api/shopQuery";
 
 function Header() {
@@ -97,7 +96,7 @@ function Header() {
   return (
     <header
       className={`${isSticky ? "sticky top-0 z-[30]" : "relative"} Web-header flex flex-col bg-primaryColor min-w-0 w-full
-                ${urlPath === "cart" ? "lg:h-[140px]" : "lg:h-[120px]"} h-[56px]`}
+                ${urlPath === "cart" ? "lg:h-[140px]" : "lg:h-[120px]"} h-[56px] z-50`}
     >
       <StackBar toasts={toasts} width={"400px"} height={"100px"} />
       {/* Phần 1 của Navbar */}

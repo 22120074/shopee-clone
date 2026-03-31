@@ -1,5 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useSelector } from "react-redux";
+import clsx from "clsx";
 import GlitchText from "../components/animations/GlitchText";
 import PrimaryButton from "../components/buttons/Button";
 import Header from "./Header/Header";
@@ -7,6 +9,7 @@ import Footer from "../layouts/Footer";
 import SideBar from "../components/sidebar/SideBar";
 import useToastQueue from "../hooks/useToastQueue";
 import StackBar from "../components/StackBar";
+import SidebarPopupButton from "../components/userComponents/sidebarPopupButton";
 
 function UserLayout() {
   const navigate = useNavigate();
@@ -15,21 +18,31 @@ function UserLayout() {
   // Sử dụng useToastQueue để hiển thị thông báo
   const { toasts, addToast } = useToastQueue(3, 1500);
 
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="UserLayout bg-backgroundGrayColor">
       <StackBar toasts={toasts} width={"300px"} height={"80px"} />
       <Header />
-      <div className="flex max-w-7xl mx-auto px-10">
+      <div className="relative flex max-w-7xl mx-auto px-4 md:px-10 min-h-[600px] md:min-h-0">
         {user ? (
           <>
-            <SideBar />
+            <SidebarPopupButton isOpen={isOpen} setIsOpen={setIsOpen} />
+            <SideBar isOpen={isOpen} />
             <Outlet context={{ addToast }} />
+            {isOpen && (
+              <div
+                className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-40 cursor-pointer md:hidden"
+                onClick={() => setIsOpen(false)}
+              />
+            )}
           </>
         ) : (
           <div
-            className="flex flex-col w-full items-center justify-start bg-backgroundGrayColor min-h-[580px]
-                        bg-white mt-4 rounded-sm shadow-md py-4 px-8 gap-10
-                    "
+            className={clsx(
+              "flex flex-col items-center justify-start gap-10 bg-backgroundGrayColor bg-white",
+              "min-h-[580px] w-full mt-4 rounded-sm shadow-md py-4 px-8",
+            )}
           >
             <div className="w-full relative flex flex-col items-start">
               <div className="absolute top-[100px] left-[220px]">

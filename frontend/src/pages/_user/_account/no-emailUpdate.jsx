@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
+import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import PrimaryButton from "../../../components/buttons/Button";
 import StepProgress from "../../../components/StepProgress";
@@ -132,7 +133,7 @@ function NoEmailUpdateCase() {
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden="true"
-            className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+            className="absolute top-10 left-1/2 mt-2 md:mt-0 transform -translate-x-1/2 -translate-y-1/2 z-10"
           >
             <path d="M12 2 3 5v6c0 5.25 3.75 9.74 9 11 5.25-1.26 9-5.75 9-11V5l-9-3z" />
             <path d="M9 12.5l1.8 1.8L15 10.1" />
@@ -143,7 +144,7 @@ function NoEmailUpdateCase() {
             width="80"
             height="80"
             aria-hidden="true"
-            className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-10 left-1/2 mt-2 md:mt-0 transform -translate-x-1/2 -translate-y-1/2"
           >
             <path d="M12 2v20c5.25-1.26 9-5.75 9-11V5l-9-3z" fill="#FFC7B3" />
           </svg>
@@ -153,14 +154,15 @@ function NoEmailUpdateCase() {
           </div>
           <button
             ref={btnRef}
-            className="flex items-center justify-center gap-2 py-2 px-6 text-primaryTextColor rounded-sm text-base
-                    border border-primaryTextColor hover:bg-primaryRatingColor"
+            className={clsx(
+              "flex items-center justify-center gap-2 py-2 px-6 text-primaryTextColor text-base",
+              "rounded-sm border border-primaryTextColor hover:bg-primaryRatingColor",
+            )}
             onMouseEnter={handleMouseEnter}
             onClick={handleOnclick}
           >
             <i ref={iconRef} className="fa-regular fa-envelope text-lg"></i>
             <span className="flex gap-1">
-              {" "}
               {/* gap giữa các từ */}
               {text.split(" ").map((word, wIdx) => (
                 <span key={wIdx} className="flex gap-0">
@@ -181,8 +183,8 @@ function NoEmailUpdateCase() {
           </button>
         </div>
       ) : currentStep === 2 ? (
-        <div className="w-full flex flex-col items-center justify-center gap-8 py-0 select-none">
-          <div className="text-xl">Nhập địa chỉ Email mới</div>
+        <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-8 py-0 select-none">
+          <div className="text-xl mt-2 md:mt-0">Nhập địa chỉ Email mới</div>
           <form
             action=""
             className="w-full flex flex-col items-center justify-center max-w-[300px]"
@@ -196,7 +198,7 @@ function NoEmailUpdateCase() {
               className="w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none"
             />
           </form>
-          <div className="w-full flex items-center justify-center gap-6 mt-4">
+          <div className="w-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 mt-4">
             <button
               className="relative flex items-center justify-center gap-3 py-2 px-6 w-[180px] h-10
                             text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
@@ -244,7 +246,7 @@ function NoEmailUpdateCase() {
           </div>
         </div>
       ) : (
-        <div className="w-full flex flex-col items-center justify-center gap-8 py-10">
+        <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-8 py-10">
           <div className="text-xl text-green-600">
             Xác minh email thành công!
           </div>

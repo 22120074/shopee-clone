@@ -213,11 +213,149 @@ function ProductList({
   return cartItems.map((attribute, index) => (
     <div
       key={index}
-      className={`bg-white h-auto max-w-[1200px] mx-auto border-b border-gray-200 items-center mt-4
-                ${isPhone ? "w-full flex h-full pl-2 pr-3 py-3 gap-3" : "grid [grid-template-columns:1fr_150px_150px_150px_150px] px-10"}`}
+      className={`bg-white h-auto max-w-[1200px] mx-auto border-b border-gray-200 items-center mt-4 py-3
+                w-full flex h-full pl-2 pr-3 gap-3
+                md:grid md:[grid-template-columns:1fr_100px_100px_100px_50px] md:px-2 md:gap-4
+                lg:grid lg:[grid-template-columns:1fr_1fr_1fr_1fr_1fr] lg:px-10`}
     >
-      {isPhone ? (
-        <>
+      {/* Điện thoại */}
+      <>
+        {/* Checkbox */}
+        <input
+          type="checkbox"
+          className="md:hidden flex-shrink-0 relative inline-block appearance-none w-[16px] h-[16px] border border-[#DBDBDB] 
+                            rounded-sm checked:bg-primaryColor checked:border-primaryColor"
+          checked={isChecked[index]}
+          onChange={() => handleCheckboxChange(index)}
+        />
+        {/* Ảnh sản phẩm */}
+        <div
+          className="md:hidden flex-shrink-0 rounded-sm"
+          style={{
+            width: "80px",
+            height: "80px",
+            backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+        {/* Tên sản phẩm, phân loại sản phẩm, ( giá tiền, điều chỉnh số lượng ) */}
+        <div className="md:hidden flex-1 flex flex-col items-start h-[80px] justify-between">
+          <div className="relative flex items-start w-full justify-between">
+            <div className="w-[180px] line-clamp-1 text-sm font-normal text-start">
+              {attribute.name}
+            </div>
+            <div className="absolute w-auto top-4 left-0">
+              <div
+                className="inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2
+                                        bg-lessgrayColor px-1 rounded-sm"
+                onClick={() =>
+                  setOpenDropdown(openDropdown === index ? null : index)
+                }
+              >
+                <div className="text-xs capitalize text-grayTextColor w-auto whitespace-normal">
+                  {attribute.selectedAttributes.color}
+                  {attribute.selectedAttributes.size !== null ? ", " : ""}
+                  {attribute.selectedAttributes.size}
+                </div>
+                <i
+                  className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
+                                            ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                ></i>
+              </div>
+              {/* Phần dropdown */}
+              <DetailProductDropDown
+                openDropdown={openDropdown}
+                index={index}
+              />
+            </div>
+            <button
+              className="flex justify-center text-sm font-medium text-primaryTextColor"
+              onClick={() =>
+                handleRemoveItem(attribute.selectedAttributes.attribute.id)
+              }
+            >
+              Xóa
+            </button>
+          </div>
+          <div className="flex items-end w-full justify-between">
+            <div className="flex items-center justify-start text-sm font-normal gap-1 mt-5">
+              <div className="whitespace-nowrap text-primaryTextColor font-medium">
+                <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                {(
+                  (attribute.selectedAttributes.attribute.price *
+                    (100 - (attribute.discount || 0))) /
+                  100
+                ).toLocaleString("vi-VN")}
+              </div>
+              {attribute.discount > 0 && (
+                <div className="relative text-[#929292] whitespace-nowrap">
+                  <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                  {attribute.selectedAttributes.attribute.price.toLocaleString(
+                    "vi-VN",
+                  )}
+                  <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end items-center h-4 text-inherit w-full rounded-sm overflow-hidden text-sm">
+              <button
+                className={`w-6 h-full flex items-center justify-center
+                                        border border-[#CCCCCC] text-xs rounded-tl-sm rounded-bl-sm
+                                        `}
+                onClick={handleQuantityClick}
+                data-action="decrease"
+                data-id={index}
+              >
+                <i className="fa-solid fa-minus"></i>
+              </button>
+              <input
+                type="number"
+                min="1"
+                value={quantityInputs[index]}
+                onChange={(e) => handleQuantityChange(e, index)}
+                onBlur={(e) => handleBlur(e, index)}
+                onKeyDown={(e) => {
+                  if (
+                    !(
+                      (e.key >= "0" && e.key <= "9") ||
+                      [
+                        "Backspace",
+                        "Delete",
+                        "ArrowLeft",
+                        "ArrowRight",
+                        "Tab",
+                      ].includes(e.key)
+                    )
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
+                className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
+                                        [&::-webkit-outer-spin-button]:appearance-none 
+                                        [&::-webkit-inner-spin-button]:appearance-none
+                                        focus:outline-none
+                                        bg-transparent
+                                        border-y border-[#CCCCCC]
+                                        `}
+              />
+              <button
+                className={`w-6 h-full flex items-center justify-center
+                                        border border-[#CCCCCC] text-xs rounded-tr-sm rounded-br-sm
+                                        `}
+                onClick={handleQuantityClick}
+                data-action="increase"
+                data-id={index}
+              >
+                <i className="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+      {/* Tablet */}
+      <>
+        <div className="hidden md:flex lg:hidden items-center justify-start h-full gap-4">
           {/* Checkbox */}
           <input
             type="checkbox"
@@ -238,171 +376,27 @@ function ProductList({
             }}
           ></div>
           {/* Tên sản phẩm, phân loại sản phẩm, ( giá tiền, điều chỉnh số lượng ) */}
-          <div className="flex-1 flex flex-col items-start h-[80px] justify-between">
-            <div className="relative flex items-start w-full justify-between">
-              <div className="w-[180px] line-clamp-1 text-sm font-normal text-start">
-                {attribute.name}
-              </div>
-              <div className="absolute w-auto top-4 left-0">
-                <div
-                  className="inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2
+          <div className="relative flex flex-col items-start h-[80px] justify-between">
+            <div className="w-[180px] line-clamp-1 text-sm font-normal text-start">
+              {attribute.name}
+            </div>
+            <div className="absolute w-auto top-4 left-0">
+              <div
+                className="inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2
                                         bg-lessgrayColor px-1 rounded-sm"
-                  onClick={() =>
-                    setOpenDropdown(openDropdown === index ? null : index)
-                  }
-                >
-                  <div className="text-xs capitalize text-grayTextColor w-auto whitespace-normal">
-                    {attribute.selectedAttributes.color}
-                    {attribute.selectedAttributes.size !== null ? ", " : ""}
-                    {attribute.selectedAttributes.size}
-                  </div>
-                  <i
-                    className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
-                                            ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
-                  ></i>
-                </div>
-                {/* Phần dropdown */}
-                <DetailProductDropDown
-                  openDropdown={openDropdown}
-                  index={index}
-                />
-              </div>
-              <button
-                className="flex justify-center text-sm font-medium text-primaryTextColor"
                 onClick={() =>
-                  handleRemoveItem(attribute.selectedAttributes.attribute.id)
+                  setOpenDropdown(openDropdown === index ? null : index)
                 }
               >
-                Xóa
-              </button>
-            </div>
-            <div className="flex items-end w-full justify-between">
-              <div className="flex items-center justify-start text-sm font-normal gap-1 mt-5">
-                <div className="whitespace-nowrap text-primaryTextColor font-medium">
-                  <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                  {(
-                    (attribute.selectedAttributes.attribute.price *
-                      (100 - (attribute.discount || 0))) /
-                    100
-                  ).toLocaleString("vi-VN")}
+                <div className="text-xs capitalize text-grayTextColor w-auto whitespace-normal">
+                  {attribute.selectedAttributes.color}
+                  {attribute.selectedAttributes.size !== null ? ", " : ""}
+                  {attribute.selectedAttributes.size}
                 </div>
-                {attribute.discount > 0 && (
-                  <div className="relative text-[#929292] whitespace-nowrap">
-                    <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                    {attribute.selectedAttributes.attribute.price.toLocaleString(
-                      "vi-VN",
-                    )}
-                    <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-end items-center h-4 text-inherit w-full rounded-sm overflow-hidden text-sm">
-                <button
-                  className={`w-6 h-full flex items-center justify-center
-                                        border border-[#CCCCCC] text-xs rounded-tl-sm rounded-bl-sm
-                                        `}
-                  onClick={handleQuantityClick}
-                  data-action="decrease"
-                  data-id={index}
-                >
-                  <i className="fa-solid fa-minus"></i>
-                </button>
-                <input
-                  type="number"
-                  min="1"
-                  value={quantityInputs[index]}
-                  onChange={(e) => handleQuantityChange(e, index)}
-                  onBlur={(e) => handleBlur(e, index)}
-                  onKeyDown={(e) => {
-                    if (
-                      !(
-                        (e.key >= "0" && e.key <= "9") ||
-                        [
-                          "Backspace",
-                          "Delete",
-                          "ArrowLeft",
-                          "ArrowRight",
-                          "Tab",
-                        ].includes(e.key)
-                      )
-                    ) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
-                                        [&::-webkit-outer-spin-button]:appearance-none 
-                                        [&::-webkit-inner-spin-button]:appearance-none
-                                        focus:outline-none
-                                        bg-transparent
-                                        border-y border-[#CCCCCC]
-                                        `}
-                />
-                <button
-                  className={`w-6 h-full flex items-center justify-center
-                                        border border-[#CCCCCC] text-xs rounded-tr-sm rounded-br-sm
-                                        `}
-                  onClick={handleQuantityClick}
-                  data-action="increase"
-                  data-id={index}
-                >
-                  <i className="fa-solid fa-plus"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          {/* Bên trái: checkbox, ảnh, tên, phân loại */}
-          <div className="flex items-center h-full gap-4 my-[36px]">
-            {/* Checkbox */}
-            <input
-              type="checkbox"
-              className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
-                            checked:bg-primaryColor checked:border-primaryColor"
-              checked={isChecked[index]}
-              onChange={() => handleCheckboxChange(index)}
-            />
-            {/* Ảnh và tên sản phẩm */}
-            <div className="flex items-center h-full gap-2">
-              {/* Ảnh sản phẩm */}
-              <div
-                className="rounded-sm"
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              ></div>
-              {/* Tên sản phẩm */}
-              <div className="flex items-start h-[80px]">
-                <div className="w-[200px] line-clamp-2 text-sm font-normal text-start">
-                  {attribute.name}
-                </div>
-              </div>
-            </div>
-            {/* Phân loại sản phẩm */}
-            <div className="relative">
-              <div className="text-sm capitalize text-moregrayTextColor font-medium flex gap-2">
-                phân loại hàng:
-                <button
-                  className="inline-block"
-                  onClick={() =>
-                    setOpenDropdown(openDropdown === index ? null : index)
-                  }
-                >
-                  <i
-                    className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
-                                    ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
-                  ></i>
-                </button>
-              </div>
-              <div className="text-sm capitalize text-grayTextColor w-[140px] whitespace-normal">
-                {attribute.selectedAttributes.color}
-                {attribute.selectedAttributes.size !== null ? ", " : ""}
-                {attribute.selectedAttributes.size}
+                <i
+                  className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
+                                            ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                ></i>
               </div>
               {/* Phần dropdown */}
               <DetailProductDropDown
@@ -411,101 +405,252 @@ function ProductList({
               />
             </div>
           </div>
-          {/* Bên phải: 4 thông tin sản phẩm */}
-          {/* Đơn giá */}
-          <div className="flex justify-center text-sm font-normal gap-2">
-            {attribute.discount > 0 && (
-              <div className="relative text-[#929292] whitespace-nowrap">
-                <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                {attribute.selectedAttributes.attribute.price.toLocaleString(
-                  "vi-VN",
-                )}
-                <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
-              </div>
-            )}
-            <div className="whitespace-nowrap">
+        </div>
+        {/* Bên phải: 4 thông tin sản phẩm */}
+        {/* Đơn giá */}
+        <div className="hidden md:flex lg:hidden justify-center text-sm font-normal gap-2">
+          {attribute.discount > 0 && (
+            <div className="relative text-[#929292] whitespace-nowrap">
               <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-              {(
-                (attribute.selectedAttributes.attribute.price *
-                  (100 - (attribute.discount || 0))) /
-                100
-              ).toLocaleString("vi-VN")}
+              {attribute.selectedAttributes.attribute.price.toLocaleString(
+                "vi-VN",
+              )}
+              <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
             </div>
+          )}
+          <div className="whitespace-nowrap">
+            <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+            {(
+              (attribute.selectedAttributes.attribute.price *
+                (100 - (attribute.discount || 0))) /
+              100
+            ).toLocaleString("vi-VN")}
           </div>
-          {/* Số lượng */}
-          <div className="flex justify-center items-center h-8  text-inherit w-full">
-            <button
-              className={`w-[30px] h-full flex items-center justify-center
+        </div>
+        {/* Số lượng */}
+        <div className="hidden md:flex lg:hidden justify-center items-center h-8  text-inherit w-full">
+          <button
+            className={`w-[30px] h-full flex items-center justify-center
                             border border-[#CCCCCC] text-xs
                             `}
-              onClick={handleQuantityClick}
-              data-action="decrease"
-              data-id={index}
-            >
-              <i className="fa-solid fa-minus"></i>
-            </button>
-            <input
-              type="number"
-              min="1"
-              value={quantityInputs[index]}
-              onChange={(e) => handleQuantityChange(e, index)}
-              onBlur={(e) => handleBlur(e, index)}
-              onKeyDown={(e) => {
-                if (
-                  !(
-                    (e.key >= "0" && e.key <= "9") ||
-                    [
-                      "Backspace",
-                      "Delete",
-                      "ArrowLeft",
-                      "ArrowRight",
-                      "Tab",
-                    ].includes(e.key)
-                  )
-                ) {
-                  e.preventDefault();
-                }
-              }}
-              className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
+            onClick={handleQuantityClick}
+            data-action="decrease"
+            data-id={index}
+          >
+            <i className="fa-solid fa-minus"></i>
+          </button>
+          <input
+            type="number"
+            min="1"
+            value={quantityInputs[index]}
+            onChange={(e) => handleQuantityChange(e, index)}
+            onBlur={(e) => handleBlur(e, index)}
+            onKeyDown={(e) => {
+              if (
+                !(
+                  (e.key >= "0" && e.key <= "9") ||
+                  [
+                    "Backspace",
+                    "Delete",
+                    "ArrowLeft",
+                    "ArrowRight",
+                    "Tab",
+                  ].includes(e.key)
+                )
+              ) {
+                e.preventDefault();
+              }
+            }}
+            className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
                             [&::-webkit-outer-spin-button]:appearance-none 
                             [&::-webkit-inner-spin-button]:appearance-none
                             focus:outline-none
                             bg-transparent
                             border-y border-[#CCCCCC]
                             `}
-            />
-            <button
-              className={`w-[30px] h-full flex items-center justify-center
+          />
+          <button
+            className={`w-[30px] h-full flex items-center justify-center
                             border border-[#CCCCCC] text-xs
                             `}
-              onClick={handleQuantityClick}
-              data-action="increase"
-              data-id={index}
-            >
-              <i className="fa-solid fa-plus"></i>
-            </button>
+            onClick={handleQuantityClick}
+            data-action="increase"
+            data-id={index}
+          >
+            <i className="fa-solid fa-plus"></i>
+          </button>
+        </div>
+        {/* Số tiền */}
+        <div className="hidden md:flex lg:hidden justify-center text-sm font-normal text-primaryTextColor">
+          <i className="fa-solid fa-dong-sign text-[10px] relative top-[7px] right-[1px]"></i>
+          {(
+            attribute.quantity *
+            ((attribute.selectedAttributes.attribute.price *
+              (100 - (attribute.discount || 0))) /
+              100)
+          ).toLocaleString("vi-VN")}
+        </div>
+        {/* Thao tác */}
+        <button
+          className="hidden md:flex lg:hidden justify-center text-sm font-normal"
+          onClick={() =>
+            handleRemoveItem(attribute.selectedAttributes.attribute.id)
+          }
+        >
+          Xóa
+        </button>
+      </>
+      {/* Máy tính */}
+      <>
+        {/* Bên trái: checkbox, ảnh, tên, phân loại */}
+        <div className="hidden lg:flex items-center h-full gap-4 my-[36px]">
+          {/* Checkbox */}
+          <input
+            type="checkbox"
+            className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
+                            checked:bg-primaryColor checked:border-primaryColor"
+            checked={isChecked[index]}
+            onChange={() => handleCheckboxChange(index)}
+          />
+          {/* Ảnh và tên sản phẩm */}
+          <div className="flex items-center h-full gap-2">
+            {/* Ảnh sản phẩm */}
+            <div
+              className="rounded-sm"
+              style={{
+                width: "80px",
+                height: "80px",
+                backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            ></div>
+            {/* Tên sản phẩm */}
+            <div className="flex items-start h-[80px]">
+              <div className="w-[200px] line-clamp-2 text-sm font-normal text-start">
+                {attribute.name}
+              </div>
+            </div>
           </div>
-          {/* Số tiền */}
-          <div className="flex justify-center text-sm font-normal text-primaryTextColor">
-            <i className="fa-solid fa-dong-sign text-[10px] relative top-[7px] right-[1px]"></i>
+          {/* Phân loại sản phẩm */}
+          <div className="relative">
+            <div className="text-sm capitalize text-moregrayTextColor font-medium flex gap-2">
+              phân loại hàng:
+              <button
+                className="inline-block"
+                onClick={() =>
+                  setOpenDropdown(openDropdown === index ? null : index)
+                }
+              >
+                <i
+                  className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
+                                    ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                ></i>
+              </button>
+            </div>
+            <div className="text-sm capitalize text-grayTextColor w-[140px] whitespace-normal">
+              {attribute.selectedAttributes.color}
+              {attribute.selectedAttributes.size !== null ? ", " : ""}
+              {attribute.selectedAttributes.size}
+            </div>
+            {/* Phần dropdown */}
+            <DetailProductDropDown openDropdown={openDropdown} index={index} />
+          </div>
+        </div>
+        {/* Bên phải: 4 thông tin sản phẩm */}
+        {/* Đơn giá */}
+        <div className="hidden lg:flex justify-center text-sm font-normal gap-2 max-w-[150px]">
+          {attribute.discount > 0 && (
+            <div className="relative text-[#929292] whitespace-nowrap">
+              <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+              {attribute.selectedAttributes.attribute.price.toLocaleString(
+                "vi-VN",
+              )}
+              <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
+            </div>
+          )}
+          <div className="whitespace-nowrap">
+            <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
             {(
-              attribute.quantity *
-              ((attribute.selectedAttributes.attribute.price *
+              (attribute.selectedAttributes.attribute.price *
                 (100 - (attribute.discount || 0))) /
-                100)
+              100
             ).toLocaleString("vi-VN")}
           </div>
-          {/* Thao tác */}
+        </div>
+        {/* Số lượng */}
+        <div className="hidden lg:flex justify-center items-center h-8  text-inherit w-full max-w-[150px]">
           <button
-            className="flex justify-center text-sm font-normal"
-            onClick={() =>
-              handleRemoveItem(attribute.selectedAttributes.attribute.id)
-            }
+            className={`w-[30px] h-full flex items-center justify-center
+                            border border-[#CCCCCC] text-xs
+                            `}
+            onClick={handleQuantityClick}
+            data-action="decrease"
+            data-id={index}
           >
-            Xóa
+            <i className="fa-solid fa-minus"></i>
           </button>
-        </>
-      )}
+          <input
+            type="number"
+            min="1"
+            value={quantityInputs[index]}
+            onChange={(e) => handleQuantityChange(e, index)}
+            onBlur={(e) => handleBlur(e, index)}
+            onKeyDown={(e) => {
+              if (
+                !(
+                  (e.key >= "0" && e.key <= "9") ||
+                  [
+                    "Backspace",
+                    "Delete",
+                    "ArrowLeft",
+                    "ArrowRight",
+                    "Tab",
+                  ].includes(e.key)
+                )
+              ) {
+                e.preventDefault();
+              }
+            }}
+            className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
+                            [&::-webkit-outer-spin-button]:appearance-none 
+                            [&::-webkit-inner-spin-button]:appearance-none
+                            focus:outline-none
+                            bg-transparent
+                            border-y border-[#CCCCCC]
+                            `}
+          />
+          <button
+            className={`w-[30px] h-full flex items-center justify-center
+                            border border-[#CCCCCC] text-xs
+                            `}
+            onClick={handleQuantityClick}
+            data-action="increase"
+            data-id={index}
+          >
+            <i className="fa-solid fa-plus"></i>
+          </button>
+        </div>
+        {/* Số tiền */}
+        <div className="hidden lg:flex justify-center text-sm font-normal text-primaryTextColor max-w-[150px]">
+          <i className="fa-solid fa-dong-sign text-[10px] relative top-[7px] right-[1px]"></i>
+          {(
+            attribute.quantity *
+            ((attribute.selectedAttributes.attribute.price *
+              (100 - (attribute.discount || 0))) /
+              100)
+          ).toLocaleString("vi-VN")}
+        </div>
+        {/* Thao tác */}
+        <button
+          className="hidden lg:flex justify-center text-sm font-normal max-w-[150px]"
+          onClick={() =>
+            handleRemoveItem(attribute.selectedAttributes.attribute.id)
+          }
+        >
+          Xóa
+        </button>
+      </>
     </div>
   ));
 }

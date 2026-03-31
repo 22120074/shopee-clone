@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { emailHidden, userImageUrlFormat } from "../../../utils/stringFormat";
@@ -10,7 +10,6 @@ import FileSubmitButton from "../../../components/userComponents/fileSubmitButto
 import { useUpdateProfileMutation } from "../../../features/api/userQuery";
 
 function UserProfile() {
-  const dispatch = useDispatch();
   const { addToast } = useOutletContext();
   // Sử dụng useSelector để lấy thông tin người dùng từ Redux store
   const user = useSelector((state) => state.auth.currentUser);
@@ -110,51 +109,52 @@ function UserProfile() {
           Quản lí thông tin hồ sơ để bảo mật tài khoản
         </div>
       </div>
-      <div className="w-full grid grid-cols-[1fr_280px] mt-10">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_280px] mt-10">
         <form
           action=""
-          className="grid grid-cols-[120px_1fr] gap-y-6 px-10 border-r border-lesslessgrayColor"
+          className="w-full grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[120px_1fr] 
+          gap-y-2 md:gap-y-6 lg:px-10 lg:border-r lg:border-lesslessgrayColor"
           autoComplete="off"
         >
           {/* Tên hiển thị */}
           <label
             htmlFor="displayName"
-            className="flex items-center justify-end text-[15px] text-moregrayTextColor"
+            className="flex items-center justify-start md:justify-end text-sm md:text-[15px] text-moregrayTextColor"
           >
             Tên hiển thị
           </label>
           <input
             type="text"
             id="displayName"
-            className="h-9 border border-gray-300 rounded-sm p-2 ml-4 focus:outline-none text-[15px]"
+            className="h-9 border border-gray-300 rounded-sm p-2 md:ml-4 focus:outline-none text-sm md:text-[15px]"
             value={displayNameForm}
             onChange={(e) => setDisplayNameForm(e.target.value)}
           />
           {/* Họ và tên */}
           <label
             htmlFor="userName"
-            className="flex items-center justify-end text-[15px] text-moregrayTextColor"
+            className="flex items-center justify-start md:justify-end text-sm md:text-[15px] text-moregrayTextColor"
           >
             Họ và tên
           </label>
           <input
             type="text"
             id="userName"
-            className="h-9 border border-gray-300 rounded-sm p-2 ml-4 focus:outline-none text-[15px]"
+            className="h-9 border border-gray-300 rounded-sm p-2 md:ml-4 focus:outline-none text-sm md:text-[15px]"
             value={nameForm}
             onChange={(e) => setNameForm(e.target.value)}
           />
           {/* Email */}
           <label
             htmlFor="userEmail"
-            className="flex items-center justify-end text-[15px] text-moregrayTextColor"
+            className="flex items-center justify-start md:justify-end text-sm md:text-[15px] text-moregrayTextColor"
           >
             Email
           </label>
           <div
             type="text"
             id="userEmail"
-            className="flex items-center justify-between h-9 ml-4 text-[15px]"
+            className="flex items-center justify-between h-9 md:ml-4 text-sm md:text-[15px]"
           >
             {emailHidden(user?.email) || "Chưa thiết lập Email"}
             <Link
@@ -171,14 +171,14 @@ function UserProfile() {
           {/* Số điện thoại */}
           <label
             htmlFor="userPhone"
-            className="flex items-center justify-end text-[15px] text-moregrayTextColor"
+            className="flex items-center justify-start md:justify-end text-sm md:text-[15px] text-moregrayTextColor"
           >
             Số điện thoại
           </label>
           <div
             type="text"
             id="userPhone"
-            className="flex items-center justify-between h-9 ml-4 text-[15px]"
+            className="flex items-center justify-between h-9 md:ml-4 text-sm md:text-[15px]"
           >
             {hiddenPhone(user?.phone) || "Chưa thiết lập số điện thoại"}
             <Link
@@ -191,11 +191,11 @@ function UserProfile() {
           {/* Giới tính */}
           <label
             htmlFor="userSex"
-            className="flex items-center justify-end text-[15px] text-moregrayTextColor"
+            className="flex items-center justify-start md:justify-end text-sm md:text-[15px] text-moregrayTextColor"
           >
             Giới tính
           </label>
-          <div className="flex items-center h-9 ml-4">
+          <div className="flex items-center h-9 md:ml-4">
             <input
               type="radio"
               className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-full
@@ -209,7 +209,7 @@ function UserProfile() {
               checked={genderForm === "male"}
               onChange={(e) => setGenderForm(e.target.value)}
             ></input>
-            <span className="ml-2 mr-4 text-[15px]">Nam</span>
+            <span className="ml-2 mr-4 text-sm md:text-[15px]">Nam</span>
             <input
               type="radio"
               className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-full
@@ -223,7 +223,7 @@ function UserProfile() {
               checked={genderForm === "female"}
               onChange={(e) => setGenderForm(e.target.value)}
             ></input>
-            <span className="ml-2 mr-4 text-[15px]">Nữ</span>
+            <span className="ml-2 mr-4 text-sm md:text-[15px]">Nữ</span>
             <input
               type="radio"
               className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-full
@@ -237,16 +237,16 @@ function UserProfile() {
               checked={genderForm === "other"}
               onChange={(e) => setGenderForm(e.target.value)}
             ></input>
-            <span className="ml-2 mr-4 text-[15px]">Khác</span>
+            <span className="ml-2 mr-4 text-sm md:text-[15px]">Khác</span>
           </div>
           {/* Ngày sinh */}
           <label
             htmlFor="dateBirth"
-            className="flex items-center justify-end text-[15px] text-moregrayTextColor"
+            className="flex items-center justify-start md:justify-end text-sm md:text-[15px] text-moregrayTextColor"
           >
             Ngày sinh
           </label>
-          <div className="relative flex items-center ml-4 gap-2">
+          <div className="relative flex items-center md:ml-4 gap-2">
             <div
               ref={dayRef}
               className="relative flex-1 h-9 max-w-[120px] border border-gray-300 rounded-sm px-2 focus:outline-none text-sm"
@@ -402,7 +402,7 @@ function UserProfile() {
           </div>
         </form>
         {/* Avatar */}
-        <div className="flex flex-col w-full h-auto min-h-32 items-center justify-start gap-4 py-6 select-none">
+        <div className="order-first lg:order-last flex flex-col w-full h-auto min-h-32 items-center justify-start gap-4 py-6 select-none">
           <div className="w-26 h-26 rounded-full overflow-hidden mr-2 border cursor-pointer">
             <img
               src={
@@ -424,7 +424,7 @@ function UserProfile() {
           </div>
         </div>
       </div>
-      <div className="flex w-full items-center justify-center ml-4 gap-2 mt-16">
+      <div className="flex w-full items-center justify-center md:ml-4 gap-2 mt-16">
         <PrimaryButton
           width="200px"
           text={"Lưu"}

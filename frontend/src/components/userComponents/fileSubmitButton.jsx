@@ -91,23 +91,22 @@ function FileSubmitButton({ addToast }) {
   return (
     <>
       <button
-        className={`flex items-center justify-center bg-white text-black border border-black rounded-sm px-4 w-auto h-10
-                    border-lessgrayColor text-sm font-normal
-                `}
+        className={`flex items-center justify-center bg-white w-auto h-10 text-black px-4
+        rounded-sm  border border-lessgrayColor text-sm font-normal`}
         onClick={() => setIsOpen(true)}
       >
         Thay đổi ảnh đại diện
       </button>
       {/* Modal */}
       {isAnimating && (
-        <div className="fixed inset-0 z-20">
+        <div className="fixed inset-0 z-[999]">
           {/* Overlay */}
           <div
             className="absolute inset-0 bg-black bg-opacity-60 z-10"
             onClick={() => setIsOpen(false)}
           ></div>
           <div
-            className={`absolute top-1/2 left-1/2 max-w-[600px] w-full h-auto
+            className={`absolute top-1/2 left-1/2 md:max-w-[600px] w-[96%] md:w-full h-auto
                     flex flex-col items-start justify-start bg-white rounded-lg py-4 px-8 select-none z-20
                     ${isOpen ? "animate-zoomInAbsolute" : "animate-zoomOutAbsolute"}`}
             onAnimationEnd={() => {
@@ -159,7 +158,7 @@ function FileSubmitButton({ addToast }) {
                   <span></span>
                 )}
               </div>
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center justify-end gap-4">
                 <button
                   className="relative bg-blueButton text-white px-6 py-2 rounded-md cursor-pointer"
                   onClick={() => handleSubmit()}

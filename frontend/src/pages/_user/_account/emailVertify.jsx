@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { gsap } from "gsap";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { emailHidden } from "../../../utils/stringFormat";
 import PrimaryButton from "../../../components/buttons/Button";
 import StepProgress from "../../../components/StepProgress";
@@ -14,7 +14,6 @@ import { useUpdateEmailMutation } from "../../../features/api/userQuery";
 
 function EmailVertify() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
   const { addToast } = useOutletContext();
   // Sử dụng useSelector để lấy thông tin người dùng từ Redux store
@@ -219,7 +218,9 @@ function EmailVertify() {
       }).unwrap();
       if (data) {
         setCurrentStep(4);
-        navigate("/user/account/profile");
+        setTimeout(() => {
+          navigate("/user/account/profile");
+        }, 1500);
       }
     } catch (error) {
       console.error("Error updating email:", error);
@@ -239,13 +240,17 @@ function EmailVertify() {
       <StepProgress currentStep={currentStep} steps={steps} />
 
       {currentStep === 2 ? (
-        <div className="w-full flex flex-col items-center justify-center gap-8 py-0 select-none">
-          <div className="text-xl">Nhập mã xác nhận</div>
+        <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-8 py-0 select-none">
+          <div className="text-xl mt-2 md:mt-0">Nhập mã xác nhận</div>
           <div className="text-base flex flex-col items-center justify-center">
-            <div>Mã xác nhận đã được gửi đến Email</div>
+            <div className="text-center">Mã xác nhận đã được gửi đến Email</div>
             <div>{emailHidden(user.email)}</div>
           </div>
-          <form action="" className="grid grid-cols-6 gap-3" ref={formRef}>
+          <form
+            action=""
+            className="grid grid-cols-6 gap-1 md:gap-3"
+            ref={formRef}
+          >
             <input
               ref={firstOtp}
               inputMode="numeric"
@@ -258,7 +263,7 @@ function EmailVertify() {
               onBlur={handleOnBlur}
               onMouseDown={(e) => e.preventDefault()}
               // onKeyDown={handleKeyDown}
-              className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
+              className="sm:w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
             />
             <input
               inputMode="numeric"
@@ -269,7 +274,7 @@ function EmailVertify() {
               onBlur={handleOnBlur}
               onMouseDown={(e) => e.preventDefault()}
               onKeyDown={handleKeyDown}
-              className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
+              className="sm:w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
             />
             <input
               inputMode="numeric"
@@ -280,7 +285,7 @@ function EmailVertify() {
               onBlur={handleOnBlur}
               onMouseDown={(e) => e.preventDefault()}
               onKeyDown={handleKeyDown}
-              className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
+              className="sm:w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
             />
             <input
               inputMode="numeric"
@@ -291,7 +296,7 @@ function EmailVertify() {
               onBlur={handleOnBlur}
               onMouseDown={(e) => e.preventDefault()}
               onKeyDown={handleKeyDown}
-              className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
+              className="sm:w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
             />
             <input
               inputMode="numeric"
@@ -302,7 +307,7 @@ function EmailVertify() {
               onBlur={handleOnBlur}
               onMouseDown={(e) => e.preventDefault()}
               onKeyDown={handleKeyDown}
-              className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
+              className="sm:w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
             />
             <input
               inputMode="numeric"
@@ -313,19 +318,19 @@ function EmailVertify() {
               onBlur={handleOnBlur}
               onMouseDown={(e) => e.preventDefault()}
               onKeyDown={handleKeyDown}
-              className="w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
+              className="sm:w-10 h-12 text-center text-lg font-medium rounded-md border border-gray-300 focus:outline-none"
             />
           </form>
-          <div className="text-sm text-moregrayTextColor flex items-center justify-center gap-2">
+          <div className="text-sm text-moregrayTextColor flex items-center justify-center gap-1 md:gap-2">
             Bạn vẫn chưa nhận được?
             <button className="text-primaryTextColor" onClick={handleOnclick}>
               Gửi lại mã
             </button>
           </div>
-          <div className="w-full flex items-center justify-center gap-6 mt-4">
+          <div className="w-full flex flex-row items-center justify-center gap-2 md:gap-6 mt-4">
             <button
-              className="relative flex items-center justify-center gap-3 py-2 px-6 w-[180px] h-10
-                            text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
+              className="relative flex flex-1 w-full items-center justify-center gap-1 md:gap-3 py-2 md:px-6 max-w-[180px] h-10
+              text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
               onClick={handleGoBack}
             >
               <svg
@@ -382,7 +387,7 @@ function EmailVertify() {
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden="true"
-            className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+            className="absolute top-10 left-1/2 mt-2 md:mt-0 transform -translate-x-1/2 -translate-y-1/2 z-10"
           >
             <path d="M12 2 3 5v6c0 5.25 3.75 9.74 9 11 5.25-1.26 9-5.75 9-11V5l-9-3z" />
             <path d="M9 12.5l1.8 1.8L15 10.1" />
@@ -393,27 +398,29 @@ function EmailVertify() {
             width="80"
             height="80"
             aria-hidden="true"
-            className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-10 left-1/2 mt-2 md:mt-0 transform -translate-x-1/2 -translate-y-1/2"
           >
             <path d="M12 2v20c5.25-1.26 9-5.75 9-11V5l-9-3z" fill="#FFC7B3" />
           </svg>
-          <div className="text-lg text-black mt-24 mb-6 w-[420px]">
+          <div className="text-base md:text-lg text-black mt-24 mb-6 w-full md:w-[420px] text-center md:text-left">
             Để tăng cường bảo mật cho tài khoản của bạn, hãy xác minh thông tin
             bằng một trong những cách sau.
           </div>
           <button
             ref={btnRef}
-            className="flex items-center justify-center gap-3 py-2 px-6 text-primaryTextColor rounded-sm text-base
+            className="flex items-center justify-center gap-2 md:gap-3 py-2 px-4 md:px-6 text-primaryTextColor rounded-sm text-base
                     border border-primaryTextColor hover:bg-primaryRatingColor"
             onMouseEnter={handleMouseEnter}
             onClick={handleOnclick}
           >
             <i ref={iconRef} className="fa-regular fa-envelope text-lg"></i>
             <span className="flex gap-1">
-              {" "}
+              <span className="md:hidden text-sm">
+                Xác minh bằng mã OTP gửi qua Email
+              </span>
               {/* gap giữa các từ */}
               {text.split(" ").map((word, wIdx) => (
-                <span key={wIdx} className="flex gap-0">
+                <span key={wIdx} className="hidden md:flex gap-0">
                   {" "}
                   {/* chữ trong từ sát nhau */}
                   {word.split("").map((char, cIdx) => (
@@ -431,8 +438,8 @@ function EmailVertify() {
           </button>
         </div>
       ) : currentStep === 3 ? (
-        <div className="w-full flex flex-col items-center justify-center gap-8 py-0 select-none">
-          <div className="text-xl">Nhập địa chỉ Email mới</div>
+        <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-8 py-0 select-none">
+          <div className="text-xl mt-2 md:mt-0">Nhập địa chỉ Email mới</div>
           <form
             action=""
             className="w-full flex flex-col items-center justify-center max-w-[300px]"
@@ -443,13 +450,20 @@ function EmailVertify() {
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none"
+              className="hidden md:block w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none"
+            />
+            <input
+              placeholder="Nhập địa chỉ Email mới"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="md:hidden w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none"
             />
           </form>
-          <div className="w-full flex items-center justify-center gap-6 mt-4">
+          <div className="w-full flex flex-row items-center justify-center gap-2 md:gap-6 mt-4">
             <button
-              className="relative flex items-center justify-center gap-3 py-2 px-6 w-[180px] h-10
-                            text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
+              className="relative flex flex-1 w-full items-center justify-center gap-1 md:gap-3 py-2 md:px-6 max-w-[180px] h-10
+              text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
               onClick={handleGoBack}
             >
               <svg

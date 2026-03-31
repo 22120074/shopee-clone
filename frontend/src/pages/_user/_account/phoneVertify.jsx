@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRef } from "react";
+import { useEffect } from "react";
 import { gsap } from "gsap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -100,9 +101,14 @@ function PhoneVertify() {
         userId: user?.userId || user?.googleID,
         newPhone: phone,
       }).unwrap();
+      console.log("Update phone response: ", data);
       if (data) {
         setCurrentStep(3);
-        navigate("/user/account/profile");
+        addToast(
+          "Số điện thoại đã được cập nhật thành công.",
+          "success",
+          "check",
+        );
       }
     } catch (error) {
       console.error("Error updating phone:", error);
@@ -134,7 +140,7 @@ function PhoneVertify() {
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden="true"
-            className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+            className="absolute top-10 left-1/2 mt-2 md:mt-0 transform -translate-x-1/2 -translate-y-1/2 z-10"
           >
             <path d="M12 2 3 5v6c0 5.25 3.75 9.74 9 11 5.25-1.26 9-5.75 9-11V5l-9-3z" />
             <path d="M9 12.5l1.8 1.8L15 10.1" />
@@ -145,24 +151,23 @@ function PhoneVertify() {
             width="80"
             height="80"
             aria-hidden="true"
-            className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-10 left-1/2 mt-2 md:mt-0 transform -translate-x-1/2 -translate-y-1/2"
           >
             <path d="M12 2v20c5.25-1.26 9-5.75 9-11V5l-9-3z" fill="#FFC7B3" />
           </svg>
-          <div className="text-lg text-black mt-24 mb-6 w-[420px] text-center">
+          <div className="text-lg text-black mt-24 mb-6 md:w-[420px] text-center ">
             Để thay đổi số điện thoại cho tài khoản của bạn, hãy xác minh bằng
             cách nhấn vào nút sau.
           </div>
           <button
             ref={btnRef}
             className="flex items-center justify-center gap-2 py-2 px-6 text-primaryTextColor rounded-sm text-base
-                        border border-primaryTextColor hover:bg-primaryRatingColor"
+            border border-primaryTextColor hover:bg-primaryRatingColor"
             onMouseEnter={handleMouseEnter}
             onClick={handleOnclick}
           >
             <i ref={iconRef} className="fa-solid fa-phone-flip text-lg"></i>
             <span className="flex gap-1">
-              {" "}
               {/* gap giữa các từ */}
               {text.split(" ").map((word, wIdx) => (
                 <span key={wIdx} className="flex gap-0">
@@ -183,8 +188,8 @@ function PhoneVertify() {
           </button>
         </div>
       ) : currentStep === 2 ? (
-        <div className="w-full flex flex-col items-center justify-center gap-8 py-0 select-none">
-          <div className="text-xl">Nhập Số điện thoại mới</div>
+        <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-8 py-0 select-none">
+          <div className="text-xl mt-2 md:mt-0">Nhập Số điện thoại mới</div>
           <form
             action=""
             className="w-full flex flex-col items-center justify-center max-w-[300px]"
@@ -195,13 +200,20 @@ function PhoneVertify() {
               autoFocus
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none"
+              className="hidden md:block w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none"
+            />
+            <input
+              placeholder="Nhập Số điện thoại mới"
+              autoFocus
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="md:hidden w-full h-10 text-center text-base rounded-md border border-gray-300 focus:outline-none"
             />
           </form>
-          <div className="w-full flex items-center justify-center gap-6 mt-4">
+          <div className="w-full flex items-center justify-center gap-2 md:gap-6 mt-4">
             <button
-              className="relative flex items-center justify-center gap-3 py-2 px-6 w-[180px] h-10
-                            text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
+              className="relative flex flex-1 items-center justify-center gap-1 md:gap-3 py-2 md:px-6 max-w-[180px] h-10
+              text-primaryTextColor bg-primaryRatingColor border border-primaryColor rounded-sm text-base"
               onClick={handleGoBack}
             >
               <svg
@@ -233,7 +245,7 @@ function PhoneVertify() {
             >
               <div
                 className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
-                                ${isLoading ? "bg-white/50" : "hidden"}`}
+                ${isLoading ? "bg-white/50" : "hidden"}`}
               >
                 <Spinner
                   size={"30px"}
@@ -246,13 +258,19 @@ function PhoneVertify() {
           </div>
         </div>
       ) : (
-        <div className="w-full flex flex-col items-center justify-center gap-8 py-10">
-          <div className="text-xl text-green-600">
+        <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-8 py-10">
+          <div className="text-xl text-green-600 text-center">
             Xác minh số điện thoại thành công!
           </div>
           <div className="text-base text-center">
             Số điện thoại của bạn đã được cập nhật thành công.
           </div>
+          <PrimaryButton
+            height="40px"
+            width="200px"
+            text="Quay về hồ sơ"
+            onClick={() => navigate("/user/account/profile")}
+          />
         </div>
       )}
     </div>

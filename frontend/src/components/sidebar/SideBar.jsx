@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import clsx from "clsx";
 import { userImageUrlFormat } from "../../utils/stringFormat";
 
-function SideBar() {
+function SideBar({ isOpen }) {
   const navigate = useNavigate();
   // Lấy thông tin user từ Redux store
   const user = useSelector((state) => state.auth.currentUser);
@@ -31,9 +32,27 @@ function SideBar() {
     }
   }, [firstSegment, secondSegment]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
   return (
-    <div className="flex flex-col w-52 items-center justify-start bg-backgroundGrayColor min-h-[600px] select-none">
-      <div className="flex items-center justify-start gap-2 w-full h-28">
+    <div
+      className={clsx(
+        "fixed top-0 left-0 z-50 md:relative flex flex-col flex-shrink-0 items-center justify-start",
+        "bg-white md:bg-backgroundGrayColor w-52 h-screen md:min-h-[600px] select-none",
+        "shadow-[2px_0_8px_rgba(0,0,0,0.15)] md:shadow-none md:animate-none",
+        { "animate-slide-in-left": isOpen, "animate-slide-out-left": !isOpen },
+      )}
+    >
+      <div className="flex items-center justify-start gap-2 w-full h-28 px-4 md:px-0">
         <div
           className="w-14 h-14 rounded-full overflow-hidden mr-2 border cursor-pointer"
           onClick={() => navigate("/user/account/profile")}
@@ -59,7 +78,7 @@ function SideBar() {
         </div>
       </div>
       <div className="h-0 w-[90%] border-b border-lesslessgrayColor mx-auto mb-9" />
-      <div className="flex flex-col items-center justify-start w-full h-auto gap-2">
+      <div className="flex flex-col items-center justify-start w-full h-auto gap-2 px-4 md:px-0">
         <div className="select-none w-full">
           <div
             className="flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor"

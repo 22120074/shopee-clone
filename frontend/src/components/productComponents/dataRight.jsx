@@ -24,7 +24,11 @@ function DataRight({
   // Sử dụng biến để lưu min-max giá, mảng giá để dùng hiển thị
   const prices = product?.attributes?.map((attr) => attr.price) || [];
   const minPrice = prices.length ? Math.min(...prices) : 0;
-  const maxPrice = prices.length ? Math.max(...prices) : 0;
+  const maxPrice = prices.length
+    ? Math.max(...prices) === minPrice
+      ? null
+      : Math.max(...prices)
+    : 0;
 
   // Sử dụng useState để lưu các thuộc tính đã giảm bớt trùng lặp
   const [reducedAttributes, setReducedAttributes] = useState([]);
@@ -209,16 +213,7 @@ function DataRight({
             ></i>
           ))}
           {/* Thẻ div để hiện thanh dọc ngăn cách */}
-          <span
-            style={{
-              content: '""',
-              top: "calc(50% - 12px)",
-              right: "calc(0px)",
-              height: "24px",
-              border: "1px solid #E8E8E8",
-              margin: "0 16px",
-            }}
-          ></span>
+          <span className="h-6 border-l border-[#E8E8E8] mx-2 sm:mx-4"></span>
         </div>
         {/* Phần số lượng đánh giá và bán */}
         <div className="relative flex items-center gap-[2px] justify-start text-lg">
@@ -227,16 +222,7 @@ function DataRight({
           </div>
           <div className="text-[14px] text-[#767676] font-medium">Đánh Giá</div>
           {/* Thẻ div để hiện thanh dọc ngăn cách */}
-          <span
-            style={{
-              content: '""',
-              top: "calc(50% - 12px)",
-              right: "calc(0px)",
-              height: "24px",
-              border: "1px solid #E8E8E8",
-              margin: "0 16px",
-            }}
-          ></span>
+          <span className="h-6 border-l border-[#E8E8E8] mx-2 sm:mx-4"></span>
         </div>
         <div className="flex items-center gap-[2px] justify-start text-lg">
           <div className="mr-1 text-[14px] text-[#767676] font-medium">
@@ -272,37 +258,57 @@ function DataRight({
             {((minPrice * (100 - product.discount)) / 100).toLocaleString(
               "vi-VN",
             )}
-            <i className="fa-solid fa-minus text-[18px] mx-3"></i>
-            <i className="fa-solid fa-dong-sign text-[14px] lg:text-[18px] relative top-[-2px]"></i>
-            {((maxPrice * (100 - product.discount)) / 100).toLocaleString(
-              "vi-VN",
+            {maxPrice && (
+              <>
+                <i className="fa-solid fa-minus text-[18px] mx-3"></i>
+                <i className="fa-solid fa-dong-sign text-[14px] lg:text-[18px] relative top-[-2px]"></i>
+                {((maxPrice * (100 - product.discount)) / 100).toLocaleString(
+                  "vi-VN",
+                )}
+              </>
             )}
           </div>
         )}
-        {focusAttribute && product.discount ? (
+        {focusAttribute &&
+        product.discount !== 0 &&
+        product.discount !== null &&
+        product.discount !== "" &&
+        product.discount !== undefined ? (
           <div className="hidden lg:block relative text-[18px] text-[#929292] whitespace-nowrap">
             <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
             {focusAttribute.price.toLocaleString("vi-VN")}
             <div className="absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]"></div>
           </div>
         ) : (
-          <div className="hidden lg:block relative text-[18px] text-[#929292] whitespace-nowrap">
-            <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-            {minPrice.toLocaleString("vi-VN")}
-            <i className="fa-solid fa-minus text-[10px] mx-1"></i>
-            <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-            {maxPrice.toLocaleString("vi-VN")}
-            <div className="absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]"></div>
-          </div>
+          product.discount !== 0 &&
+          product.discount !== null &&
+          product.discount !== "" &&
+          product.discount !== undefined && (
+            <div className="hidden lg:block relative text-[18px] text-[#929292] whitespace-nowrap">
+              <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+              {minPrice.toLocaleString("vi-VN")}
+              {maxPrice && (
+                <>
+                  <i className="fa-solid fa-minus text-[10px] mx-1"></i>
+                  <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
+                  {maxPrice.toLocaleString("vi-VN")}
+                  <div className="absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]"></div>
+                </>
+              )}
+            </div>
+          )
         )}
-        {product.discount && (
-          <div
-            className="text-[12px] text-[#ee4d2d] font-bold bg-[#feeeea] w-[34px] h-[18px]
+        {product.discount !== 0 &&
+          product.discount !== null &&
+          product.discount !== "" &&
+          product.discount !== undefined && (
+            <div
+              className="text-[12px] text-primaryTextColor font-bold bg-[#feeeea] w-[34px] h-[18px]
                         flex items-center justify-center rounded-sm"
-          >
-            -{product.discount}%
-          </div>
-        )}
+            >
+              -{product.discount}%
+            </div>
+          )}
       </div>
       {/* Phần màu sắc và size */}
       {reducedAttributes.length > 0 && (
@@ -467,13 +473,14 @@ function DataRight({
           className="w-[170px] md:w-[180px] lg:w-[200px] h-[40px] md:h-[48px] bg-[#FFEEE8] text-primaryColor rounded border border-primaryColor
                 text-[16px] flex items-center justify-center gap-1"
           onClick={handleAddToCart}
-          // disabled={!focusAttribute}
+          disabled={!focusAttribute}
         >
           <i
             className="fa-solid fa-cart-shopping"
             style={{ transform: "translateY(1px)" }}
           ></i>
-          Thêm vào giỏ hàng
+          <span className="hidden md:inline">Thêm vào giỏ hàng</span>
+          <span className="md:hidden">Thêm vào giỏ</span>
         </button>
         <PrimaryButton
           height={isPhone ? "40px" : "48px"}

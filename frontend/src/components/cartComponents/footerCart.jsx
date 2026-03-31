@@ -67,12 +67,15 @@ function FooterCart({
   return (
     <>
       <div
-        className={`fixed md:sticky bottom-0 w-full h-20 bg-white mt-5 flex items-center justify-between px-2 md:px-10 
+        className={`fixed md:sticky bottom-0 right-0 w-full h-20 bg-white mt-5 flex items-center justify-between px-2 md:px-2 lg:px-10 
             ${isSticky ? "shadow-[0_-10px_30px_-20px_rgba(0,0,0,0.3)] border-t" : "border-b border-gray-200"}`}
       >
-        <div className="flex items-center justify-between w-full md:w-auto gap-2 md:gap-10">
+        <div
+          className={`flex items-center justify-between md:w-auto gap-2 md:gap-4 lg:gap-10
+            ${isPhone ? (isChangeFooter === true ? "w-full" : "") : ""}`}
+        >
           {/* Checkbox */}
-          <div className="flex items-center justify-center gap-2 md:gap-10">
+          <div className="flex items-center justify-center gap-2 md:gap-4 lg:gap-10">
             <input
               type="checkbox"
               className="flex-shrink-0 relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
@@ -80,11 +83,11 @@ function FooterCart({
               checked={isCheckedAll}
               onChange={(e) => setIsAllChecked(e.target.checked)}
             />
-            <div className="white-space-nowrap text-sm md:text-base">
+            <div className="whitespace-nowrap text-sm md:text-base">
               Chọn tất cả
             </div>
           </div>
-          <div className="flex gap-2 md:gap-10">
+          <div className="flex gap-2 md:gap-4 lg:gap-10">
             <button
               className={`${isPhone ? (isChangeFooter === true && isPhone ? "block" : "hidden") : ""} text-sm md:text-base`}
               onClick={handleClearCart}
@@ -95,15 +98,16 @@ function FooterCart({
               className={`${isPhone ? (isChangeFooter === true && isPhone ? "block" : "hidden") : ""} text-base 
                         text-primaryTextColor md:text-black font-semibold md:font-normal`}
             >
-              Lưu vào mục yêu thích
+              <span className="md:hidden lg:block">Lưu vào mục yêu thích</span>
+              <span className="hidden md:block lg:hidden">Yêu thích</span>
             </button>
           </div>
         </div>
         <div
-          className={`flex-1 flex items-center justify-end gap-2 md:gap-10 ${isChangeFooter === true ? "hidden" : "block"}`}
+          className={`items-center justify-end gap-2 md:gap-4 lg:gap-10 ${isChangeFooter === true ? "hidden md:flex" : "flex"}`}
         >
-          <div className="flex flex-col md:flex-row items-end md:items-center justify-center md:gap-3">
-            <div className="text-sm md:text-base self-end block md:flex">
+          <div className="flex flex-col md:flex-row items-center md:items-center justify-end md:gap-3">
+            <div className="text-sm md:text-base flex items-center justify-center gap-1">
               Tổng cộng
               {isPhone ? (
                 <div className="whitespace-nowrap">
@@ -113,7 +117,7 @@ function FooterCart({
                 <> ({isChecked.filter((item) => item).length} sản phẩm):</>
               )}
             </div>
-            <div className="flex justify-center text-base md:text-2xl font-normal text-primaryTextColor">
+            <div className="flex justify-start md:justify-center text-base md:text-2xl font-normal text-primaryTextColor">
               <i className="fa-solid fa-dong-sign text-xs md:text-[14px] relative top-0 md:top-[8px] right-[2px]"></i>
               {totalPrice.toLocaleString("vi-VN")}
             </div>

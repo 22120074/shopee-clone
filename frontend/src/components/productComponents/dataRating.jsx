@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { getProductReviews } from "../../services/product.service";
 import {
   formatNumber,
   formatDate,
@@ -236,7 +235,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
         Đánh giá sản phẩm
       </h1>
       {/* Phần hiển thị tổng quan đánh giá */}
-      <div className="w-full h-32 flex px-10 items-center justify-between bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
+      <div className="w-full h-32 flex px-4 md:px-10 items-center justify-between bg-primaryRatingColor mt-5 rounded-sm border border-primaryBorderRating">
         <div className="relative h-full flex flex-col gap-2 justify-center items-center">
           <div className="flex gap-1 items-end text-primaryColor text-4xl">
             {formatRating(rating)}
@@ -255,7 +254,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
           <button
             type="button"
             onClick={() => setIsOpenDropPhone(!isOpenDropPhone)}
-            className="relative w-40 h-10 flex items-center justify-start p-2 border border-gray-400 rounded bg-white text-sm"
+            className="relative w-32 md:w-40 h-10 flex items-center justify-start p-2 border border-gray-400 rounded bg-white text-sm"
           >
             {selected}
             <i
@@ -434,7 +433,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
           {reviews.map((review, idx) => (
             <div
               key={review.id}
-              className="w-full h-auto grid grid-cols-[50px_1fr] pb-14 border-b border-gray-300 p-3"
+              className="w-full h-auto grid grid-cols-[50px_1fr] pb-2 md:pb-14 p-1 md:p-3 border-b border-gray-300"
             >
               {/* Avatar */}
               <Link
@@ -480,7 +479,7 @@ function DataRatingProduct({ product, rating, isPhone }) {
                   </div>
                 </div>
                 {/* Phần nội dung bình luận */}
-                <div className="pr-12">{review.comment}</div>
+                <div className="md:pr-12">{review.comment}</div>
                 {/* Phần hiển thị video và hình ảnh */}
                 <div className="flex gap-3">
                   {review.Video_Ratings?.length > 0 && (
