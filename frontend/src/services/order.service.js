@@ -19,3 +19,12 @@ export const createVnpayUrl = (payload) => {
     },
   );
 };
+
+export const vnpayReturnUrl = (queryParams) => {
+  return axios.get(
+    `${process.env.REACT_APP_API_URL}/order/vnpay-return${queryParams}`,
+    {
+      withCredentials: true,
+    },
+  );
+};

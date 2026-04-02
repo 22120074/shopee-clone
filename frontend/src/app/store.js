@@ -10,6 +10,7 @@ import { userQuery } from "../features/api/userQuery";
 import { productQuery } from "../features/api/productQuery";
 import { mediaQuery } from "../features/api/mediaQuery";
 import { shopProductQuery } from "../features/api/shopProductQuery";
+import { orderQuery } from "../features/api/orderQuery";
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     [productQuery.reducerPath]: productQuery.reducer,
     [mediaQuery.reducerPath]: mediaQuery.reducer,
     [shopProductQuery.reducerPath]: shopProductQuery.reducer,
+    [orderQuery.reducerPath]: orderQuery.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -34,5 +36,6 @@ export const store = configureStore({
       productQuery.middleware,
       mediaQuery.middleware,
       shopProductQuery.middleware,
+      orderQuery.middleware,
     ),
 });

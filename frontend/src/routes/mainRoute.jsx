@@ -8,6 +8,7 @@ import CartPage from "../pages/_cart/cartPage";
 import Home from "../pages/home";
 import PurchaseLayout from "../layouts/purchaseLayout";
 import PurchasePage from "../pages/_purchase/purchasePage";
+import VnPayReturnPage from "../pages/_purchase/vnpay_return/page";
 
 export const mainRoutes = (
   <>
@@ -35,6 +36,7 @@ export const mainRoutes = (
     {/* Mua hàng */}
     <Route element={<PurchaseLayout />}>
       <Route path="/purchase" element={<PurchasePage />} />
+      <Route path="/purchase/vnpay_return" element={<VnPayReturnPage />} />
     </Route>
   </>
 );

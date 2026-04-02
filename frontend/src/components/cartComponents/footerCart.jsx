@@ -1,8 +1,9 @@
-import PrimaryButton from "../buttons/Button";
 import { useDispatch } from "react-redux";
+import clsx from "clsx";
 import { removeItem } from "../../features/cart/cartSlice";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PrimaryButton from "../buttons/Button";
 import Spinner from "../skeletons/spinnerButton";
 
 function FooterCart({
@@ -104,15 +105,18 @@ function FooterCart({
           </div>
         </div>
         <div
-          className={`items-center justify-end gap-2 md:gap-4 lg:gap-10 ${isChangeFooter === true ? "hidden md:flex" : "flex"}`}
+          className={clsx(
+            "items-center justify-end gap-2 md:gap-4 lg:gap-10",
+            isChangeFooter === true ? "hidden md:flex" : "flex",
+          )}
         >
-          <div className="flex flex-col md:flex-row items-center md:items-center justify-end md:gap-3">
-            <div className="text-sm md:text-base flex items-center justify-center gap-1">
+          <div className="flex flex-col md:flex-shrink-0 md:flex-row items-center md:items-center justify-end md:gap-3">
+            <div className="text-sm md:text-base flex flex-col md:flex-row items-center justify-center md:gap-1">
               Tổng cộng
               {isPhone ? (
-                <div className="whitespace-nowrap">
+                <span className="whitespace-nowrap">
                   ({isChecked.filter((item) => item).length} sản phẩm):
-                </div>
+                </span>
               ) : (
                 <> ({isChecked.filter((item) => item).length} sản phẩm):</>
               )}
@@ -127,6 +131,7 @@ function FooterCart({
             width={isPhone ? "120px" : "200px"}
             text={"Mua Hàng"}
             onClick={() => handleBuyNow()}
+            className="!flex-shrink-0 !flex-none"
           >
             <div
               className={`absolute top-0 left-0 w-full h-full flex items-center justify-center

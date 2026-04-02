@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 function PrimaryButton({
   height = "40px",
   width = "120px",
@@ -6,6 +8,7 @@ function PrimaryButton({
   type = "button",
   disabled,
   children,
+  className,
 }) {
   return (
     <button
@@ -19,9 +22,11 @@ function PrimaryButton({
         fontSize: "16px",
       }}
       disabled={disabled}
-      className={`relative flex flex-1 w-full h-full items-center justify-center bg-primaryColor transition-opacity duration-200 ${
-        disabled ? "opacity-60 cursor-not-allowed" : "hover:brightness-110"
-      }`}
+      className={clsx(
+        "relative flex flex-1 w-full h-full items-center justify-center bg-primaryColor transition-opacity duration-200",
+        disabled ? "opacity-60 cursor-not-allowed" : "hover:brightness-110",
+        className,
+      )}
     >
       {text}
       {children}

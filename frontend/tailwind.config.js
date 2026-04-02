@@ -16,9 +16,13 @@ module.exports = {
         grayTextColor: "#888888",
         moregrayTextColor: "#777777",
         hoverTextColorHeader: "#00b9c7",
+        successColor: "#26AA99",
+        failColor: "#DC2626",
         // Background
         backgroundGrayColor: "#F5F5F5",
         backgroundLightGrayColor: "#F9FAFB",
+        backgroundSuccessColor: "#DCFCE7",
+        backgroundFailColor: "#FEF2F2",
         // Button
         blueButton: "#2563EB",
       },

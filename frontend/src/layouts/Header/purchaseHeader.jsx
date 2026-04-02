@@ -15,6 +15,13 @@ export default function PurchaseHeader() {
   const dispatch = useDispatch();
   const { toasts, addToast } = useToastQueue(3, 1500);
 
+  const nameUrl =
+    location.pathname === "/purchase"
+      ? "thanh toán"
+      : location.pathname === "/purchase/vnpay_return"
+        ? "kết quả thanh toán"
+        : "";
+
   // Lấy thông tin người dùng từ Redux store
   const user = useSelector((state) => state.auth.currentUser);
   const isSticky = useLocation().pathname === "/";
@@ -241,8 +248,8 @@ export default function PurchaseHeader() {
               <div className="relative mx-4">
                 <div className="absolute border border-primaryColor top-0 left-1/2 h-[30px] translate-y-[-50%]"></div>
               </div>
-              <div className="font-normal text-[22px] flex items-center h-full">
-                Thanh Toán
+              <div className="font-normal text-[22px] flex items-center h-full capitalize">
+                {nameUrl}
               </div>
             </Link>
           </div>

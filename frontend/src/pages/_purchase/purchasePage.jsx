@@ -6,11 +6,13 @@ import ProductList from "../../components/purchaseComponents/productList";
 import FooterPurchase from "../../components/purchaseComponents/footerPurchase";
 import useIsWindow from "../../hooks/useIsWindow";
 import PurchaseSelection from "../../components/purchaseComponents/purchaseSelection";
-import { createOrder, createVnpayUrl } from "../../services/order.service";
 import { removeListItem } from "../../features/cart/cartSlice";
-import { createOrupdateCart } from "../../services/cart.service";
 import useToastQueue from "../../hooks/useToastQueue";
 import StackBar from "../../components/StackBar";
+import {
+  useCreateOrderMutation,
+  useCreateVnpayUrlMutation,
+} from "../../features/api/orderQuery";
 
 export default function PurchasePage() {
   const dispatch = useDispatch();
@@ -46,29 +48,17 @@ export default function PurchasePage() {
     });
   };
 
-  useEffect(() => {
-    const syncCart = async () => {
-      await createOrupdateCart({
-        userId: user.userId || user.googleID,
-        items: cartItems,
-        totalQuantity: totalQuantity,
-        totalPrice: totalPriceCart,
-      });
-    };
-    if (user?.userId || user?.googleID) {
-      syncCart();
-    }
-  }, [cartItems]);
+  const [createOrder] = useCreateOrderMutation();
+  const [createVnpayUrl] = useCreateVnpayUrlMutation();
 
   const handlePurchase = async () => {
     try {
       setIsOrdering(true);
       const orderItems = transformCartToOrderItems(buyItems);
-      console.log("Order Items: ", orderItems);
       if (paymentMethod === "cod") {
         if (paymentMethod === "cod") {
-          const responseCod = await createOrder(orderItems);
-          if (responseCod.data.success) {
+          const dataCod = await createOrder({ items: orderItems }).unwrap();
+          if (dataCod) {
             dispatch(
               removeListItem(
                 buyItems.map((item) => item.selectedAttributes.attribute.id),
@@ -78,19 +68,25 @@ export default function PurchasePage() {
           }
         }
       } else if (paymentMethod === "vnpay") {
-        setIsOrdering(true);
-        const responseVnpay = await createOrder(orderItems);
-        const totalPrice = responseVnpay.data.data.totalPrice;
-        const orderId = responseVnpay.data.data.id;
+        const dataVnpay = await createOrder({ items: orderItems }).unwrap();
+        const totalPrice = dataVnpay.totalPrice;
+        const orderId = dataVnpay.id;
+
+        localStorage.setItem(
+          "pendingOrderItems",
+          JSON.stringify(
+            buyItems.map((item) => item.selectedAttributes.attribute.id),
+          ),
+        );
 
         const payload = {
           amount: parseInt(totalPrice),
           orderId: orderId,
-          bankCode: "", // Bỏ trống để user tự chọn ngân hàng trên VNPAY, hoặc truyền 'VNBANK'
+          bankCode: "",
         };
 
-        const responseVnpayUrl = await createVnpayUrl(payload);
-        const paymentUrl = responseVnpayUrl.data.data.url;
+        const dataVnpayUrl = await createVnpayUrl({ payload }).unwrap();
+        const paymentUrl = dataVnpayUrl.url;
         if (paymentUrl) {
           window.location.href = paymentUrl;
         }

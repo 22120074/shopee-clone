@@ -8,6 +8,7 @@ function NormalButton({
   className = "",
   type = "button",
   children,
+  icon,
 }) {
   const isActive = typeSort === sortOption;
   const baseClasses =
@@ -26,6 +27,7 @@ function NormalButton({
       }}
       className={finalClassName}
     >
+      {icon}
       {text}
       {children}
     </button>
