@@ -17,3 +17,9 @@ export const registerShop = (userId, nameShop, address) => {
     { withCredentials: true },
   );
 };
+
+export const getShop = (shopId) => {
+  return axios.get(`${process.env.REACT_APP_API_URL}/shop/${shopId}`, {
+    withCredentials: true,
+  });
+};

@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as ShopProductService from "../../services/shopProduct.service";
-import { handleAxiosRequest } from "../../utils/axiosHandle";
+import { handleAxiosRequestWithLoginNavigate } from "../../utils/axiosHandle";
 
 export const shopProductQuery = createApi({
   reducerPath: "shopProductQuery",
@@ -9,7 +9,9 @@ export const shopProductQuery = createApi({
   endpoints: (builder) => ({
     createProduct: builder.mutation({
       queryFn: ({ payload }) =>
-        handleAxiosRequest(() => ShopProductService.createProduct(payload)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          ShopProductService.createProduct(payload),
+        ),
       invalidatesTags: ["shopProduct"],
     }),
   }),

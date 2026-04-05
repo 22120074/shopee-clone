@@ -11,13 +11,6 @@ export const handleAxiosRequest = async (apiCall) => {
         const retryRes = await apiCall();
         return { data: retryRes.data.data };
       } catch (refreshErr) {
-        if (
-          !window.location.pathname.includes("/auth/login") &&
-          window.location.pathname !== "/" &&
-          !window.location.pathname.includes("/product")
-        ) {
-          window.location.href = "/auth/login";
-        }
         return {
           error: {
             status: 401,

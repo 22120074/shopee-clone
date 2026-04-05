@@ -66,13 +66,14 @@ const getShop = async (userId) => {
         Follow.count({ where: { follower: userId } }),
       ]);
 
-    if (shopData) {
-      shopData.productCount = productCount;
-      shopData.followerCount = followerCount;
-      shopData.followingCount = followingCount;
-    }
+    if (!shopData) return null;
 
-    return shopData;
+    return {
+      ...shopData,
+      productCount,
+      followerCount,
+      followingCount,
+    };
   } catch (error) {
     throw error;
   }

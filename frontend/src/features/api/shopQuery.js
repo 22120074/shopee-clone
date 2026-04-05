@@ -1,6 +1,9 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as ShopService from "../../services/shop.service";
-import { handleAxiosRequest } from "../../utils/axiosHandle";
+import {
+  handleAxiosRequest,
+  handleAxiosRequestWithLoginNavigate,
+} from "../../utils/axiosHandle";
 
 export const shopQuery = createApi({
   reducerPath: "shopQuery",
@@ -9,15 +12,25 @@ export const shopQuery = createApi({
   endpoints: (builder) => ({
     checkShop: builder.query({
       queryFn: (userId) =>
-        handleAxiosRequest(() => ShopService.checkShop(userId)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          ShopService.checkShop(userId),
+        ),
       providesTags: ["Shop"],
     }),
     registerShop: builder.mutation({
       queryFn: (shopData) =>
-        handleAxiosRequest(() => ShopService.registerShop(shopData)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          ShopService.registerShop(shopData),
+        ),
       invalidatesTags: ["Shop"],
+    }),
+    getShop: builder.query({
+      queryFn: (shopId) =>
+        handleAxiosRequest(() => ShopService.getShop(shopId)),
+      providesTags: (result, error, shopId) => [{ type: "Shop", id: shopId }],
     }),
   }),
 });
 
-export const { useCheckShopQuery, useRegisterShopMutation } = shopQuery;
+export const { useCheckShopQuery, useRegisterShopMutation, useGetShopQuery } =
+  shopQuery;

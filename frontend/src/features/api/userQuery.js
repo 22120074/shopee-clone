@@ -1,6 +1,9 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as UserService from "../../services/user.service";
-import { handleAxiosRequest } from "../../utils/axiosHandle";
+import {
+  handleAxiosRequest,
+  handleAxiosRequestWithLoginNavigate,
+} from "../../utils/axiosHandle";
 
 export const userQuery = createApi({
   reducerPath: "userQuery",
@@ -9,17 +12,21 @@ export const userQuery = createApi({
   endpoints: (builder) => ({
     updateEmail: builder.mutation({
       queryFn: ({ userId, newEmail }) =>
-        handleAxiosRequest(() => UserService.updateEmail(userId, newEmail)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          UserService.updateEmail(userId, newEmail),
+        ),
       invalidatesTags: ["Profile"],
     }),
     updatePhone: builder.mutation({
       queryFn: ({ userId, newPhone }) =>
-        handleAxiosRequest(() => UserService.updatePhone(userId, newPhone)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          UserService.updatePhone(userId, newPhone),
+        ),
       invalidatesTags: ["Profile"],
     }),
     updateProfile: builder.mutation({
       queryFn: ({ userId, displayName, name, gender, date }) =>
-        handleAxiosRequest(() =>
+        handleAxiosRequestWithLoginNavigate(() =>
           UserService.updateUserProfile(
             userId,
             displayName,
@@ -32,7 +39,9 @@ export const userQuery = createApi({
     }),
     updateAvatar: builder.mutation({
       queryFn: (avatar) =>
-        handleAxiosRequest(() => UserService.updateUserAvatar(avatar)),
+        handleAxiosRequestWithLoginNavigate(() =>
+          UserService.updateUserAvatar(avatar),
+        ),
       invalidatesTags: ["Profile"],
     }),
   }),

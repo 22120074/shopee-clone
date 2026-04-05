@@ -9,6 +9,7 @@ import Home from "../pages/home";
 import PurchaseLayout from "../layouts/purchaseLayout";
 import PurchasePage from "../pages/_purchase/purchasePage";
 import VnPayReturnPage from "../pages/_purchase/vnpay_return/page";
+import ShopProfile from "../pages/_profile/_shop/shopProfile";
 
 export const mainRoutes = (
   <>
@@ -31,6 +32,10 @@ export const mainRoutes = (
     {/* Giỏ hàng */}
     <Route element={<MainLayout />}>
       <Route path="/cart" element={<CartPage />} />
+    </Route>
+    {/* Trang cá nhân */}
+    <Route element={<MainLayout />}>
+      <Route path="/profile/shop/:shopId" element={<ShopProfile />} />
     </Route>
 
     {/* Mua hàng */}

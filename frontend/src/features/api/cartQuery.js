@@ -11,7 +11,7 @@ export const cartQuery = createApi({
   tagTypes: ["Cart", "User"],
   endpoints: (builder) => ({
     getCart: builder.query({
-      queryFn: () => handleAxiosRequest(CartService.getCart),
+      queryFn: () => handleAxiosRequestWithLoginNavigate(CartService.getCart),
       providesTags: ["Cart", "User"],
     }),
 
