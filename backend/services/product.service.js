@@ -68,6 +68,7 @@ const getOneProduct = async (productID) => {
     throw new Error("Product not found");
   }
 
+  product.fromStoreId = product.fromStore;
   let shopData;
   if (
     typeof product.fromStore === "string" &&
