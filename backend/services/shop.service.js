@@ -1,6 +1,10 @@
 const Shop = require("../models/Mongoose/Shop");
 const mongoose = require("mongoose");
 const { Conflict } = require("../utils/appErrors");
+const dbPostgre = require("../models/PostgreSql/index");
+
+const Follow = dbPostgre.Follow;
+const Product = dbPostgre.Product;
 
 const checkExistingShop = async (userId) => {
   try {
@@ -47,4 +51,67 @@ const addShop = async (userId, nameShop, addresses) => {
   }
 };
 
-module.exports = { checkExistingShop, addShop };
+const getShop = async (userId) => {
+  try {
+    const shopQuery =
+      typeof userId === "string" && !mongoose.Types.ObjectId.isValid(userId)
+        ? { googleID: userId }
+        : { userId: userId };
+
+    const [shopData, productCount, followerCount, followingCount] =
+      await Promise.all([
+        Shop.findOne(shopQuery),
+        Product.count({ where: { fromStore: userId } }),
+        Follow.count({ where: { following: userId } }),
+        Follow.count({ where: { follower: userId } }),
+      ]);
+
+    if (shopData) {
+      shopData.productCount = productCount;
+      shopData.followerCount = followerCount;
+      shopData.followingCount = followingCount;
+    }
+
+    return shopData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const isFollowShop = async (followerId, followingId) => {
+  try {
+    const isFollowing = await Follow.findOne({
+      where: { follower: followerId, following: followingId },
+    });
+    return !!isFollowing;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const followShop = async (followerId, followingId) => {
+  try {
+    await Follow.create({ follower: followerId, following: followingId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+const unfollowShop = async (followerId, followingId) => {
+  try {
+    await Follow.destroy({
+      where: { follower: followerId, following: followingId },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  checkExistingShop,
+  addShop,
+  getShop,
+  isFollowShop,
+  followShop,
+  unfollowShop,
+};

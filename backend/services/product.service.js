@@ -1,5 +1,6 @@
-const dbPostgre = require('../models/PostgreSql/index');
-const { Sequelize } = require('sequelize');
+const dbPostgre = require("../models/PostgreSql/index");
+const Shop = require("../models/Mongoose/Shop");
+const { Sequelize } = require("sequelize");
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
@@ -15,274 +16,312 @@ const Image_Rating = dbPostgre.Image_Rating;
 
 // Service liên quan đến lấy thông tin sản phẩm
 const getAllProduct = async (limit) => {
-    // Bước 1: lấy danh sách sản phẩm
-    const products = await Product.findAll({
-        limit,
-        order: [['createdAt', 'DESC']],
-        raw: true
-    });
+  // Bước 1: lấy danh sách sản phẩm
+  const products = await Product.findAll({
+    limit,
+    order: [["createdAt", "DESC"]],
+    raw: true,
+  });
 
-    // Bước 2: xử lý từng product để truy vấn riêng
-    const productWithExtra = await Promise.all(products.map(async (product) => {
-        const attributes = await Attribute.findAll({
-            where: { productId: product.id },
-            attributes: ['id', 'price'],
-            raw: true
-        });
-
-        const image = await ImageProduct.findOne({
-            where: { productId: product.id },
-            attributes: ['id', 'imageUrl'],
-            raw: true
-        });
-
-        const soldCount = await Sold.sum('quantity', {
-            where: { productId: product.id }
-        }) || 0;
-
-        return {
-            ...product,
-            attributes,
-            image,
-            soldCount
-        };
-    }));
-
-    return productWithExtra;
-}
-
-const getOneProduct = async (productID) => {
-    const product = await Product.findOne({
-        where: {
-            id: productID,
-        },
-        raw: true
-    });
-
-    if (!product) {
-        throw new Error('Product not found');
-    }
-
-    const attributes = await Attribute.findAll({
+  // Bước 2: xử lý từng product để truy vấn riêng
+  const productWithExtra = await Promise.all(
+    products.map(async (product) => {
+      const attributes = await Attribute.findAll({
         where: { productId: product.id },
-        attributes: ['id', 'imageUrl', 'nameEach', 'price', 'size'],
-        raw: true
-    });
+        attributes: ["id", "price"],
+        raw: true,
+      });
 
-    const image = await ImageProduct.findAll({
+      const image = await ImageProduct.findOne({
         where: { productId: product.id },
-        attributes: ['imageUrl'],
-        raw: true
-    });
+        attributes: ["id", "imageUrl"],
+        raw: true,
+      });
 
-    const soldCount = await Sold.sum('quantity', {
-        where: { productId: product.id }
-    }) || 0;
+      const soldCount =
+        (await Sold.sum("quantity", {
+          where: { productId: product.id },
+        })) || 0;
 
-    const detailedProduct = await Detail.findOne({
-        where: { productId: product.id },
-        raw: true
-    });
-
-    const likes = await Like.count({
-        where: { productId: product.id },
-        raw: true
-    });
-
-    const ratings = await Rating.findAll({
-        where: { productId: product.id },
-        attributes: ['rate'],
-        raw: true
-    });
-
-    const stockCounts = await Stock.findAll({
-        attributes: ['productId', 'attributeID', 'quantity'],
-        where: {
-            productId: product.id
-        },
-        raw: true
-    });
-
-    return {
+      return {
         ...product,
         attributes,
         image,
         soldCount,
-        detailedProduct,
-        likes,
-        ratings,
-        stockCounts
-    };
-}
+      };
+    }),
+  );
+
+  return productWithExtra;
+};
+
+const getOneProduct = async (productID) => {
+  const product = await Product.findOne({
+    where: {
+      id: productID,
+    },
+    raw: true,
+  });
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  let shopData;
+  if (
+    typeof product.fromStore === "string" &&
+    !mongoose.Types.ObjectId.isValid(product.fromStore)
+  ) {
+    shopData = await Shop.findOne({ googleID: product.fromStore });
+  } else {
+    shopData = await Shop.findOne({ userId: product.fromStore });
+  }
+  product.fromStore = shopData.nameShop;
+
+  const attributes = await Attribute.findAll({
+    where: { productId: product.id },
+    attributes: ["id", "imageUrl", "nameEach", "price", "size"],
+    raw: true,
+  });
+
+  const image = await ImageProduct.findAll({
+    where: { productId: product.id },
+    attributes: ["imageUrl"],
+    raw: true,
+  });
+
+  const soldCount =
+    (await Sold.sum("quantity", {
+      where: { productId: product.id },
+    })) || 0;
+
+  const detailedProduct = await Detail.findOne({
+    where: { productId: product.id },
+    raw: true,
+  });
+
+  const likes = await Like.count({
+    where: { productId: product.id },
+    raw: true,
+  });
+
+  const ratings = await Rating.findAll({
+    where: { productId: product.id },
+    attributes: ["rate"],
+    raw: true,
+  });
+
+  const stockCounts = await Stock.findAll({
+    attributes: ["productId", "attributeID", "quantity"],
+    where: {
+      productId: product.id,
+    },
+    raw: true,
+  });
+
+  return {
+    ...product,
+    attributes,
+    image,
+    soldCount,
+    detailedProduct,
+    likes,
+    ratings,
+    stockCounts,
+  };
+};
 
 // Service liên quan đến thích sản phẩm
 const isLikedByUser = async (productID, userID) => {
-    const like = await Like.findOne({
-        where: { productId: productID, userId: userID },
-        raw: true
-    });
-    return !!like;
-}
+  const like = await Like.findOne({
+    where: { productId: productID, userId: userID },
+    raw: true,
+  });
+  return !!like;
+};
 
 const addLikeProduct = async (productID, userID) => {
-    await Like.create({ productId: productID, userId: userID });
-}
+  await Like.create({ productId: productID, userId: userID });
+};
 
 const removeLikeProduct = async (productID, userID) => {
-    await Like.destroy({
-        where: { productId: productID, userId: userID }
-    });
-}
+  await Like.destroy({
+    where: { productId: productID, userId: userID },
+  });
+};
 
 // Service liên quan đến đánh giá sản phẩm
 const getAllProductReviews = async (productID, limit = 6, page = 1) => {
-    const offset = (page - 1) * limit;
+  const offset = (page - 1) * limit;
 
-    const reviews = await Rating.findAndCountAll({
-        where: { productId: productID },
-        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
-        limit,
-        offset,
-        include: [
-            {
-                model: Image_Rating,
-                attributes: ['imageUrl']
-            },
-            {
-                model: Video_Rating,
-                attributes: ['videoUrl', 'thumbnailUrl']
-            },
-            {
-                model: Attribute,
-                attributes: ['nameEach', 'size']
-            }
-        ],
-        order: [['createdAt', 'DESC']]
-    });
+  const reviews = await Rating.findAndCountAll({
+    where: { productId: productID },
+    attributes: ["id", "dataUserId", "rate", "comment", "createdAt"],
+    limit,
+    offset,
+    include: [
+      {
+        model: Image_Rating,
+        attributes: ["imageUrl"],
+      },
+      {
+        model: Video_Rating,
+        attributes: ["videoUrl", "thumbnailUrl"],
+      },
+      {
+        model: Attribute,
+        attributes: ["nameEach", "size"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
 
-    return {
-        reviews,
-        totalPages: Math.ceil(reviews.count / limit),
-        currentPage: page
-    };
+  return {
+    reviews,
+    totalPages: Math.ceil(reviews.count / limit),
+    currentPage: page,
+  };
 };
 
 const getReviewsByRating = async (productID, limit = 6, page = 1, rating) => {
-    const offset = (page - 1) * limit;
-    if (page == 0) {
-        return {
-            rows: [],
-            totalPages: 0,
-            currentPage: 0
-        };
-    }
-
-    const reviews = await Rating.findAndCountAll({
-        where: { productId: productID, rate: rating },
-        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
-        limit,
-        offset,
-        include: [
-            {
-                model: Image_Rating,
-                attributes: ['imageUrl']
-            },
-            {
-                model: Video_Rating,
-                attributes: ['videoUrl', 'thumbnailUrl']
-            },
-            {
-                model: Attribute,
-                attributes: ['nameEach', 'size']
-            }
-        ],
-        order: [['createdAt', 'DESC']]
-    });
-
+  const offset = (page - 1) * limit;
+  if (page == 0) {
     return {
-        rows: reviews.rows,
-        totalPages: Math.ceil(reviews.count / limit),
-        currentPage: page
+      rows: [],
+      totalPages: 0,
+      currentPage: 0,
     };
+  }
+
+  const reviews = await Rating.findAndCountAll({
+    where: { productId: productID, rate: rating },
+    attributes: ["id", "dataUserId", "rate", "comment", "createdAt"],
+    limit,
+    offset,
+    include: [
+      {
+        model: Image_Rating,
+        attributes: ["imageUrl"],
+      },
+      {
+        model: Video_Rating,
+        attributes: ["videoUrl", "thumbnailUrl"],
+      },
+      {
+        model: Attribute,
+        attributes: ["nameEach", "size"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+
+  return {
+    rows: reviews.rows,
+    totalPages: Math.ceil(reviews.count / limit),
+    currentPage: page,
+  };
 };
 
 const getReviewsWithMedia = async (productID, limit = 6, page = 1) => {
-    const reviews = await Rating.findAll({
-        where: { productId: productID },
-        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
-        include: [
-            { model: Image_Rating, attributes: ['imageUrl'], required: false },
-            { model: Video_Rating, attributes: ['videoUrl', 'thumbnailUrl'], required: false },
-            { model: Attribute, attributes: ['nameEach', 'size'], required: false }
-        ],
-    });
+  const reviews = await Rating.findAll({
+    where: { productId: productID },
+    attributes: ["id", "dataUserId", "rate", "comment", "createdAt"],
+    include: [
+      { model: Image_Rating, attributes: ["imageUrl"], required: false },
+      {
+        model: Video_Rating,
+        attributes: ["videoUrl", "thumbnailUrl"],
+        required: false,
+      },
+      { model: Attribute, attributes: ["nameEach", "size"], required: false },
+    ],
+  });
 
-    // Lọc review có ít nhất 1 media
-    const filteredReviews = reviews.filter(
-        r => (r.Image_Ratings && r.Image_Ratings.length > 0) || (r.Video_Ratings && r.Video_Ratings.length > 0)
-    );
+  // Lọc review có ít nhất 1 media
+  const filteredReviews = reviews.filter(
+    (r) =>
+      (r.Image_Ratings && r.Image_Ratings.length > 0) ||
+      (r.Video_Ratings && r.Video_Ratings.length > 0),
+  );
 
-    // Sắp xếp theo ngày tạo mới nhất
-    filteredReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  // Sắp xếp theo ngày tạo mới nhất
+  filteredReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    // Phân trang thủ công
-    const total = filteredReviews.length;
-    const totalPages = Math.ceil(total / limit);
-    const safePage = Math.min(Math.max(parseInt(page), 1), totalPages || 1);
-    const safeOffset = (safePage - 1) * limit;
-    const pagedReviews = filteredReviews.slice(safeOffset, safeOffset + limit);
+  // Phân trang thủ công
+  const total = filteredReviews.length;
+  const totalPages = Math.ceil(total / limit);
+  const safePage = Math.min(Math.max(parseInt(page), 1), totalPages || 1);
+  const safeOffset = (safePage - 1) * limit;
+  const pagedReviews = filteredReviews.slice(safeOffset, safeOffset + limit);
 
-    return {
-        rows: pagedReviews,
-        totalPages: totalPages,
-        currentPage: safePage
-    };
+  return {
+    rows: pagedReviews,
+    totalPages: totalPages,
+    currentPage: safePage,
+  };
 };
 
 const getEachNumofTypeRating = async (productID) => {
-    const allCounts = await Rating.findAndCountAll({
-        where: { productId: productID },
-    });
+  const allCounts = await Rating.findAndCountAll({
+    where: { productId: productID },
+  });
 
-    const ratingEachCounts = await Rating.findAll({
-        where: { productId: productID },
-        attributes: [
-            'rate',
-            [Sequelize.fn('COUNT', Sequelize.col('rate')), 'count']
-        ],
-        group: ['rate'],
-        raw: true
-    });
+  const ratingEachCounts = await Rating.findAll({
+    where: { productId: productID },
+    attributes: [
+      "rate",
+      [Sequelize.fn("COUNT", Sequelize.col("rate")), "count"],
+    ],
+    group: ["rate"],
+    raw: true,
+  });
 
-    const mediaCounts = await Rating.findAll({
-        where: { productId: productID },
-        attributes: ['id', 'dataUserId', 'rate', 'comment', 'createdAt'],
-        include: [
-            { model: Image_Rating, attributes: ['imageUrl'], required: false },
-            { model: Video_Rating, attributes: ['videoUrl', 'thumbnailUrl'], required: false },
-            { model: Attribute, attributes: ['nameEach', 'size'], required: false }
-        ],
-    });
+  const mediaCounts = await Rating.findAll({
+    where: { productId: productID },
+    attributes: ["id", "dataUserId", "rate", "comment", "createdAt"],
+    include: [
+      { model: Image_Rating, attributes: ["imageUrl"], required: false },
+      {
+        model: Video_Rating,
+        attributes: ["videoUrl", "thumbnailUrl"],
+        required: false,
+      },
+      { model: Attribute, attributes: ["nameEach", "size"], required: false },
+    ],
+  });
 
-    // Lọc review có ít nhất 1 media
-    const filteredReviews = mediaCounts.filter(
-        r => (r.Image_Ratings && r.Image_Ratings.length > 0) || (r.Video_Ratings && r.Video_Ratings.length > 0)
-    );
+  // Lọc review có ít nhất 1 media
+  const filteredReviews = mediaCounts.filter(
+    (r) =>
+      (r.Image_Ratings && r.Image_Ratings.length > 0) ||
+      (r.Video_Ratings && r.Video_Ratings.length > 0),
+  );
 
-    const result = {
-        all: allCounts,
-        withMedia: filteredReviews.length,
-        5: 0, 4: 0, 3: 0, 2: 0, 1: 0
-    };
+  const result = {
+    all: allCounts,
+    withMedia: filteredReviews.length,
+    5: 0,
+    4: 0,
+    3: 0,
+    2: 0,
+    1: 0,
+  };
 
-    ratingEachCounts.forEach(r => {
-        result[r.rate] = parseInt(r.count);
-    });
+  ratingEachCounts.forEach((r) => {
+    result[r.rate] = parseInt(r.count);
+  });
 
-    return result;
+  return result;
 };
 
 module.exports = {
-    getAllProduct, getOneProduct, addLikeProduct, isLikedByUser, removeLikeProduct,
-    getAllProductReviews, getReviewsByRating, getReviewsWithMedia, getEachNumofTypeRating
+  getAllProduct,
+  getOneProduct,
+  addLikeProduct,
+  isLikedByUser,
+  removeLikeProduct,
+  getAllProductReviews,
+  getReviewsByRating,
+  getReviewsWithMedia,
+  getEachNumofTypeRating,
 };
