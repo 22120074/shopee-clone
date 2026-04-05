@@ -60,7 +60,7 @@ const getShop = async (userId) => {
 
     const [shopData, productCount, followerCount, followingCount] =
       await Promise.all([
-        Shop.findOne(shopQuery),
+        Shop.findOne(shopQuery).lean(),
         Product.count({ where: { fromStore: userId } }),
         Follow.count({ where: { following: userId } }),
         Follow.count({ where: { follower: userId } }),
