@@ -1,6 +1,7 @@
 const dbPostgre = require("../models/PostgreSql/index");
 const Shop = require("../models/Mongoose/Shop");
 const { Sequelize } = require("sequelize");
+const mongoose = require("mongoose");
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
