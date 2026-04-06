@@ -29,8 +29,37 @@ export const shopQuery = createApi({
         handleAxiosRequest(() => ShopService.getShop(shopId)),
       providesTags: (result, error, shopId) => [{ type: "Shop", id: shopId }],
     }),
+    isFollowShop: builder.query({
+      queryFn: (shopId) =>
+        handleAxiosRequest(() => ShopService.isFollowShop(shopId)),
+      providesTags: (result, error, shopId) => [{ type: "Shop", id: shopId }],
+    }),
+    followShop: builder.mutation({
+      queryFn: (shopId) =>
+        handleAxiosRequestWithLoginNavigate(() =>
+          ShopService.followShop(shopId),
+        ),
+      invalidatesTags: (result, error, shopId) => [
+        { type: "Shop", id: shopId },
+      ],
+    }),
+    unfollowShop: builder.mutation({
+      queryFn: (shopId) =>
+        handleAxiosRequestWithLoginNavigate(() =>
+          ShopService.unfollowShop(shopId),
+        ),
+      invalidatesTags: (result, error, shopId) => [
+        { type: "Shop", id: shopId },
+      ],
+    }),
   }),
 });
 
-export const { useCheckShopQuery, useRegisterShopMutation, useGetShopQuery } =
-  shopQuery;
+export const {
+  useCheckShopQuery,
+  useRegisterShopMutation,
+  useGetShopQuery,
+  useIsFollowShopQuery,
+  useFollowShopMutation,
+  useUnfollowShopMutation,
+} = shopQuery;

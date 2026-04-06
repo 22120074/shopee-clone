@@ -1,14 +1,52 @@
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
-import { useGetShopQuery } from "../../../features/api/shopQuery";
+import { useEffect, useState } from "react";
+import {
+  useGetShopQuery,
+  useIsFollowShopQuery,
+  useFollowShopMutation,
+  useUnfollowShopMutation,
+} from "../../../features/api/shopQuery";
+import StackBar from "../../../components/StackBar";
+import useToastQueue from "../../../hooks/useToastQueue";
 
 export default function ShopProfile() {
   const { shopId } = useParams();
+  const { toasts, addToast } = useToastQueue(3, 1500);
+
   const { data: shopData, isLoading, isError } = useGetShopQuery(shopId);
+  const { data: isFollow } = useIsFollowShopQuery(shopId, {
+    skip: !shopId,
+  });
+  const [isFollowing, setIsFollowing] = useState(isFollow);
+  const [followShop] = useFollowShopMutation();
+  const [unfollowShop] = useUnfollowShopMutation();
   const onlineStatus = "17 phút trước";
+
+  useEffect(() => {
+    console.log("isFollow", isFollow);
+    console.log("isFollowing", isFollowing);
+  }, [isFollow]);
+
+  const handleFollow = async () => {
+    try {
+      if (isFollowing) {
+        await unfollowShop({ shopId }).unwrap();
+        addToast("Đã bỏ theo dõi cửa hàng!", "success", "check");
+        setIsFollowing(false);
+      } else {
+        await followShop({ shopId }).unwrap();
+        setIsFollowing(true);
+        addToast("Đã theo dõi cửa hàng!", "success", "check");
+      }
+    } catch (error) {
+      addToast("Có lỗi xảy ra khi theo dõi cửa hàng!", "error", "warning");
+    }
+  };
 
   return (
     <div className={clsx("w-full  border-b border-lessgrayColor")}>
+      <StackBar toasts={toasts} width={"400px"} height={"100px"} />
       {shopData && (
         <div
           className={clsx(
@@ -51,8 +89,14 @@ export default function ShopProfile() {
                     "flex flex-1 items-center justify-center gap-1 md:gap-2 px-3 py-1",
                     "border border-white rounded-sm text-sm hover:bg-white/10 transition-all",
                   )}
+                  onClick={() => handleFollow()}
                 >
-                  <i className="fa-solid fa-plus"></i>Theo Dõi
+                  {isFollowing ? (
+                    <i className="fa-solid fa-check"></i>
+                  ) : (
+                    <i className="fa-solid fa-plus"></i>
+                  )}
+                  {isFollowing ? "Đang Theo Dõi" : "Theo Dõi"}
                 </button>
                 <button
                   className={clsx(
