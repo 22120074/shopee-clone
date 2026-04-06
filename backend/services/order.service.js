@@ -203,10 +203,6 @@ const createPaymentUrl = (req) => {
   // 3. Fallback an toàn trực tiếp vào biến ipAddr
   ipAddr = ipAddr || "127.0.0.1";
 
-  // (In ra để lát check log xem IP lấy được đã chuẩn IPv4 chưa)
-  console.log("👉 [DEBUG] FINAL IP SENT TO VNPAY createPaymentUrl:", ipAddr);
-  // --- KẾT THÚC FIX LOGIC LẤY IP ---
-
   let vnp_Params = {};
   vnp_Params["vnp_Version"] = "2.1.0";
   vnp_Params["vnp_Command"] = "pay";

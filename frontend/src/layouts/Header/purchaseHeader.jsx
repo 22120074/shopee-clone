@@ -81,7 +81,7 @@ export default function PurchaseHeader() {
       className={`${isSticky ? "sticky top-0 z-[30]" : "relative"} Web-header
        flex flex-col bg-primaryColor min-w-0 w-full lg:h-[140px]`}
     >
-      <StackBar toasts={toasts} width={"400px"} height={"100px"} />
+      <StackBar toasts={toasts} width={"300px"} height={"100px"} />
       {/* Phần 1 của Navbar */}
       <div
         className={`navbar flex items-center justify-between pl-4 lg:pl-0 py-2 lg:py-0 w-full

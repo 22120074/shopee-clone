@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   useGetShopQuery,
   useIsFollowShopQuery,
@@ -14,39 +14,52 @@ export default function ShopProfile() {
   const { shopId } = useParams();
   const { toasts, addToast } = useToastQueue(3, 1500);
 
-  const { data: shopData, isLoading, isError } = useGetShopQuery(shopId);
+  const {
+    data: shopData,
+    isLoading,
+    isError,
+  } = useGetShopQuery(shopId, { refetchOnMountOrArgChange: true });
   const { data: isFollow } = useIsFollowShopQuery(shopId, {
     skip: !shopId,
+    refetchOnMountOrArgChange: true,
   });
   const [isFollowing, setIsFollowing] = useState(isFollow);
   const [followShop] = useFollowShopMutation();
   const [unfollowShop] = useUnfollowShopMutation();
+  const optimisticFollowingRef = useRef(isFollow);
+  const timerRef = useRef(null);
   const onlineStatus = "17 phút trước";
 
-  useEffect(() => {
-    console.log("isFollow", isFollow);
-    console.log("isFollowing", isFollowing);
-  }, [isFollow]);
+  const handleFollow = () => {
+    const nextFollowingState = !optimisticFollowingRef.current;
+    optimisticFollowingRef.current = nextFollowingState;
 
-  const handleFollow = async () => {
-    try {
-      if (isFollowing) {
-        await unfollowShop({ shopId }).unwrap();
-        addToast("Đã bỏ theo dõi cửa hàng!", "success", "check");
-        setIsFollowing(false);
-      } else {
-        await followShop({ shopId }).unwrap();
-        setIsFollowing(true);
-        addToast("Đã theo dõi cửa hàng!", "success", "check");
+    setIsFollowing(nextFollowingState);
+
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    timerRef.current = setTimeout(async () => {
+      if (optimisticFollowingRef.current === isFollow) return;
+
+      try {
+        if (optimisticFollowingRef.current) {
+          await followShop(shopId).unwrap();
+          addToast("Đã theo dõi cửa hàng!", "success", "check");
+        } else {
+          await unfollowShop(shopId).unwrap();
+          addToast("Đã bỏ theo dõi cửa hàng!", "success", "check");
+        }
+      } catch (error) {
+        addToast("Có lỗi xảy ra khi theo dõi cửa hàng!", "error", "warning");
+        setIsFollowing(isFollow);
+        optimisticFollowingRef.current = isFollow;
       }
-    } catch (error) {
-      addToast("Có lỗi xảy ra khi theo dõi cửa hàng!", "error", "warning");
-    }
+    }, 500);
   };
 
   return (
     <div className={clsx("w-full  border-b border-lessgrayColor")}>
-      <StackBar toasts={toasts} width={"400px"} height={"100px"} />
+      <StackBar toasts={toasts} width={"300px"} height={"100px"} />
       {shopData && (
         <div
           className={clsx(
@@ -89,7 +102,7 @@ export default function ShopProfile() {
                     "flex flex-1 items-center justify-center gap-1 md:gap-2 px-3 py-1",
                     "border border-white rounded-sm text-sm hover:bg-white/10 transition-all",
                   )}
-                  onClick={() => handleFollow()}
+                  onClick={handleFollow}
                 >
                   {isFollowing ? (
                     <i className="fa-solid fa-check"></i>

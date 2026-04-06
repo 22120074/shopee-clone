@@ -27,9 +27,6 @@ exports.createOrder = async (req, res, next) => {
 
 exports.createVNPayUrl = async (req, res, next) => {
   try {
-    console.log("=== [VNPAY CONTROLLER] START CREATE URL ===");
-    console.log("1. Received Request Body:", JSON.stringify(req.body, null, 2));
-    console.log("2. User ID from Token:", req.user.userId);
     const { amount, orderId } = req.body;
 
     if (!amount || amount <= 0) {
@@ -60,11 +57,6 @@ exports.createVNPayUrl = async (req, res, next) => {
 // [GET] Xử lý URL trả về sau khi thanh toán xong (Dành cho Frontend)
 exports.vnpayReturn = async (req, res, next) => {
   try {
-    console.log("=== [VNPAY RETURN] START PROCESSING RETURN URL ===");
-    console.log(
-      "1. Received Query Params:",
-      JSON.stringify(req.query, null, 2),
-    );
     let vnp_Params = req.query;
 
     // Hàm này sẽ kiểm tra chữ ký bảo mật (xem phần Service bổ sung bên dưới)
@@ -147,14 +139,11 @@ exports.vnpayReturn = async (req, res, next) => {
 // };
 
 exports.vnpayIpn = async (req, res, next) => {
-  console.log("=== [VNPAY IPN] START RECEIVING REQUEST ===");
   try {
     let vnp_Params = req.query;
-    console.log("1. Received Params:", JSON.stringify(vnp_Params, null, 2));
 
     // 1. Kiểm tra chữ ký (Checksum)
     const isValidSignature = verifyReturnUrl(vnp_Params);
-    console.log("2. Signature Verification Result:", isValidSignature);
 
     if (!isValidSignature) {
       console.error(
@@ -169,10 +158,6 @@ exports.vnpayIpn = async (req, res, next) => {
     let vnp_Amount = vnp_Params["vnp_Amount"];
     let rspCode = vnp_Params["vnp_ResponseCode"];
 
-    console.log(
-      `3. Processing OrderId: ${orderId}, Amount: ${vnp_Amount}, RspCode: ${rspCode}`,
-    );
-
     // 2. Tìm đơn hàng trong Database
     const order = await getOrderById(orderId);
     if (!order) {
@@ -181,16 +166,11 @@ exports.vnpayIpn = async (req, res, next) => {
         .status(200)
         .json({ RspCode: "01", Message: "Order not found" });
     }
-    console.log("4. Found Order in DB:", JSON.stringify(order, null, 2));
 
     // 3. Kiểm tra số tiền (VNPAY gửi về số tiền đã nhân 100)
     // Lưu ý: Cần ép kiểu Number cho chính xác
     const dbAmount = Number(order.totalPrice) * 100;
     const vnpAmountReceived = Number(vnp_Amount);
-
-    console.log(
-      `5. Comparing Amounts: DB(${dbAmount}) vs VNPAY(${vnpAmountReceived})`,
-    );
 
     if (dbAmount !== vnpAmountReceived) {
       console.error("❌ ERROR: Amount mismatch!");
@@ -198,7 +178,6 @@ exports.vnpayIpn = async (req, res, next) => {
     }
 
     // 4. Kiểm tra trạng thái đơn hàng
-    console.log(`6. Current DB Order Status: ${order.status}`);
     if (order.status !== "PENDING") {
       console.warn("⚠️ WARNING: Order already processed (Status not PENDING)");
       return res
@@ -208,17 +187,11 @@ exports.vnpayIpn = async (req, res, next) => {
 
     // 5. Cập nhật trạng thái
     if (rspCode === "00") {
-      console.log("✅ SUCCESS: Updating status to PAID...");
       await updateOrderStatus(orderId, "PAID");
-      console.log("🎉 SUCCESS: DB updated successfully!");
     } else {
-      console.log(
-        `❌ FAILED: VNPAY returned error code ${rspCode}. Updating status to FAILED...`,
-      );
       await updateOrderStatus(orderId, "FAILED");
     }
 
-    console.log("=== [VNPAY IPN] END - RESPONSE SENT: 00 ===");
     return res.status(200).json({ RspCode: "00", Message: "Confirm Success" });
   } catch (error) {
     console.error("🔥 CRITICAL ERROR in VNPAY IPN:", error);

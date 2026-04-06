@@ -81,12 +81,9 @@ const getShop = async (userId) => {
 
 const isFollowShop = async (followerId, followingId) => {
   try {
-    console.log(followerId, followingId);
-    console.log(typeof followerId, typeof followingId);
     const isFollowing = await Follow.findOne({
       where: { follower: followerId, following: followingId },
     });
-    console.log(isFollowing);
     return !!isFollowing;
   } catch (error) {
     throw error;

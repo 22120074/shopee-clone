@@ -98,7 +98,7 @@ function Header() {
       className={`${isSticky ? "sticky top-0 z-[30]" : "relative"} Web-header flex flex-col bg-primaryColor min-w-0 w-full
                 ${urlPath === "cart" ? "lg:h-[140px]" : "lg:h-[120px]"} h-[56px] z-50`}
     >
-      <StackBar toasts={toasts} width={"400px"} height={"100px"} />
+      <StackBar toasts={toasts} width={"300px"} height={"100px"} />
       {/* Phần 1 của Navbar */}
       <div
         className={`navbar flex items-center justify-between pl-4 lg:pl-0 py-2 lg:py-0 w-full max-w-[1200px] mx-auto
