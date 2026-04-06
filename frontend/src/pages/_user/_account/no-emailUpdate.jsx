@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import clsx from "clsx";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import PrimaryButton from "../../../components/buttons/Button";
 import StepProgress from "../../../components/StepProgress";
 import Spinner from "../../../components/skeletons/spinnerButton";
@@ -10,7 +10,6 @@ import { useUpdateEmailMutation } from "../../../features/api/userQuery";
 
 function NoEmailUpdateCase() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
   // const { addToast } = useOutletContext();
   // Sử dụng useSelector để lấy thông tin người dùng từ Redux store

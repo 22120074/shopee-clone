@@ -1,9 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as UserService from "../../services/user.service";
-import {
-  handleAxiosRequest,
-  handleAxiosRequestWithLoginNavigate,
-} from "../../utils/axiosHandle";
+import { handleAxiosRequestWithLoginNavigate } from "../../utils/axiosHandle";
 
 export const userQuery = createApi({
   reducerPath: "userQuery",

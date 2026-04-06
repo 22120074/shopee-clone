@@ -1,5 +1,5 @@
 import "../../css/header.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useToastQueue from "../../hooks/useToastQueue";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -12,7 +12,6 @@ import { useCheckShopQuery } from "../../features/api/shopQuery";
 export default function PurchaseHeader() {
   const isDesktop = useIsWindow("(min-width: 1024px)");
   const location = useLocation();
-  const dispatch = useDispatch();
   const { toasts, addToast } = useToastQueue(3, 1500);
 
   const nameUrl =
@@ -91,7 +90,7 @@ export default function PurchaseHeader() {
         {/* Hỗ trợ của web */}
         <ul className="flex-row items-center hidden lg:flex">
           <li className="text-sm text-white li_borderleft pr-[9px] pl-[8px] relative">
-            <a href="#" onClick={navigateShop} rel="noopener noreferrer">
+            <a href="/" onClick={navigateShop} rel="noopener noreferrer">
               Kênh Người bán
             </a>
           </li>

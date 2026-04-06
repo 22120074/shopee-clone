@@ -17,8 +17,8 @@ router.post("/register", protect, registerShop);
 router.post("/product", protect, createProduct);
 
 router.get("/:userId", getShop);
-router.get("/is-follow/:followerId/:followingId", protect, isFollowShop);
-router.post("/follow/:followerId/:followingId", protect, followShop);
-router.post("/unfollow/:followerId/:followingId", protect, unfollowShop);
+router.get("/is-follow/:followingId", protect, isFollowShop);
+router.post("/follow/:followingId", protect, followShop);
+router.post("/unfollow/:followingId", protect, unfollowShop);
 
 module.exports = router;

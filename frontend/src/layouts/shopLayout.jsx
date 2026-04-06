@@ -1,5 +1,5 @@
 import ShopHeader from "../layouts/Header/shopHeader";
-import Footer from "../layouts/Footer";
+// import Footer from "../layouts/Footer";
 import { Outlet, useLocation } from "react-router-dom";
 import ShopSideBar from "../components/sidebar/shopSidebar";
 

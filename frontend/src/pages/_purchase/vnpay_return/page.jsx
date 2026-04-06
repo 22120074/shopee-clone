@@ -36,7 +36,7 @@ export default function VnPayReturnPage() {
       dispatch(removeListItem(items));
       localStorage.removeItem("pendingOrderItems");
     }
-  }, [isSuccess]);
+  }, [isSuccess, dispatch]);
 
   if (isLoading) {
     return (

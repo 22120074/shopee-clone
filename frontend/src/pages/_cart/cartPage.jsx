@@ -8,7 +8,7 @@ import PrimaryButton from "../../components/buttons/Button";
 import useIsWindow from "../../hooks/useIsWindow";
 import { useSelector } from "react-redux";
 import emptyCart from "../../assets/Empty-bro.svg";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetCartQuery } from "../../features/api/cartQuery";
 import Spinner from "../../components/skeletons/spinnerButton";

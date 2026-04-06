@@ -66,7 +66,8 @@ exports.getShop = async (req, res, next) => {
 
 exports.isFollowShop = async (req, res, next) => {
   try {
-    const { followerId, followingId } = req.params;
+    const followerId = req.user.userId;
+    const { followingId } = req.params;
 
     if (!followerId || !followingId)
       throw BadRequest("Thiếu followerId hoặc followingId để kiểm tra.");
@@ -81,7 +82,8 @@ exports.isFollowShop = async (req, res, next) => {
 
 exports.followShop = async (req, res, next) => {
   try {
-    const { followerId, followingId } = req.params;
+    const followerId = req.user.userId;
+    const { followingId } = req.params;
 
     if (!followerId || !followingId)
       throw BadRequest("Thiếu followerId hoặc followingId để theo dõi.");
@@ -99,7 +101,8 @@ exports.followShop = async (req, res, next) => {
 
 exports.unfollowShop = async (req, res, next) => {
   try {
-    const { followerId, followingId } = req.params;
+    const followerId = req.user.userId;
+    const { followingId } = req.params;
 
     if (!followerId || !followingId)
       throw BadRequest("Thiếu followerId hoặc followingId để bỏ theo dõi.");

@@ -7,7 +7,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primaryColor: "#FA5130",
         primaryRatingColor: "#FFFBF8",
         primaryBorderRating: "#FFC7B3",
         primaryTextColor: "#ee4d2d",
@@ -19,6 +18,7 @@ module.exports = {
         successColor: "#26AA99",
         failColor: "#DC2626",
         // Background
+        primaryColor: "#FA5130",
         backgroundGrayColor: "#F5F5F5",
         backgroundLightGrayColor: "#F9FAFB",
         backgroundSuccessColor: "#DCFCE7",

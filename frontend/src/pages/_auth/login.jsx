@@ -1,7 +1,6 @@
 import "../../css/auth.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { isValidPhone } from "../../utils/numberCheck";
 import PrimaryButton from "../../components/buttons/Button";
 import Spinner from "../../components/skeletons/spinnerButton";

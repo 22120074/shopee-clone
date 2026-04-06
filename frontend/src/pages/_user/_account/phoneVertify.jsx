@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useRef } from "react";
-import { useEffect } from "react";
 import { gsap } from "gsap";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import StepProgress from "../../../components/StepProgress";
 import PrimaryButton from "../../../components/buttons/Button";
@@ -11,7 +10,6 @@ import { useUpdatePhoneMutation } from "../../../features/api/userQuery";
 
 function PhoneVertify() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   // Lấy hàm addToast từ context của Outlet để hiển thị thông báo
   const { addToast } = useOutletContext();
   // Sử dụng useSelector để lấy thông tin người dùng từ Redux store

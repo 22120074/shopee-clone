@@ -1,9 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as CartService from "../../services/cart.service";
-import {
-  handleAxiosRequest,
-  handleAxiosRequestWithLoginNavigate,
-} from "../../utils/axiosHandle";
+import { handleAxiosRequestWithLoginNavigate } from "../../utils/axiosHandle";
 
 export const cartQuery = createApi({
   reducerPath: "cartQuery",

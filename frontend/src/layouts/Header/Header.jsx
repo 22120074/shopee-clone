@@ -107,7 +107,7 @@ function Header() {
         {/* Hỗ trợ của web */}
         <ul className="flex-row items-center hidden lg:flex">
           <li className="text-sm text-white li_borderleft pr-[9px] pl-[8px] relative">
-            <a href="#" onClick={navigateShop} rel="noopener noreferrer">
+            <a href="/" onClick={navigateShop} rel="noopener noreferrer">
               Kênh Người bán
             </a>
           </li>

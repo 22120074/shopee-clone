@@ -1,8 +1,3 @@
-import { useState, useRef, useEffect } from "react";
-import { updateQuantityItem, removeItem } from "../../features/cart/cartSlice";
-import { useDispatch } from "react-redux";
-import DetailProductDropDown from "../../components/cartComponents/detailProductDropDown";
-
 function ProductList({ cartItems, addToast, isPhone }) {
   return cartItems.map((attribute, index) => (
     <div

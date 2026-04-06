@@ -1,6 +1,5 @@
 import { useState, useEffect, useReducer } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import InsertListImgButton from "../../../../components/buttons/insertListImgButton";
 import PrimaryDashedButton from "../../../../components/buttons/primaryDashedBttn";
 import CardAttribute from "../../../../components/shopComponents/cardAttribute";
@@ -13,7 +12,6 @@ import DetailData from "../../../../components/shopComponents/product/detailData
 import useIsWindow from "../../../../hooks/useIsWindow";
 import StackBar from "../../../../components/StackBar";
 import useToastQueue from "../../../../hooks/useToastQueue";
-import { handlexpiredToken } from "../../../../services/auth.helper";
 import { useUploadMultipleImagesMutation } from "../../../../features/api/mediaQuery";
 import { useCreateProductMutation } from "../../../../features/api/shopProductQuery";
 
@@ -143,8 +141,6 @@ export default function AddProduct() {
   const isTablet = useIsWindow("(min-width: 768px) and (max-width: 1023px)");
   const { toasts, addToast } = useToastQueue(3, 1500);
   const user = useSelector((state) => state.auth.currentUser);
-  const navigate = useNavigate();
-  const dispatchRedux = useDispatch();
 
   const steps = [
     "Thông tin cơ bản",

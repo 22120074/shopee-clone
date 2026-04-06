@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect, useMemo } from "react";
+import { useDispatch } from "react-redux";
 import HeaderProductList from "../../components/purchaseComponents/headerProductList";
 import ProductList from "../../components/purchaseComponents/productList";
 import FooterPurchase from "../../components/purchaseComponents/footerPurchase";
@@ -21,20 +21,14 @@ export default function PurchasePage() {
   const isPhone = useIsWindow("(max-width: 768px)");
   const [isOrdering, setIsOrdering] = useState(false);
   const location = useLocation();
-  const buyItems = location.state || [];
+  const buyItems = useMemo(() => location.state || [], [location.state]);
   const [paymentMethod, setPaymentMethod] = useState("cod");
-  // sử dụng useSelector để lấy thông tin người dùng
-  const user = useSelector((state) => state.auth.currentUser);
-  // sử dụng useSelector để lấy thông tin giỏ hàng
-  const cartItems = useSelector((state) => state.cart.items);
-  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-  const totalPriceCart = useSelector((state) => state.cart.totalPrice);
 
   useEffect(() => {
     if (!buyItems || buyItems.length === 0) {
       navigate("/");
     }
-  }, []);
+  }, [navigate, buyItems]);
 
   const transformCartToOrderItems = (cartData) => {
     if (!cartData || !Array.isArray(cartData)) return [];
