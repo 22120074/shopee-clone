@@ -3,6 +3,8 @@ const { Sequelize } = require("sequelize");
 const cloudinary = require("../config/cloudinaryConfig");
 const { InternalServer, BadRequest } = require("../utils/appErrors");
 const notificationService = require("./notification.service");
+const Shop = require("../models/Mongoose/Shop");
+const mongoose = require("mongoose");
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
@@ -168,6 +170,16 @@ const notifyFollowersNewProduct = async (newProduct) => {
   try {
     const shopId = newProduct.fromStore;
 
+    let shopData;
+    if (
+      typeof shopId === "string" &&
+      !mongoose.Types.ObjectId.isValid(shopId)
+    ) {
+      shopData = await Shop.findOne({ googleID: shopId });
+    } else {
+      shopData = await Shop.findOne({ userId: shopId });
+    }
+
     const followers = await Follow.findAll({
       where: { following: shopId },
       attributes: ["follower"],
@@ -180,7 +192,11 @@ const notifyFollowersNewProduct = async (newProduct) => {
       const notificationData = {
         userId: f.follower,
         senderId: shopId,
-        content: JSON.stringify(newProduct),
+        content: JSON.stringify({
+          id: newProduct.id,
+          name: newProduct.name,
+          shopName: shopData.nameShop,
+        }),
         type: "NEW_PRODUCT",
       };
 
