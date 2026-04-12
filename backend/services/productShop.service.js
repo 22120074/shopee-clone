@@ -2,6 +2,7 @@ const dbPostgre = require("../models/PostgreSql/index");
 const { Sequelize } = require("sequelize");
 const cloudinary = require("../config/cloudinaryConfig");
 const { InternalServer, BadRequest } = require("../utils/appErrors");
+const notificationService = require("./notification.service");
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
@@ -11,6 +12,7 @@ const Like = dbPostgre.Like;
 const Detail = dbPostgre.Detail;
 const Rating = dbPostgre.Rating;
 const Stock = dbPostgre.Stock;
+const Follow = dbPostgre.Follow;
 
 const getAllProductShop = async (userId) => {
   const products = await Product.findAll({
@@ -162,6 +164,38 @@ const addProduct = async (product, detail, attributes, imagesData) => {
   }
 };
 
+const notifyFollowersNewProduct = async (newProduct) => {
+  try {
+    const shopId = newProduct.fromStore;
+
+    const followers = await Follow.findAll({
+      where: { following: shopId },
+      attributes: ["follower"],
+      raw: true,
+    });
+
+    if (!followers || followers.length === 0) return;
+
+    const notificationPromises = followers.map((f) => {
+      const notificationData = {
+        userId: f.follower,
+        senderId: shopId,
+        content: JSON.stringify(newProduct),
+        type: "NEW_PRODUCT",
+      };
+
+      return notificationService.createAndSendNotification(notificationData);
+    });
+
+    await Promise.all(notificationPromises);
+    console.log(
+      `Đã gửi thông báo sản phẩm mới đến ${followers.length} followers.`,
+    );
+  } catch (error) {
+    console.error("Lỗi khi gửi thông báo cho follower:", error);
+  }
+};
+
 module.exports = {
   getAllProductShop,
   addProduct,
@@ -170,4 +204,5 @@ module.exports = {
   createProductAttribute,
   createProductImage,
   createProductStock,
+  notifyFollowersNewProduct,
 };

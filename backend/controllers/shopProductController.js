@@ -1,4 +1,7 @@
-const { addProduct } = require("../services/productShop.service");
+const {
+  addProduct,
+  notifyFollowersNewProduct,
+} = require("../services/productShop.service");
 const { BadRequest } = require("../utils/appErrors");
 const { Created } = require("../utils/responseHelper");
 
@@ -28,6 +31,9 @@ const createProduct = async (req, res, next) => {
       detail,
       attributes,
       imagesData,
+    );
+    notifyFollowersNewProduct(newProduct).catch((err) =>
+      console.error("Lỗi gửi thông báo:", err),
     );
     return Created(res, newProduct, "Tạo sản phẩm mới thành công!");
   } catch (error) {

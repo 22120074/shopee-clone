@@ -11,12 +11,14 @@ import { productQuery } from "../features/api/productQuery";
 import { mediaQuery } from "../features/api/mediaQuery";
 import { shopProductQuery } from "../features/api/shopProductQuery";
 import { orderQuery } from "../features/api/orderQuery";
+import notificationReducer from "../features/notification/notificationSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     cart: cartReducer,
     shop: shopReducer,
+    notification: notificationReducer,
     [authQuery.reducerPath]: authQuery.reducer,
     [cartQuery.reducerPath]: cartQuery.reducer,
     [shopQuery.reducerPath]: shopQuery.reducer,

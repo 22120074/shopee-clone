@@ -43,6 +43,9 @@ db.Like = require("./Product/like.model")(sequelize);
 db.Order = require("./Order/order.model")(sequelize);
 db.OrderItem = require("./Order/order_item.model")(sequelize);
 
+// Import liên quan đến Notification
+db.Notification = require("./Notification/notification.model")(sequelize);
+
 // =================================================================================
 
 // Associations giữa các bảng chính

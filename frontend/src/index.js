@@ -5,7 +5,8 @@ import axios from "axios";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import AuthInitializer from "./AuthInitializer";
+import AuthInitializer from "../src/contexts/AuthInitializer";
+import SocketInitializer from "../src/contexts/SocketInitializer";
 
 axios.defaults.withCredentials = true;
 
@@ -14,7 +15,9 @@ root.render(
   <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
     <Provider store={store}>
       <AuthInitializer>
-        <App />
+        <SocketInitializer>
+          <App />
+        </SocketInitializer>
       </AuthInitializer>
     </Provider>
   </GoogleOAuthProvider>,
