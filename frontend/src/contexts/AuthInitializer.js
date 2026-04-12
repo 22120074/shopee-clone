@@ -1,5 +1,5 @@
-import { useGetCurrentUserQuery } from "../src/features/api/authQuery";
-import { useGetCartQuery } from "./features/api/cartQuery";
+import { useGetCurrentUserQuery } from "../features/api/authQuery";
+import { useGetCartQuery } from "../features/api/cartQuery";
 
 const AuthInitializer = ({ children }) => {
   const { data: user } = useGetCurrentUserQuery(undefined, {

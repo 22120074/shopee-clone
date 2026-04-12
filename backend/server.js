@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const http = require("http");
 const dbPostgre = require("./models/PostgreSql/index");
 const { errorHandler } = require("./middleware/errorHandle");
+const { initSocket } = require("./config/socketConfig");
 
 dotenv.config();
 
@@ -62,13 +64,18 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
+const server = http.createServer(app);
+
 Promise.all([
   mongoose.connect(process.env.MONGO_URI),
   dbPostgre.sequelize.sync({ force: false }),
 ])
   .then(() => {
     console.log("✅ All databases connected");
-    app.listen(PORT, "0.0.0.0", () =>
+
+    initSocket(server);
+
+    server.listen(PORT, "0.0.0.0", () =>
       console.log(`Server running on port ${PORT}`),
     );
   })

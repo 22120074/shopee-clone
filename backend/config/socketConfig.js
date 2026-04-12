@@ -1,23 +1,36 @@
-const io = require("socket.io")(server);
+const socketIo = require("socket.io");
 
+let io;
 // Lưu trữ danh sách user online: { userId: socketId }
 let onlineUsers = {};
 
-io.on("connection", (socket) => {
-  socket.on("register-user", (userId) => {
-    onlineUsers[userId] = socket.id;
-    console.log(`User ${userId} đang online tại socket: ${socket.id}`);
+const initSocket = (server) => {
+  io = socketIo(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
   });
 
-  socket.on("disconnect", () => {
-    for (let userId in onlineUsers) {
-      if (onlineUsers[userId] === socket.id) {
-        delete onlineUsers[userId];
-        break;
+  io.on("connection", (socket) => {
+    socket.on("register-user", (userId) => {
+      onlineUsers[userId] = socket.id;
+      console.log(`User ${userId} đang online tại socket: ${socket.id}`);
+    });
+
+    socket.on("disconnect", () => {
+      for (let userId in onlineUsers) {
+        if (onlineUsers[userId] === socket.id) {
+          delete onlineUsers[userId];
+          break;
+        }
       }
-    }
+    });
   });
-});
+
+  return io;
+};
 
 const sendNotification = (receiverId, data) => {
   const socketId = onlineUsers[receiverId];
@@ -26,4 +39,4 @@ const sendNotification = (receiverId, data) => {
   }
 };
 
-module.exports = { sendNotification };
+module.exports = { sendNotification, initSocket };
