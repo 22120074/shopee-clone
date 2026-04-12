@@ -23,9 +23,6 @@ module.exports = (sequelize) =>
     type: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isIn: [["ORDER", "PRODUCT", "OTHER"]],
-      },
       defaultValue: "OTHER",
     },
     isRead: {
