@@ -60,6 +60,9 @@ app.use("/media", mediaRoute);
 const orderRoute = require("./routes/orderRoute");
 app.use("/order", orderRoute);
 
+const notificationRoute = require("./routes/notificationRoute");
+app.use("/notification", notificationRoute);
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
