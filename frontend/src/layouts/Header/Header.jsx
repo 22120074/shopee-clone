@@ -11,6 +11,7 @@ import useIsWindow from "../../hooks/useIsWindow";
 import StackBar from "../../components/StackBar";
 import { useLogoutMutation } from "../../features/api/authQuery";
 import { useCheckShopQuery } from "../../features/api/shopQuery";
+import NotificationDropdown from "../../components/dropdownComponents/notificationDropdown";
 
 function Header() {
   const isDesktop = useIsWindow("(min-width: 1024px)");
@@ -31,6 +32,8 @@ function Header() {
 
   // dùng useState để quản lí animation
   const [openUserDropdown, setOpenUserDropdown] = useState("closed");
+  const [openNotificationDropdown, setOpenNotificationDropdown] =
+    useState("closed");
   const [openCartDropdown, setOpenCartDropdown] = useState("closed");
 
   const [logout] = useLogoutMutation();
@@ -71,10 +74,21 @@ function Header() {
     return () => clearTimeout(timer);
   }, [openCartDropdown]);
 
+  useEffect(() => {
+    let timer;
+    if (openNotificationDropdown === "close") {
+      timer = setTimeout(() => {
+        setOpenNotificationDropdown("closed");
+      }, 200);
+    }
+    return () => clearTimeout(timer);
+  }, [openNotificationDropdown]);
+
   // Dùng useEffect để fix lỗi tự open dropdown khi từ /cart quay về trang chủ
   useEffect(() => {
     setOpenCartDropdown("closed");
     setOpenUserDropdown("closed");
+    setOpenNotificationDropdown("closed");
   }, [location.pathname]);
 
   const navigateShop = async (e) => {
@@ -146,9 +160,20 @@ function Header() {
                             fa-solid fa-cart-shopping text-white"
             ></i>
           </Link>
-          <li className="lg:text-sm text-xl text-white relative mx-[6px]">
+          <li
+            className="lg:text-sm text-xl text-white relative mx-[6px]"
+            onMouseEnter={
+              isDesktop ? () => setOpenNotificationDropdown("open") : undefined
+            }
+            onMouseLeave={
+              isDesktop ? () => setOpenNotificationDropdown("close") : undefined
+            }
+          >
             <i className="lg:top-[calc(50%-6px)] top-[calc(50%-9px)] fa-regular fa-bell absolute left-[-18px]"></i>
             <span className="hidden lg:inline-block">Thông Báo</span>
+            <NotificationDropdown
+              openNotificationDropdown={openNotificationDropdown}
+            />
           </li>
           <li className="hidden lg:block relative mx-[18px] my-0 text-sm text-white">
             <i className="absolute fa-regular fa-question top-[calc(50%-6px)] left-[-14px]"></i>

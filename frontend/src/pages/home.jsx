@@ -191,7 +191,7 @@ function Home() {
   return (
     <div className="home_wrapper flex flex-col items-center bg-backgroundGrayColor w-full">
       {/* Phần hiển thị ảnh quảng cáo và danh mục ở đầu trang home */}
-      <div className="home-events-banner flex flex-col items-center w-full h-auto bg-white min-w-0 mt-3 lg:mt-8">
+      <div className="home-events-banner flex flex-col items-center w-full h-auto bg-white min-w-0 pt-3 lg:pt-8">
         {/* Phần hiển thị danh sách ảnh quảng cáo */}
         <div className="home-events-banner_ads flex justify-center h-[120px] md:h-[200px] lg:h-[240px] mx-auto w-full max-w-[1200px]">
           {/* Hiển thị ảnh quảng cáo 1 dạng Slide*/}

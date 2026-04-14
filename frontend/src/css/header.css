@@ -202,3 +202,53 @@
   background-color: transparent;
   cursor: pointer;
 }
+
+.notification_dropdown {
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  font-size: 16px;
+  width: 400px;
+  height: auto;
+  min-height: 600px;
+  top: calc(100% + 10px);
+  right: calc(0px + 0px);
+  transform-origin: calc(100% - 60px) top;
+}
+
+.notification_dropdown.open {
+  display: block;
+  animation: dropdownIn 0.3s ease-in-out forwards;
+}
+
+.notification_dropdown.close {
+  display: block;
+  animation: dropdownOut 0.2s ease-in-out forwards;
+}
+
+.notification_dropdown.closed {
+  display: none;
+}
+
+.notification_dropdown::before {
+  content: "";
+  border-color: transparent transparent #ffffff transparent;
+  top: -17px;
+  right: 16px;
+  border-width: 10px 20px;
+  border-style: solid;
+  position: absolute;
+}
+
+.notification_dropdown::after {
+  content: "";
+  width: 120px;
+  height: 20px;
+  top: -18px;
+  right: 0px;
+  position: absolute;
+  background-color: transparent;
+  cursor: pointer;
+}

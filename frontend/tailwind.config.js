@@ -23,6 +23,7 @@ module.exports = {
         backgroundLightGrayColor: "#F9FAFB",
         backgroundSuccessColor: "#DCFCE7",
         backgroundFailColor: "#FEF2F2",
+        notificationBg: "#FFF2EE",
         // Button
         blueButton: "#2563EB",
       },
