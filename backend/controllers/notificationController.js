@@ -5,7 +5,7 @@ const {
 const { Success } = require("../utils/responseHelper");
 const { BadRequest } = require("../utils/appErrors");
 
-const getNotifications = async (req, res) => {
+const getNotificationsController = async (req, res) => {
   try {
     const userId = req.user.userId;
     const { limit, page } = req.query;
@@ -16,7 +16,7 @@ const getNotifications = async (req, res) => {
   }
 };
 
-const markAsRead = async (req, res) => {
+const markAsReadController = async (req, res) => {
   try {
     const { notificationId } = req.params;
     if (!notificationId) {
@@ -30,6 +30,6 @@ const markAsRead = async (req, res) => {
 };
 
 module.exports = {
-  getNotifications,
-  markAsRead,
+  getNotificationsController,
+  markAsReadController,
 };
