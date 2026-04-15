@@ -24,6 +24,11 @@ export default function ShopProfile() {
     refetchOnMountOrArgChange: true,
   });
   const [isFollowing, setIsFollowing] = useState(isFollow);
+
+  useEffect(() => {
+    setIsFollowing(isFollow);
+  }, [isFollow]);
+
   const [followShop] = useFollowShopMutation();
   const [unfollowShop] = useUnfollowShopMutation();
   const optimisticFollowingRef = useRef(isFollow);

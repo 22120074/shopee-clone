@@ -8,6 +8,7 @@ const AuthInitializer = ({ children }) => {
   useGetCartQuery(undefined, {
     skip: !user,
   });
+
   return children;
 };
 

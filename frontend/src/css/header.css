@@ -154,14 +154,25 @@
 
 .user_dropdown::before {
   content: "";
-  border-color: transparent transparent #ffffff transparent;
-  top: -17px;
-  right: 37px;
-  border-width: 10px 20px;
-  border-style: solid;
   position: absolute;
+  top: -21px;
+  right: 37px;
+  border-style: solid;
+  border-width: 11px 21px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.15) transparent;
+  z-index: 1;
 }
 
+.user_dropdown::after {
+  content: "";
+  position: absolute;
+  top: -19px;
+  right: 38px;
+  border-style: solid;
+  border-width: 10px 20px;
+  border-color: transparent transparent #ffffff transparent;
+  z-index: 2;
+}
 .cart_dropdown {
   top: calc(34px);
   right: -17px;
@@ -212,8 +223,7 @@
   font-size: 16px;
   width: 400px;
   height: auto;
-  min-height: 600px;
-  top: calc(100% + 10px);
+  top: calc(100% + 16px);
   right: calc(0px + 0px);
   transform-origin: calc(100% - 60px) top;
 }
@@ -232,23 +242,36 @@
   display: none;
 }
 
+.notification_dropdown_wrapper::after {
+  content: "";
+  width: 120px;
+  height: 20px;
+  top: 12px;
+  right: -7px;
+  position: absolute;
+  background-color: transparent;
+  cursor: pointer;
+}
+
 .notification_dropdown::before {
   content: "";
-  border-color: transparent transparent #ffffff transparent;
-  top: -17px;
-  right: 16px;
-  border-width: 10px 20px;
-  border-style: solid;
   position: absolute;
+  top: -21px;
+  right: 15px;
+  border-style: solid;
+  border-width: 11px 21px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.15) transparent;
+  z-index: 1;
 }
 
 .notification_dropdown::after {
   content: "";
-  width: 120px;
-  height: 20px;
-  top: -18px;
-  right: 0px;
   position: absolute;
-  background-color: transparent;
-  cursor: pointer;
+  /* Vị trí chuẩn bạn đang dùng */
+  top: -19px;
+  right: 16px;
+  border-style: solid;
+  border-width: 10px 20px;
+  border-color: transparent transparent #ffffff transparent;
+  z-index: 2;
 }

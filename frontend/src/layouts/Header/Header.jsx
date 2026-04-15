@@ -161,7 +161,7 @@ function Header() {
             ></i>
           </Link>
           <li
-            className="lg:text-sm text-xl text-white relative mx-[6px]"
+            className="notification_dropdown_wrapper lg:text-sm text-xl text-white relative mx-[6px]"
             onMouseEnter={
               isDesktop ? () => setOpenNotificationDropdown("open") : undefined
             }
