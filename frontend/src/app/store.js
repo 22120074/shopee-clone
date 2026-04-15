@@ -11,6 +11,7 @@ import { productQuery } from "../features/api/productQuery";
 import { mediaQuery } from "../features/api/mediaQuery";
 import { shopProductQuery } from "../features/api/shopProductQuery";
 import { orderQuery } from "../features/api/orderQuery";
+import { notificationQuery } from "../features/api/notificationQuery";
 import notificationReducer from "../features/notification/notificationSlice";
 
 export const store = configureStore({
@@ -27,6 +28,7 @@ export const store = configureStore({
     [mediaQuery.reducerPath]: mediaQuery.reducer,
     [shopProductQuery.reducerPath]: shopProductQuery.reducer,
     [orderQuery.reducerPath]: orderQuery.reducer,
+    [notificationQuery.reducerPath]: notificationQuery.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -39,5 +41,6 @@ export const store = configureStore({
       mediaQuery.middleware,
       shopProductQuery.middleware,
       orderQuery.middleware,
+      notificationQuery.middleware,
     ),
 });
