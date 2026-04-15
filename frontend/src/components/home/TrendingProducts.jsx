@@ -8,8 +8,6 @@ function TrendingProducts() {
     refetchOnMountOrArgChange: true,
   });
 
-  console.log("Dang mount");
-
   // Hàm định dạng số lượng đã bán
   const formatSold = (sold) => {
     if (sold >= 1_000_000)

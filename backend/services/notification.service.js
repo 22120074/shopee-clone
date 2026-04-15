@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const dbPostgre = require("../models/PostgreSql/index");
 const { sendNotification } = require("../config/socketConfig");
 
@@ -20,20 +21,38 @@ const createAndSendNotification = async (notificationData) => {
   }
 };
 
-const getNotifications = async (userId, limit = 10, page = 1) => {
-  const offset = (page - 1) * limit;
+const getNotifications = async (userId, limit = 10, cursor) => {
+  const limitNumber = parseInt(limit, 10);
+  const whereClause = { userId };
 
-  const notifications = await Notification.findAndCountAll({
-    where: { userId },
-    limit,
-    offset,
+  if (cursor) {
+    whereClause.createdAt = {
+      [Op.lt]: new Date(cursor),
+    };
+  }
+
+  const notifications = await Notification.findAll({
+    where: whereClause,
+    limit: limitNumber + 1, // Lấy dư 1 item để check xem còn trang tiếp theo không
     order: [["createdAt", "DESC"]],
   });
 
+  let hasNextPage = false;
+  let nextCursor = null;
+
+  if (notifications.length > limitNumber) {
+    hasNextPage = true;
+    notifications.pop();
+  }
+
+  if (notifications.length > 0) {
+    nextCursor = notifications[notifications.length - 1].createdAt;
+  }
+
   return {
-    rows: notifications.rows,
-    totalPages: Math.ceil(notifications.count / limit),
-    currentPage: page,
+    rows: notifications,
+    nextCursor,
+    hasNextPage,
   };
 };
 

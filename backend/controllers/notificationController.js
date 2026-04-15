@@ -5,18 +5,18 @@ const {
 const { Success } = require("../utils/responseHelper");
 const { BadRequest } = require("../utils/appErrors");
 
-const getNotificationsController = async (req, res) => {
+const getNotificationsController = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    const { limit, page } = req.query;
-    const notifications = await getNotifications(userId, limit, page);
+    const { limit, cursor } = req.query;
+    const notifications = await getNotifications(userId, limit, cursor);
     return Success(res, notifications, "Lấy danh sách thông báo thành công");
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 
-const markAsReadController = async (req, res) => {
+const markAsReadController = async (req, res, next) => {
   try {
     const { notificationId } = req.params;
     if (!notificationId) {
@@ -25,7 +25,7 @@ const markAsReadController = async (req, res) => {
     const notification = await markAsRead(notificationId);
     return Success(res, notification, "Đánh dấu thông báo đã đọc thành công");
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 

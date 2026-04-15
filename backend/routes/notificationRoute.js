@@ -7,6 +7,6 @@ const {
 } = require("../controllers/notificationController");
 
 router.get("/get-notifications", protect, getNotificationsController);
-router.put("/mark-as-read/:notificationId", protect, markAsReadController);
+router.patch("/mark-as-read/:notificationId", protect, markAsReadController);
 
 module.exports = router;
