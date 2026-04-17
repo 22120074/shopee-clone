@@ -9,12 +9,17 @@ import {
 } from "../../../features/api/shopQuery";
 import StackBar from "../../../components/StackBar";
 import useToastQueue from "../../../hooks/useToastQueue";
+import ShopSkeleton from "../../../components/skeletons/shopProfileSkeleton";
 
 export default function ShopProfile() {
   const { shopId } = useParams();
   const { toasts, addToast } = useToastQueue(3, 1500);
 
-  const { data: shopData } = useGetShopQuery(shopId, {
+  const {
+    data: shopData,
+    isLoading,
+    isFetching,
+  } = useGetShopQuery(shopId, {
     refetchOnMountOrArgChange: true,
   });
   const { data: isFollow } = useIsFollowShopQuery(shopId, {
@@ -61,9 +66,11 @@ export default function ShopProfile() {
   };
 
   return (
-    <div className={clsx("w-full  border-b border-lessgrayColor")}>
+    <div className={clsx("w-full border-b border-lessgrayColor h-screen")}>
       <StackBar toasts={toasts} width={"300px"} height={"100px"} />
-      {shopData && (
+      {isLoading || isFetching ? (
+        <ShopSkeleton />
+      ) : (
         <div
           className={clsx(
             "flex flex-col md:flex-row items-start justify-start bg-white gap-2 md:gap-8 max-w-[1200px] mx-auto",
