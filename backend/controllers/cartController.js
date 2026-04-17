@@ -58,7 +58,7 @@ module.exports.createOrUpdateCart = async (req, res, next) => {
 };
 
 module.exports.getCart = async (req, res, next) => {
-  const { userId } = req.user.userId;
+  const userId = req.user.userId;
   try {
     let cart;
     if (
@@ -69,8 +69,6 @@ module.exports.getCart = async (req, res, next) => {
     } else {
       cart = await getCartByUserId(userId);
     }
-    console.log(userId);
-    console.log(cart);
     return Success(res, cart, "Lấy thông tin giỏ hàng thành công");
   } catch (error) {
     next(error);
