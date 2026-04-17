@@ -15,6 +15,7 @@ exports.protect = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // Lưu payload vào req.user
     req.user = { userId: decoded.userId, phone: decoded.phone };
+    console.log(req.user);
 
     return next();
   } catch (err) {

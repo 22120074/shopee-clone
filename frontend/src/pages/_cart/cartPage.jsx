@@ -35,6 +35,7 @@ function CartPage() {
 
   const { isLoading } = useGetCartQuery(undefined, {
     refetchOnMountOrArgChange: true,
+    skip: !user,
   });
 
   return (
