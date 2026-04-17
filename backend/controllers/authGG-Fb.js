@@ -16,7 +16,7 @@ exports.googleLogin = async (req, res, next) => {
         code,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: "http://localhost:3000", // để trống cho SPA
+        redirect_uri: "postmessage",
         grant_type: "authorization_code",
       }).toString(),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
