@@ -69,6 +69,8 @@ module.exports.getCart = async (req, res, next) => {
     } else {
       cart = await getCartByUserId(userId);
     }
+    console.log(userId);
+    console.log(cart);
     return Success(res, cart, "Lấy thông tin giỏ hàng thành công");
   } catch (error) {
     next(error);
