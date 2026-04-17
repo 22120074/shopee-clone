@@ -11,7 +11,6 @@ export const cartQuery = createApi({
       queryFn: () => handleAxiosRequestWithLoginNavigate(CartService.getCart),
       providesTags: ["Cart", "User"],
     }),
-
     createOrupdateCart: builder.mutation({
       queryFn: (cartData) =>
         handleAxiosRequestWithLoginNavigate(() =>

@@ -20,6 +20,10 @@ function CartPage() {
   const navigate = useNavigate();
   // Sử dụng hook useToastQueue để quản lí toast
   const { toasts, addToast } = useToastQueue(3, 1500);
+  const { isLoading } = useGetCartQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    skip: !user,
+  });
   // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
   // Lấy thông tin user từ Redux store
@@ -32,11 +36,6 @@ function CartPage() {
   const [totalPrice, setTotalPrice] = useState(0);
   // Dùng useState để lưu trạng thái tùy chọn của footer
   const [isChangeFooter, setIsChangeFooter] = useState(false);
-
-  const { isLoading } = useGetCartQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-    skip: !user,
-  });
 
   return (
     <div className="w-full bg-backgroundGrayColor pt-5 h-screen md:h-auto pb-10">

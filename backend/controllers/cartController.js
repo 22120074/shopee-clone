@@ -14,7 +14,8 @@ const { BadRequest } = require("../utils/appErrors");
 const { Success, Created } = require("../utils/responseHelper");
 
 module.exports.createOrUpdateCart = async (req, res, next) => {
-  const { userId, items, totalQuantity, totalPrice } = req.body;
+  const { items, totalQuantity, totalPrice } = req.body;
+  const userId = req.user.userId;
   try {
     if (
       typeof userId === "string" &&
