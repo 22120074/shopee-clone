@@ -10,6 +10,7 @@ import {
   useMarkAsReadMutation,
   useLazyGetNotificationsQuery,
   useGetFirstTimeNotificationsQuery,
+  useMarkAllAsReadMutation,
 } from "../../features/api/notificationQuery";
 
 export default function NotificationDropdown({ openNotificationDropdown }) {
@@ -24,6 +25,7 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
   const hasNextPage = useSelector((state) => state.notification.hasNextPage);
 
   const [markAsRead] = useMarkAsReadMutation();
+  const [markAllAsRead] = useMarkAllAsReadMutation();
   useGetFirstTimeNotificationsQuery(
     { limit: 5 },
     {
@@ -81,11 +83,19 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
 
   const handleClick = async (type, notification) => {
     try {
-      await markAsRead(notification.id).unwrap();
+      markAsRead(notification.id).unwrap();
       if (type === "NEW_PRODUCT") {
-        console.log(JSON.parse(notification.content).id);
         navigate(`/product/${JSON.parse(notification.content).id}`);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      if (unreadCount === 0) return;
+      await markAllAsRead().unwrap();
     } catch (error) {
       console.log(error);
     }
@@ -95,14 +105,22 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
     <div
       className={`notification_dropdown absolute ${openNotificationDropdown}`}
     >
-      <h1 className="text-grayTextColor capitalize text-md font-normal p-2">
-        Thông báo mới nhận
-      </h1>
+      <div className="w-full flex items-center justify-between p-2">
+        <h1 className="text-grayTextColor capitalize text-md font-normal">
+          Thông báo mới nhận
+        </h1>
+        <button
+          className="text-primaryColor text-sm font-normal"
+          onClick={() => handleMarkAllAsRead()}
+        >
+          Đánh dấu tất cả đã đọc
+        </button>
+      </div>
       {/* Notification List Container */}
       <div
         className={clsx(
           "w-full flex flex-col items-start justify-start",
-          "min-h-[400px] max-h-[600px] overflow-y-auto overflow-x-hidden",
+          "min-h-[400px] max-h-[500px] overflow-y-auto overflow-x-hidden",
         )}
       >
         {notifications?.length === 0 ? (

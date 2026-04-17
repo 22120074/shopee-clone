@@ -1,6 +1,7 @@
 const {
   getNotifications,
   markAsRead,
+  markAllAsRead,
 } = require("../services/notification.service");
 const { Success } = require("../utils/responseHelper");
 const { BadRequest } = require("../utils/appErrors");
@@ -29,7 +30,22 @@ const markAsReadController = async (req, res, next) => {
   }
 };
 
+const markAllAsReadController = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const notifications = await markAllAsRead(userId);
+    return Success(
+      res,
+      notifications,
+      "Đánh dấu tất cả thông báo đã đọc thành công",
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getNotificationsController,
   markAsReadController,
+  markAllAsReadController,
 };

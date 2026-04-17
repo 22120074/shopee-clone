@@ -28,6 +28,10 @@ export const notificationQuery = createApi({
         ),
       invalidatesTags: ["Notification"],
     }),
+    markAllAsRead: builder.mutation({
+      queryFn: () =>
+        handleAxiosRequest(() => NotificationService.markAllAsRead()),
+    }),
   }),
 });
 
@@ -36,4 +40,5 @@ export const {
   useGetNotificationsQuery,
   useLazyGetNotificationsQuery,
   useMarkAsReadMutation,
+  useMarkAllAsReadMutation,
 } = notificationQuery;

@@ -33,3 +33,12 @@ export const markAsRead = (notificationId) => {
     },
   );
 };
+
+export const markAllAsRead = () => {
+  return axios.patch(
+    `${process.env.REACT_APP_API_URL}/notification/mark-all-as-read`,
+    {
+      withCredentials: true,
+    },
+  );
+};

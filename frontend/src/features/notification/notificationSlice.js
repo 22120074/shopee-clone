@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { notificationQuery } from "../api/notificationQuery";
-import { current } from "@reduxjs/toolkit";
 
 const notificationSlice = createSlice({
   name: "notification",
@@ -54,6 +53,15 @@ const notificationSlice = createSlice({
             notification.isRead = true;
             state.unreadCount = Math.max(0, state.unreadCount - 1);
           }
+        },
+      )
+      .addMatcher(
+        notificationQuery.endpoints.markAllAsRead.matchFulfilled,
+        (state) => {
+          state.list.forEach((n) => {
+            n.isRead = true;
+          });
+          state.unreadCount = 0;
         },
       );
   },

@@ -24,19 +24,21 @@ function ProductPage() {
   // Sử dụng useParams để lấy productName từ URL
   // productName là tên sản phẩm được truyền vào URL, ví dụ: /product/:productName
   const { productName } = useParams();
-  const { data: product, isLoading: isLoadingProduct } = useGetOneProductQuery(
-    productName,
-    {
-      refetchOnMountOrArgChange: true,
-    },
-  );
-  const { data: likedData, isLoading: isLoadingLiked } = useIsLikedProductQuery(
-    product?.id,
-    {
-      skip: !product?.id,
-      refetchOnMountOrArgChange: true,
-    },
-  );
+  const {
+    data: product,
+    isLoading: isLoadingProduct,
+    isFetching: isFetchingProduct,
+  } = useGetOneProductQuery(productName, {
+    refetchOnMountOrArgChange: true,
+  });
+  const {
+    data: likedData,
+    isLoading: isLoadingLiked,
+    isFetching: isFetchingLiked,
+  } = useIsLikedProductQuery(product?.id, {
+    skip: !product?.id,
+    refetchOnMountOrArgChange: true,
+  });
 
   // Sử dụng useToastQueue để hiển thị thông báo
   const { toasts, addToast } = useToastQueue(3, 1500);
@@ -63,7 +65,10 @@ function ProductPage() {
     <div className="w-full bg-backgroundGrayColor h-auto">
       {/* Toast Queue để hiển thị thông báo thành công*/}
       <StackBar toasts={toasts} width={"300px"} height={"80px"} />
-      {isLoadingProduct || isLoadingLiked ? (
+      {isLoadingProduct ||
+      isLoadingLiked ||
+      isFetchingProduct ||
+      isFetchingLiked ? (
         <ProductPageSkeleton />
       ) : (
         <>
