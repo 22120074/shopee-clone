@@ -5,6 +5,10 @@ frontend/node_modules/
 # Ignore environment files
 backend/.env
 
+frontend/build/
+frontend/dist/
+frontend/.eslintcache
+
 # Logs
 *.log
 
