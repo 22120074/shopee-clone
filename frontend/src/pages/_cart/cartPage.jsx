@@ -18,6 +18,8 @@ function CartPage() {
   // const isIPad = useIsWindow("(min-width: 769px) and (max-width: 1024px)");
 
   const navigate = useNavigate();
+  // Lấy thông tin user từ Redux store
+  const user = useSelector((state) => state.auth.currentUser);
   // Sử dụng hook useToastQueue để quản lí toast
   const { toasts, addToast } = useToastQueue(3, 1500);
   const { isLoading } = useGetCartQuery(undefined, {
@@ -26,8 +28,6 @@ function CartPage() {
   });
   // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
-  // Lấy thông tin user từ Redux store
-  const user = useSelector((state) => state.auth.currentUser);
   // Sử dụng useState để lưu isAllChecked
   const [isAllChecked, setIsAllChecked] = useState(false);
   // Sử dụng useState để lưu số checked của từng item, tổng tiền

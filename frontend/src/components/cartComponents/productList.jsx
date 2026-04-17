@@ -39,7 +39,9 @@ function ProductList({
       cartItems[index].stock.find(
         (attr) =>
           attr.attributeID === cartItems[index].selectedAttributes.attribute.id,
-      )?.count || 0;
+      )?.quantity || 0;
+
+    console.log(stock);
 
     if (quantityInputs[index] >= stock) {
       // Clear timeout cũ
@@ -130,7 +132,7 @@ function ProductList({
       cartItems[index].stock.find(
         (attr) =>
           attr.attributeID === cartItems[index].selectedAttributes.attribute.id,
-      )?.count || 0;
+      )?.quantity || 0;
     if (parseInt(value) > 0) {
       if (parseInt(value) > stock) {
         setQuantityInputs((prev) => {
