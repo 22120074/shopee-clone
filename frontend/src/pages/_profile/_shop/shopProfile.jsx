@@ -14,11 +14,9 @@ export default function ShopProfile() {
   const { shopId } = useParams();
   const { toasts, addToast } = useToastQueue(3, 1500);
 
-  const {
-    data: shopData,
-    isLoading,
-    isError,
-  } = useGetShopQuery(shopId, { refetchOnMountOrArgChange: true });
+  const { data: shopData } = useGetShopQuery(shopId, {
+    refetchOnMountOrArgChange: true,
+  });
   const { data: isFollow } = useIsFollowShopQuery(shopId, {
     skip: !shopId,
     refetchOnMountOrArgChange: true,

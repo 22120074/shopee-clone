@@ -22,7 +22,7 @@ function ImagePreview({ images, selectedImage, isPhone, isIPad }) {
     } else {
       setMainImage(prevImage);
     }
-  }, [selectedImage]);
+  }, [selectedImage, prevImage]);
 
   return (
     <div className="flex flex-col">

@@ -4,8 +4,6 @@ import { useSelector } from "react-redux";
 
 function ShopSideBar() {
   const navigate = useNavigate();
-  // Lấy thông tin user từ Redux store
-  const shop = useSelector((state) => state.shop.currentUser);
 
   let path = window.location.pathname; // Lấy đường dẫn hiện tại
   // let mainSegment = path.split("/")[1]; // Lấy phần đầu tiên sau dấu '/'

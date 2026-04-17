@@ -1,6 +1,6 @@
 import "../../css/header.css";
 import clsx from "clsx";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { userImageUrlFormat } from "../../utils/stringFormat";
 import { useSelector } from "react-redux";
