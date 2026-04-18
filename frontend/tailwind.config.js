@@ -19,6 +19,7 @@ module.exports = {
         failColor: "#DC2626",
         // Background
         primaryColor: "#FA5130",
+        secoundPrimaryColor: "#FEF2F2",
         backgroundGrayColor: "#F5F5F5",
         backgroundLightGrayColor: "#F9FAFB",
         backgroundSuccessColor: "#DCFCE7",

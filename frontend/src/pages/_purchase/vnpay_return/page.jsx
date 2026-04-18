@@ -30,6 +30,66 @@ export default function VnPayReturnPage() {
     paymentData.responseCode === data?.vnp_ResponseCode;
   //   const isSuccess = false;
 
+  const responseCodeBaseContent = {
+    "07": {
+      title: "Giao dịch bị từ chối",
+      message:
+        "Trừ tiền thành công nhưng giao dịch bị nghi ngờ bất thường. Vui lòng liên hệ ngân hàng.",
+    },
+    "09": {
+      title: "Chưa đăng ký Internet Banking",
+      message:
+        "Thẻ/Tài khoản của bạn chưa đăng ký dịch vụ Internet Banking tại ngân hàng.",
+    },
+    10: {
+      title: "Xác thực thất bại",
+      message: "Bạn đã xác thực thông tin thẻ/tài khoản sai quá 3 lần.",
+    },
+    11: {
+      title: "Hết thời gian chờ",
+      message:
+        "Đã hết hạn chờ thanh toán. Vui lòng thực hiện lại giao dịch mới.",
+    },
+    12: {
+      title: "Tài khoản bị khóa",
+      message: "Thẻ/Tài khoản của bạn hiện đang bị khóa.",
+    },
+    13: {
+      title: "Sai mã OTP",
+      message:
+        "Bạn đã nhập sai mật khẩu xác thực giao dịch (OTP). Vui lòng thử lại.",
+    },
+    24: {
+      title: "Đã hủy thanh toán",
+      message: "Bạn đã chủ động hủy quá trình thanh toán giao dịch này.",
+    },
+    51: {
+      title: "Không đủ số dư",
+      message: "Tài khoản của bạn không đủ số dư để thực hiện giao dịch này.",
+    },
+    65: {
+      title: "Vượt quá hạn mức",
+      message: "Tài khoản của bạn đã vượt quá hạn mức giao dịch trong ngày.",
+    },
+    75: {
+      title: "Ngân hàng bảo trì",
+      message: "Ngân hàng thanh toán hiện đang bảo trì. Vui lòng thử lại sau.",
+    },
+    79: {
+      title: "Sai mật khẩu thanh toán",
+      message: "Bạn đã nhập sai mật khẩu thanh toán quá số lần quy định.",
+    },
+    99: {
+      title: "Lỗi không xác định",
+      message:
+        "Có lỗi xảy ra từ phía VNPay hoặc ngân hàng. Vui lòng thử lại sau.",
+    },
+    default: {
+      title: "Thanh toán thất bại",
+      message: "Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.",
+    },
+  };
+
   useEffect(() => {
     if (isSuccess) {
       const items = JSON.parse(localStorage.getItem("pendingOrderItems")) || [];
@@ -120,16 +180,19 @@ export default function VnPayReturnPage() {
             <i className="fa-regular fa-circle-xmark text-failColor text-6xl"></i>
           </div>
           <h2 className="text-2xl font-medium text-gray-800">
-            Thanh toán thất bại
+            {responseCodeBaseContent[paymentData.responseCode]?.title ||
+              responseCodeBaseContent.default.title}
           </h2>
           <p className="text-grayTextColor text-center">
-            Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.
+            {responseCodeBaseContent[paymentData.responseCode]?.message ||
+              responseCodeBaseContent.default.message}
           </p>
           <NormalButton
             text="Quay lại trang chủ"
             onClick={() => (window.location.href = "/")}
             icon={<i class="fa-solid fa-house mr-2 text-base" />}
             height="40px"
+            className="!hover:bg-secoundPrimaryColor"
           />
         </div>
       )}
