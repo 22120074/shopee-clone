@@ -41,43 +41,31 @@ export default function VnPayReturnPage() {
       message:
         "Thẻ/Tài khoản của bạn chưa đăng ký dịch vụ Internet Banking tại ngân hàng.",
     },
-    10: {
-      title: "Xác thực thất bại",
-      message: "Bạn đã xác thực thông tin thẻ/tài khoản sai quá 3 lần.",
-    },
     11: {
-      title: "Hết thời gian chờ",
+      title: "Hết thời gian thanh toán",
+      message: "Giao dịch đã hết hạn chờ. Vui lòng thực hiện lại đơn hàng.",
+    },
+    15: {
+      title: "Giao dịch không thành công",
       message:
-        "Đã hết hạn chờ thanh toán. Vui lòng thực hiện lại giao dịch mới.",
+        "Thẻ của bạn chưa được kích hoạt thanh toán trực tuyến hoặc phiên làm việc đã hết hạn. Vui lòng kiểm tra lại thẻ hoặc thực hiện lại giao dịch.",
     },
     12: {
       title: "Tài khoản bị khóa",
       message: "Thẻ/Tài khoản của bạn hiện đang bị khóa.",
     },
-    13: {
-      title: "Sai mã OTP",
-      message:
-        "Bạn đã nhập sai mật khẩu xác thực giao dịch (OTP). Vui lòng thử lại.",
-    },
     24: {
       title: "Đã hủy thanh toán",
-      message: "Bạn đã chủ động hủy quá trình thanh toán giao dịch này.",
+      message:
+        "Bạn đã chủ động hủy quá trình thanh toán giao dịch này. Đơn hàng sẽ không được giao dịch thành công.",
     },
     51: {
       title: "Không đủ số dư",
       message: "Tài khoản của bạn không đủ số dư để thực hiện giao dịch này.",
     },
-    65: {
-      title: "Vượt quá hạn mức",
-      message: "Tài khoản của bạn đã vượt quá hạn mức giao dịch trong ngày.",
-    },
     75: {
       title: "Ngân hàng bảo trì",
       message: "Ngân hàng thanh toán hiện đang bảo trì. Vui lòng thử lại sau.",
-    },
-    79: {
-      title: "Sai mật khẩu thanh toán",
-      message: "Bạn đã nhập sai mật khẩu thanh toán quá số lần quy định.",
     },
     99: {
       title: "Lỗi không xác định",

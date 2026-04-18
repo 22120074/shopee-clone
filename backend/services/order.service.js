@@ -162,14 +162,12 @@ const sortObject = (obj) => {
   let sorted = {};
   let str = [];
   for (let key in obj) {
-    // Sửa đúng dòng này: Mượn hàm hasOwnProperty từ Object gốc
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
       str.push(encodeURIComponent(key));
     }
   }
   str.sort();
   for (let key = 0; key < str.length; key++) {
-    // Thêm 'let' để tránh lỗi scope
     sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
   }
   return sorted;
@@ -184,23 +182,22 @@ const createPaymentUrl = (req) => {
   let vnpUrl = process.env.VNP_URL;
   let returnUrl = process.env.VNP_RETURN_URL;
 
-  let orderId = req.body.orderId; // Mã đơn hàng thật từ DB
+  let orderId = req.body.orderId; // Mã đơn hàng
   let amount = req.body.amount;
   let bankCode = req.body.bankCode || "";
 
   let ipAddr = req.body.ipAddr || req.ip || "127.0.0.1";
 
-  // 1. Nếu Nginx trả về nhiều IP (cách nhau bằng dấu phẩy), chỉ lấy IP đầu tiên
+  // Nếu Nginx trả về nhiều IP (cách nhau bằng dấu phẩy), chỉ lấy IP đầu tiên
   if (typeof ipAddr === "string" && ipAddr.includes(",")) {
     ipAddr = ipAddr.split(",")[0].trim();
   }
 
-  // 2. Chuyển IPv6 sang IPv4 (nếu có)
+  // Chuyển IPv6 sang IPv4 (nếu có)
   if (ipAddr && ipAddr.includes("::ffff:")) {
     ipAddr = ipAddr.replace("::ffff:", "");
   }
 
-  // 3. Fallback an toàn trực tiếp vào biến ipAddr
   ipAddr = ipAddr || "127.0.0.1";
 
   let vnp_Params = {};
@@ -215,7 +212,6 @@ const createPaymentUrl = (req) => {
   vnp_Params["vnp_Amount"] = amount * 100;
   vnp_Params["vnp_ReturnUrl"] = returnUrl;
 
-  // Truyền ipAddr đã được làm sạch xuống đây
   vnp_Params["vnp_IpAddr"] = ipAddr;
   vnp_Params["vnp_CreateDate"] = createDate;
 
@@ -223,11 +219,8 @@ const createPaymentUrl = (req) => {
     vnp_Params["vnp_BankCode"] = bankCode;
   }
 
-  // Sắp xếp các tham số theo alphabet
   vnp_Params = sortObject(vnp_Params);
 
-  // Lưu ý: Vì hàm sortObject của Duy ĐÃ encode giá trị bên trong nó rồi,
-  // nên qs.stringify KHÔNG được encode nữa (encode: false) -> Bạn làm đúng rồi!
   let signData = qs.stringify(vnp_Params, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
   let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
@@ -243,7 +236,7 @@ const verifyReturnUrl = (vnp_Params) => {
   delete vnp_Params["vnp_SecureHash"];
   delete vnp_Params["vnp_SecureHashType"];
 
-  // Sắp xếp lại object (Dùng lại hàm sortObject bạn đã có)
+  // Sắp xếp lại object
   vnp_Params = sortObject(vnp_Params);
 
   let secretKey = process.env.VNP_HASH_SECRET;
@@ -265,7 +258,6 @@ const getOrderById = async (orderId) => {
   }
 };
 
-// 2. Hàm cập nhật trạng thái đơn hàng
 const updateOrderStatus = async (orderId, newStatus) => {
   try {
     const updatedOrder = await Order.update(
