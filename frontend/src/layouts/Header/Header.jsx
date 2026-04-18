@@ -95,7 +95,7 @@ function Header() {
     e.preventDefault();
 
     try {
-      const shop = await checkShop();
+      const shop = await checkShop().unwrap();
       if (shop) {
         window.open("/shop/dashboard", "_blank");
       } else {
