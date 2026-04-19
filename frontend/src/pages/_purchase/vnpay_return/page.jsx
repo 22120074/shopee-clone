@@ -6,7 +6,8 @@ import { useVnpayReturnUrlQuery } from "../../../features/api/orderQuery";
 import Spinner from "../../../components/skeletons/spinnerButton";
 import { useEffect } from "react";
 import { removeListItem } from "../../../features/cart/cartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetCartQuery } from "../../../features/api/cartQuery";
 
 export default function VnPayReturnPage() {
   const dispatch = useDispatch();
@@ -14,6 +15,13 @@ export default function VnPayReturnPage() {
 
   const { data, isLoading } = useVnpayReturnUrlQuery({
     queryParams: window.location.search,
+  });
+
+  const user = useSelector((state) => state.auth.currentUser);
+
+  const { data: cartData } = useGetCartQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    skip: !user,
   });
 
   const paymentData = {
@@ -82,11 +90,12 @@ export default function VnPayReturnPage() {
     console.log(isSuccess);
     if (isSuccess) {
       const items = JSON.parse(localStorage.getItem("pendingOrderItems")) || [];
+      console.log(cartData);
       console.log(items);
       dispatch(removeListItem(items));
       localStorage.removeItem("pendingOrderItems");
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, cartData, dispatch]);
 
   if (isLoading) {
     return (
