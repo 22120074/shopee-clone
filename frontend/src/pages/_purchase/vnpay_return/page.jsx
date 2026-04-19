@@ -87,11 +87,8 @@ export default function VnPayReturnPage() {
   };
 
   useEffect(() => {
-    console.log(isSuccess);
     if (isSuccess && cartData !== undefined) {
       const items = JSON.parse(localStorage.getItem("pendingOrderItems")) || [];
-      console.log(cartData);
-      console.log(items);
       dispatch(removeListItem(items));
       localStorage.removeItem("pendingOrderItems");
     }
