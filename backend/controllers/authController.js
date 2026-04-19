@@ -95,22 +95,23 @@ exports.login = async (req, res, next) => {
       { expiresIn: "7d" },
     );
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res
       .cookie("access_token", accessToken, {
         httpOnly: true,
-        // Đổi để test trên điện thoại với localhost
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "Lax",
         path: "/",
-        // secure: process.env.NODE_ENV === 'production',
+        ...(isProduction && { domain: ".duyshop.fatagram.dev" }),
         maxAge: 1 * 24 * 60 * 60 * 1000, // 1 ngày
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "Lax",
         path: "/",
-        // secure: process.env.NODE_ENV === 'production',
+        ...(isProduction && { domain: ".duyshop.fatagram.dev" }),
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
       })
       .json({ message: "Đăng nhập thành công!" });
@@ -136,7 +137,6 @@ exports.getMe = async (req, res, next) => {
       throw NotFound("Không tìm thấy dữ liệu người dùng.");
     }
 
-    // Trả về toàn bộ dữ liệu trong document dataUser
     return Success(res, userData, "Lấy thông tin người dùng thành công");
   } catch (error) {
     next(error);
@@ -165,23 +165,22 @@ exports.refreshToken = (req, res) => {
       throw Unauthorized("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
     }
 
-    // Xác thực refresh token
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-    // Tạo access token mới
     const newAccessToken = jwt.sign(
       { userId: decoded.userId, phone: decoded.phone },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
 
-    // Gửi access token mới vào cookie
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("access_token", newAccessToken, {
       httpOnly: true,
-      // Đổi để test trên điện thoại với localhost
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "Lax",
-      // secure: process.env.NODE_ENV === 'production',
+      path: "/",
+      ...(isProduction && { domain: ".duyshop.fatagram.dev" }),
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 ngày
     });
 
