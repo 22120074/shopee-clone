@@ -25,7 +25,7 @@ function UserLayout() {
 
   return (
     <div className="UserLayout bg-backgroundGrayColor">
-      <StackBar toasts={toasts} width={'300px'} height={'80px'} />
+      <StackBar toasts={toasts} width={'300px'} />
       <Header />
       <div className="relative flex max-w-7xl mx-auto px-4 md:px-10 min-h-[600px] md:min-h-0">
         {user ? (

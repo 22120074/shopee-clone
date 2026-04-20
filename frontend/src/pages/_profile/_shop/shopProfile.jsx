@@ -1,15 +1,15 @@
-import clsx from "clsx";
-import { useParams } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import clsx from 'clsx';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
 import {
   useGetShopQuery,
   useIsFollowShopQuery,
   useFollowShopMutation,
   useUnfollowShopMutation,
-} from "../../../features/api/shopQuery";
-import StackBar from "../../../components/StackBar";
-import useToastQueue from "../../../hooks/useToastQueue";
-import ShopSkeleton from "../../../components/skeletons/shopProfileSkeleton";
+} from '../../../features/api/shopQuery';
+import StackBar from '../../../components/StackBar';
+import useToastQueue from '../../../hooks/useToastQueue';
+import ShopSkeleton from '../../../components/skeletons/shopProfileSkeleton';
 
 export default function ShopProfile() {
   const { shopId } = useParams();
@@ -36,7 +36,7 @@ export default function ShopProfile() {
   const [unfollowShop] = useUnfollowShopMutation();
   const optimisticFollowingRef = useRef(isFollow);
   const timerRef = useRef(null);
-  const onlineStatus = "17 phút trước";
+  const onlineStatus = '17 phút trước';
 
   const handleFollow = () => {
     const nextFollowingState = !optimisticFollowingRef.current;
@@ -52,13 +52,13 @@ export default function ShopProfile() {
       try {
         if (optimisticFollowingRef.current) {
           await followShop(shopId).unwrap();
-          addToast("Đã theo dõi cửa hàng!", "success", "check");
+          addToast('Đã theo dõi cửa hàng!', 'success', 'check');
         } else {
           await unfollowShop(shopId).unwrap();
-          addToast("Đã bỏ theo dõi cửa hàng!", "success", "check");
+          addToast('Đã bỏ theo dõi cửa hàng!', 'success', 'check');
         }
       } catch (error) {
-        addToast("Có lỗi xảy ra khi theo dõi cửa hàng!", "error", "warning");
+        addToast('Có lỗi xảy ra khi theo dõi cửa hàng!', 'error', 'warning');
         setIsFollowing(isFollow);
         optimisticFollowingRef.current = isFollow;
       }
@@ -66,22 +66,22 @@ export default function ShopProfile() {
   };
 
   return (
-    <div className={clsx("w-full border-b border-lessgrayColor h-screen")}>
-      <StackBar toasts={toasts} width={"300px"} height={"100px"} />
+    <div className={clsx('w-full border-b border-lessgrayColor h-screen')}>
+      <StackBar toasts={toasts} width={'300px'} />
       {isLoading || isFetching ? (
         <ShopSkeleton />
       ) : (
         <div
           className={clsx(
-            "flex flex-col md:flex-row items-start justify-start bg-white gap-2 md:gap-8 max-w-[1200px] mx-auto",
-            "rounded-sm py-4 md:py-6 px-4 lg:px-0",
+            'flex flex-col md:flex-row items-start justify-start bg-white gap-2 md:gap-8 max-w-[1200px] mx-auto',
+            'rounded-sm py-4 md:py-6 px-4 lg:px-0'
           )}
         >
           {/* CỘT TRÁI: THÔNG TIN SHOP (Profile Card) */}
           <div
             className={clsx(
-              "relative w-full md:w-[390px] min-h-[135px] bg-primaryColor p-4",
-              "flex flex-col justify-between rounded-sm overflow-hidden",
+              'relative w-full md:w-[390px] min-h-[135px] bg-primaryColor p-4',
+              'flex flex-col justify-between rounded-sm overflow-hidden'
             )}
           >
             {/* Lớp overlay mờ phía sau để giống ảnh gốc (tùy chọn) */}
@@ -109,8 +109,8 @@ export default function ShopProfile() {
               <div className="w-full flex items-start justify-start gap-2 text-white">
                 <button
                   className={clsx(
-                    "flex flex-1 items-center justify-center gap-1 md:gap-2 px-3 py-1",
-                    "border border-white rounded-sm text-sm hover:bg-white/10 transition-all",
+                    'flex flex-1 items-center justify-center gap-1 md:gap-2 px-3 py-1',
+                    'border border-white rounded-sm text-sm hover:bg-white/10 transition-all'
                   )}
                   onClick={handleFollow}
                 >
@@ -119,12 +119,12 @@ export default function ShopProfile() {
                   ) : (
                     <i className="fa-solid fa-plus"></i>
                   )}
-                  {isFollowing ? "Đang Theo Dõi" : "Theo Dõi"}
+                  {isFollowing ? 'Đang Theo Dõi' : 'Theo Dõi'}
                 </button>
                 <button
                   className={clsx(
-                    "flex flex-1 items-center justify-center gap-1 md:gap-2 px-3 py-1",
-                    "border border-white rounded-sm text-sm hover:bg-white/10 transition-all",
+                    'flex flex-1 items-center justify-center gap-1 md:gap-2 px-3 py-1',
+                    'border border-white rounded-sm text-sm hover:bg-white/10 transition-all'
                   )}
                 >
                   <i className="fa-regular fa-comment-dots"></i>Chat

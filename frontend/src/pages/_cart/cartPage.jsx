@@ -1,20 +1,20 @@
-import "../../css/CartLayout.css";
-import HeaderCart from "../../components/cartComponents/headerCart";
-import useToastQueue from "../../hooks/useToastQueue";
-import StackBar from "../../components/StackBar";
-import ProductList from "../../components/cartComponents/productList";
-import FooterCart from "../../components/cartComponents/footerCart";
-import PrimaryButton from "../../components/buttons/Button";
-import useIsWindow from "../../hooks/useIsWindow";
-import { useSelector } from "react-redux";
-import emptyCart from "../../assets/Empty-bro.svg";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGetCartQuery } from "../../features/api/cartQuery";
-import Spinner from "../../components/skeletons/spinnerButton";
+import '../../css/CartLayout.css';
+import HeaderCart from '../../components/cartComponents/headerCart';
+import useToastQueue from '../../hooks/useToastQueue';
+import StackBar from '../../components/StackBar';
+import ProductList from '../../components/cartComponents/productList';
+import FooterCart from '../../components/cartComponents/footerCart';
+import PrimaryButton from '../../components/buttons/Button';
+import useIsWindow from '../../hooks/useIsWindow';
+import { useSelector } from 'react-redux';
+import emptyCart from '../../assets/Empty-bro.svg';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useGetCartQuery } from '../../features/api/cartQuery';
+import Spinner from '../../components/skeletons/spinnerButton';
 
 function CartPage() {
-  const isPhone = useIsWindow("(max-width: 768px)");
+  const isPhone = useIsWindow('(max-width: 768px)');
   // const isIPad = useIsWindow("(min-width: 769px) and (max-width: 1024px)");
 
   const navigate = useNavigate();
@@ -39,18 +39,18 @@ function CartPage() {
 
   return (
     <div className="w-full bg-backgroundGrayColor pt-5 h-screen md:h-auto pb-10">
-      <StackBar toasts={toasts} width={"400px"} height={"100px"} />
+      <StackBar toasts={toasts} width={'400px'} />
 
       {isLoading ? (
         <div
           className={`top-0 left-0 w-full h-[100px] flex items-center justify-center bg-red
-            ${isLoading ? "bg-backgroundGrayColor" : "hidden"}`}
+            ${isLoading ? 'bg-backgroundGrayColor' : 'hidden'}`}
         >
           <Spinner
-            size={"30px"}
-            stroke={"6px"}
-            _hidden={!isLoading ? "hidden" : ""}
-            color={"#ee4d2d"}
+            size={'30px'}
+            stroke={'6px'}
+            _hidden={!isLoading ? 'hidden' : ''}
+            color={'#ee4d2d'}
           />
         </div>
       ) : (
@@ -93,14 +93,14 @@ function CartPage() {
               />
               <div className="text-base font-semibold text-gray-500 mb-5">
                 {user
-                  ? "Giỏ hàng của bạn đang trống"
-                  : "Vui lòng đăng nhập để mua hàng"}
+                  ? 'Giỏ hàng của bạn đang trống'
+                  : 'Vui lòng đăng nhập để mua hàng'}
               </div>
               <PrimaryButton
                 height="40px"
                 width="200px"
-                text={user ? "Mua ngay" : "Đăng nhập ngay"}
-                onClick={() => navigate(user ? "/" : "/auth/login")}
+                text={user ? 'Mua ngay' : 'Đăng nhập ngay'}
+                onClick={() => navigate(user ? '/' : '/auth/login')}
               />
             </div>
           )}

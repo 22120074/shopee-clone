@@ -1,48 +1,48 @@
-import { useState, useEffect, useReducer } from "react";
-import { useSelector } from "react-redux";
-import InsertListImgButton from "../../../../components/buttons/insertListImgButton";
-import PrimaryDashedButton from "../../../../components/buttons/primaryDashedBttn";
-import CardAttribute from "../../../../components/shopComponents/cardAttribute";
-import PrimaryButton from "../../../../components/buttons/Button";
-import TableAttribute from "../../../../components/shopComponents/tableAttribute";
-import Stack from "../../../../components/layout/stack";
-import VerticalStepProgress from "../../../../components/verticalStepProgress";
-import Spinner from "../../../../components/skeletons/spinnerButton";
-import DetailData from "../../../../components/shopComponents/product/detailData";
-import useIsWindow from "../../../../hooks/useIsWindow";
-import StackBar from "../../../../components/StackBar";
-import useToastQueue from "../../../../hooks/useToastQueue";
-import { useUploadMultipleImagesMutation } from "../../../../features/api/mediaQuery";
-import { useCreateProductMutation } from "../../../../features/api/shopProductQuery";
+import { useState, useEffect, useReducer } from 'react';
+import { useSelector } from 'react-redux';
+import InsertListImgButton from '../../../../components/buttons/insertListImgButton';
+import PrimaryDashedButton from '../../../../components/buttons/primaryDashedBttn';
+import CardAttribute from '../../../../components/shopComponents/cardAttribute';
+import PrimaryButton from '../../../../components/buttons/Button';
+import TableAttribute from '../../../../components/shopComponents/tableAttribute';
+import Stack from '../../../../components/layout/stack';
+import VerticalStepProgress from '../../../../components/verticalStepProgress';
+import Spinner from '../../../../components/skeletons/spinnerButton';
+import DetailData from '../../../../components/shopComponents/product/detailData';
+import useIsWindow from '../../../../hooks/useIsWindow';
+import StackBar from '../../../../components/StackBar';
+import useToastQueue from '../../../../hooks/useToastQueue';
+import { useUploadMultipleImagesMutation } from '../../../../features/api/mediaQuery';
+import { useCreateProductMutation } from '../../../../features/api/shopProductQuery';
 
 const categories = [
-  "Thời Trang Nam",
-  "Điện Thoại & Phụ Kiện",
-  "Thiết Bị Điện Tử",
-  "Máy Tính & Laptop",
-  "Máy Ảnh & Máy Quay Phim",
-  "Đồng Hồ",
-  "Giày Dép Nam",
-  "Thiết Bị Điện Gia Dụng",
-  "Thể Thao & Du Lịch",
-  "Ô Tô & Xe Máy & Xe Đạp",
-  "Balo & Túi Ví Nam",
-  "Đồ Chơi",
-  "Chăm Sóc Thú Cưng",
-  "Dụng Cụ Và Thiết Bị Tiện Ích",
-  "Thời Trang Nữ",
-  "Mẹ & Bé",
-  "Nhà Cửa & Đời Sống",
-  "Sắc Đẹp",
-  "Sức Khỏe",
-  "Giày Dép Nữ",
-  "Túi Ví Nữ",
-  "Phụ Kiện & Trang Sức Nữ",
-  "Bách Hóa Online",
-  "Nhà Sách Online",
-  "Thời Trang Trẻ Em",
-  "Giặt Giũ & Chăm Sóc Nhà Cửa",
-  "Voucher & Dịch Vụ",
+  'Thời Trang Nam',
+  'Điện Thoại & Phụ Kiện',
+  'Thiết Bị Điện Tử',
+  'Máy Tính & Laptop',
+  'Máy Ảnh & Máy Quay Phim',
+  'Đồng Hồ',
+  'Giày Dép Nam',
+  'Thiết Bị Điện Gia Dụng',
+  'Thể Thao & Du Lịch',
+  'Ô Tô & Xe Máy & Xe Đạp',
+  'Balo & Túi Ví Nam',
+  'Đồ Chơi',
+  'Chăm Sóc Thú Cưng',
+  'Dụng Cụ Và Thiết Bị Tiện Ích',
+  'Thời Trang Nữ',
+  'Mẹ & Bé',
+  'Nhà Cửa & Đời Sống',
+  'Sắc Đẹp',
+  'Sức Khỏe',
+  'Giày Dép Nữ',
+  'Túi Ví Nữ',
+  'Phụ Kiện & Trang Sức Nữ',
+  'Bách Hóa Online',
+  'Nhà Sách Online',
+  'Thời Trang Trẻ Em',
+  'Giặt Giũ & Chăm Sóc Nhà Cửa',
+  'Voucher & Dịch Vụ',
 ];
 
 function syncTable(state) {
@@ -51,12 +51,12 @@ function syncTable(state) {
 
   attributeList.forEach((attr) => {
     const attrName = attr;
-    const currentSizeList = sizeList.length > 0 ? sizeList : [""];
+    const currentSizeList = sizeList.length > 0 ? sizeList : [''];
 
     newObj[attrName] = currentSizeList.map((size) => {
       const sizeName = size;
       const existingData = prevObj[attrName]?.find(
-        (item) => item.size === sizeName,
+        (item) => item.size === sizeName
       );
 
       return (
@@ -74,35 +74,35 @@ function syncTable(state) {
 
 function tableReducer(state, action) {
   switch (action.type) {
-    case "SET_FIELD": {
+    case 'SET_FIELD': {
       const val =
-        typeof action.payload === "function"
+        typeof action.payload === 'function'
           ? action.payload(state[action.field])
           : action.payload;
       return { ...state, [action.field]: val };
     }
-    case "SET_ATTRIBUTE_LIST": {
+    case 'SET_ATTRIBUTE_LIST': {
       const val =
-        typeof action.payload === "function"
+        typeof action.payload === 'function'
           ? action.payload(state.attributeList)
           : action.payload;
       return syncTable({ ...state, attributeList: val });
     }
-    case "SET_SIZE_LIST": {
+    case 'SET_SIZE_LIST': {
       const val =
-        typeof action.payload === "function"
+        typeof action.payload === 'function'
           ? action.payload(state.sizeList)
           : action.payload;
       return syncTable({ ...state, sizeList: val });
     }
-    case "SET_ATTRIBUTE_OBJECT": {
+    case 'SET_ATTRIBUTE_OBJECT': {
       const val =
-        typeof action.payload === "function"
+        typeof action.payload === 'function'
           ? action.payload(state.attributeObject)
           : action.payload;
       return { ...state, attributeObject: val };
     }
-    case "UPDATE_VALUE": {
+    case 'UPDATE_VALUE': {
       const { attrName, index, field, value } = action.payload;
       const updatedVariants = [...(state.attributeObject[attrName] || [])];
       updatedVariants[index] = { ...updatedVariants[index], [field]: value };
@@ -114,17 +114,17 @@ function tableReducer(state, action) {
         },
       };
     }
-    case "APPLY_ALL": {
+    case 'APPLY_ALL': {
       const newObj = { ...state.attributeObject };
       Object.keys(newObj).forEach((attrName) => {
         newObj[attrName] = newObj[attrName].map((variant) => ({
           ...variant,
           price:
-            state.price !== undefined && state.price !== ""
+            state.price !== undefined && state.price !== ''
               ? state.price
               : variant.price,
           stock:
-            state.stock !== undefined && state.stock !== ""
+            state.stock !== undefined && state.stock !== ''
               ? state.stock
               : variant.stock,
         }));
@@ -137,39 +137,39 @@ function tableReducer(state, action) {
 }
 
 export default function AddProduct() {
-  const isDesktop = useIsWindow("(min-width: 1024px)");
-  const isTablet = useIsWindow("(min-width: 768px) and (max-width: 1023px)");
+  const isDesktop = useIsWindow('(min-width: 1024px)');
+  const isTablet = useIsWindow('(min-width: 768px) and (max-width: 1023px)');
   const { toasts, addToast } = useToastQueue(3, 1500);
   const user = useSelector((state) => state.auth.currentUser);
 
   const steps = [
-    "Thông tin cơ bản",
-    "Thông tin chi tiết",
-    "Thông tin bán hàng",
+    'Thông tin cơ bản',
+    'Thông tin chi tiết',
+    'Thông tin bán hàng',
   ];
   const [currentStep, setCurrentStep] = useState(0);
 
   // Thông tin cơ bản
   const [imgs, setImgs] = useState([]);
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [detail, setDetail] = useState("");
+  const [name, setName] = useState('');
+  const [category, setCategory] = useState('');
+  const [detail, setDetail] = useState('');
 
   // Thông tin chi tiết
-  const [material, setMaterial] = useState("");
-  const [origin, setOrigin] = useState("");
-  const [shipFrom, setShipFrom] = useState("");
+  const [material, setMaterial] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [shipFrom, setShipFrom] = useState('');
 
   // Thông tin bán hàng gom vào useReducer
   const [isOpenAttribute, setOpenAttribute] = useState(false);
 
   const [tableState, dispatch] = useReducer(tableReducer, {
-    attribute: "",
+    attribute: '',
     attributeList: [],
-    size: "",
+    size: '',
     sizeList: [],
-    price: "",
-    stock: "",
+    price: '',
+    stock: '',
     attributeObject: {},
   });
 
@@ -189,18 +189,18 @@ export default function AddProduct() {
     useCreateProductMutation();
 
   const setAttribute = (payload) =>
-    dispatch({ type: "SET_FIELD", field: "attribute", payload });
+    dispatch({ type: 'SET_FIELD', field: 'attribute', payload });
   const setAttributeList = (payload) =>
-    dispatch({ type: "SET_ATTRIBUTE_LIST", payload });
+    dispatch({ type: 'SET_ATTRIBUTE_LIST', payload });
   const setSize = (payload) =>
-    dispatch({ type: "SET_FIELD", field: "size", payload });
-  const setSizeList = (payload) => dispatch({ type: "SET_SIZE_LIST", payload });
+    dispatch({ type: 'SET_FIELD', field: 'size', payload });
+  const setSizeList = (payload) => dispatch({ type: 'SET_SIZE_LIST', payload });
   const setPrice = (payload) =>
-    dispatch({ type: "SET_FIELD", field: "price", payload });
+    dispatch({ type: 'SET_FIELD', field: 'price', payload });
   const setStock = (payload) =>
-    dispatch({ type: "SET_FIELD", field: "stock", payload });
+    dispatch({ type: 'SET_FIELD', field: 'stock', payload });
   const setAttributeObject = (payload) =>
-    dispatch({ type: "SET_ATTRIBUTE_OBJECT", payload });
+    dispatch({ type: 'SET_ATTRIBUTE_OBJECT', payload });
 
   const prepareAttributesForServer = async (attributeData) => {
     // TẠO HÀNG ĐỢI UPLOAD (Mỗi màu chỉ lấy đúng 1 ảnh)
@@ -240,13 +240,13 @@ export default function AddProduct() {
     }
 
     const finalAttributeData = attributeData.map((attr) => {
-      let finalUrl = "";
-      let finalPublicId = "";
+      let finalUrl = '';
+      let finalPublicId = '';
 
       if (uploadedDict[attr.nameEach]) {
         finalUrl = uploadedDict[attr.nameEach].url;
         finalPublicId = uploadedDict[attr.nameEach].public_id;
-      } else if (typeof attr.imageUrl === "string") {
+      } else if (typeof attr.imageUrl === 'string') {
         finalUrl = attr.imageUrl;
       }
 
@@ -287,8 +287,8 @@ export default function AddProduct() {
             size: variant.size.trim(),
             price: parseFloat(variant.price) || 0,
             stock: parseInt(variant.stock, 10) || 0,
-            imageUrl: variant.imgData || "",
-          })),
+            imageUrl: variant.imgData || '',
+          }))
       );
       const finalAttributes = await prepareAttributesForServer(attributeData);
       const payload = {
@@ -299,13 +299,13 @@ export default function AddProduct() {
       };
       const data = await createProduct({ payload }).unwrap();
       if (data) {
-        addToast("Thêm sản phẩm thành công", "success", "check");
+        addToast('Thêm sản phẩm thành công', 'success', 'check');
       }
     } catch (error) {
       addToast(
-        error.message || "Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.",
-        "error",
-        "warning",
+        error.message || 'Lỗi hệ thống hoặc kết nối. Vui lòng thử lại.',
+        'error',
+        'warning'
       );
     }
   };
@@ -316,24 +316,24 @@ export default function AddProduct() {
     // Check Step 1: Thông tin cơ bản
     const isStep1Valid =
       imgs.length > 0 &&
-      name.trim() !== "" &&
-      category.trim() !== "" &&
-      detail.trim() !== "";
+      name.trim() !== '' &&
+      category.trim() !== '' &&
+      detail.trim() !== '';
     if (isStep1Valid) step = 1;
 
     // Check Step 2: Thông tin chi tiết
     const isStep2Valid =
       isStep1Valid &&
-      material.trim() !== "" &&
-      origin.trim() !== "" &&
-      shipFrom.trim() !== "";
+      material.trim() !== '' &&
+      origin.trim() !== '' &&
+      shipFrom.trim() !== '';
     if (isStep2Valid) step = 2;
 
     // Check Step 3: Thông tin bán hàng
     let isStep3Valid = false;
     if (isStep2Valid && Object.keys(attributeObject).length > 0) {
       isStep3Valid = Object.values(attributeObject).every((variants) =>
-        variants.every((v) => Number(v.price) > 0 && Number(v.stock) > 0),
+        variants.every((v) => Number(v.price) > 0 && Number(v.stock) > 0)
       );
     }
     if (isStep3Valid) step = 3;
@@ -352,7 +352,7 @@ export default function AddProduct() {
 
   const handleApplyAll = () => {
     if (!price && !stock) return;
-    dispatch({ type: "APPLY_ALL" });
+    dispatch({ type: 'APPLY_ALL' });
   };
 
   return (
@@ -360,7 +360,7 @@ export default function AddProduct() {
       className="relative w-full h-auto bg-backgroundGrayColor 
       grid grid-cols-1 lg:grid-cols-10 gap-2 p-2 md:p-4 lg:p-8 items-start"
     >
-      <StackBar toasts={toasts} width={"300px"} height={"80px"} />
+      <StackBar toasts={toasts} width={'300px'} />
       {/* Nội dung chính */}
       <main className="lg:col-span-8 flex flex-col gap-2">
         {/* ----------------------- Thông tin cơ bản ----------------------- */}
@@ -419,8 +419,8 @@ export default function AddProduct() {
                 text-[15px] text-dark resize-none overflow-hidden min-h-[40px]"
                 value={name}
                 onInput={(e) => {
-                  e.target.style.height = "40px";
-                  e.target.style.height = e.target.scrollHeight + "px";
+                  e.target.style.height = '40px';
+                  e.target.style.height = e.target.scrollHeight + 'px';
                 }}
                 onChange={(e) => setName(e.target.value)}
                 maxLength={120}
@@ -477,8 +477,8 @@ export default function AddProduct() {
                 md:min-h-[200px] md:max-h-[300px] lg:min-h-[300px] lg:max-h-[500px] overflow-y-auto"
                 value={detail}
                 onInput={(e) => {
-                  e.target.style.height = "150px";
-                  e.target.style.height = e.target.scrollHeight + "px";
+                  e.target.style.height = '150px';
+                  e.target.style.height = e.target.scrollHeight + 'px';
                 }}
                 onChange={(e) => setDetail(e.target.value)}
                 maxLength={3000}
@@ -527,7 +527,7 @@ export default function AddProduct() {
               ) : (
                 <PrimaryDashedButton
                   width="200px"
-                  text={"Thêm nhóm phân loại"}
+                  text={'Thêm nhóm phân loại'}
                   onClick={() => setOpenAttribute((prev) => !prev)}
                 >
                   <i className="fa-solid fa-plus"></i>
@@ -555,7 +555,7 @@ export default function AddProduct() {
                       bg-transparent border-y border-gray-300"
                       value={price}
                       onChange={(e) =>
-                        setPrice(e.target.value.replace(/\D/g, ""))
+                        setPrice(e.target.value.replace(/\D/g, ''))
                       }
                       placeholder="Giá"
                     />
@@ -567,21 +567,21 @@ export default function AddProduct() {
                       border border-gray-300 border-l-transparent mr-2"
                       value={stock}
                       onChange={(e) =>
-                        setStock(e.target.value.replace(/\D/g, ""))
+                        setStock(e.target.value.replace(/\D/g, ''))
                       }
                       placeholder="Kho hàng"
                     />
                     <PrimaryButton
-                      width={isDesktop ? "300px" : isTablet ? "200px" : "120px"}
+                      width={isDesktop ? '300px' : isTablet ? '200px' : '120px'}
                       height="36px"
                       onClick={handleApplyAll}
                     >
                       <span>
                         {isDesktop
-                          ? "Áp dụng cho tất cả các phân loại"
+                          ? 'Áp dụng cho tất cả các phân loại'
                           : isTablet
-                            ? "Áp dụng cho tất cả"
-                            : "Áp dụng"}
+                            ? 'Áp dụng cho tất cả'
+                            : 'Áp dụng'}
                       </span>
                     </PrimaryButton>
                   </div>
@@ -602,7 +602,7 @@ export default function AddProduct() {
       >
         <VerticalStepProgress currentStep={currentStep} steps={steps} />
         <PrimaryButton
-          text={"Lưu sản phẩm"}
+          text={'Lưu sản phẩm'}
           width="100%"
           height="36px"
           onClick={handlePostData}
@@ -610,13 +610,13 @@ export default function AddProduct() {
         >
           <div
             className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
-            ${isLoadingUpload || isLoadingCreate ? "bg-white/50" : "hidden"}`}
+            ${isLoadingUpload || isLoadingCreate ? 'bg-white/50' : 'hidden'}`}
           >
             <Spinner
-              size={"30px"}
-              stroke={"5px"}
-              _hidden={!(isLoadingUpload || isLoadingCreate) ? "hidden" : ""}
-              color={"white"}
+              size={'30px'}
+              stroke={'5px'}
+              _hidden={!(isLoadingUpload || isLoadingCreate) ? 'hidden' : ''}
+              color={'white'}
             />
           </div>
         </PrimaryButton>

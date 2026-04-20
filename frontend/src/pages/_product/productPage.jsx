@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import useToastQueue from "../../hooks/useToastQueue";
-import useIsWindow from "../../hooks/useIsWindow";
-import LeftData from "../../components/productComponents/dataLeft";
-import RightData from "../../components/productComponents/dataRight";
-import DataDetailProduct from "../../components/productComponents/dataDetailProduct";
-import StackBar from "../../components/StackBar";
-import DataRatingProduct from "../../components/productComponents/dataRating";
-import ProductPageSkeleton from "../../components/skeletons/productPageSkeleton";
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import useToastQueue from '../../hooks/useToastQueue';
+import useIsWindow from '../../hooks/useIsWindow';
+import LeftData from '../../components/productComponents/dataLeft';
+import RightData from '../../components/productComponents/dataRight';
+import DataDetailProduct from '../../components/productComponents/dataDetailProduct';
+import StackBar from '../../components/StackBar';
+import DataRatingProduct from '../../components/productComponents/dataRating';
+import ProductPageSkeleton from '../../components/skeletons/productPageSkeleton';
 import {
   useGetOneProductQuery,
   useIsLikedProductQuery,
-} from "../../features/api/productQuery";
+} from '../../features/api/productQuery';
 
 function ProductPage() {
-  const isPhone = useIsWindow("(max-width: 768px)");
-  const isIPad = useIsWindow("(min-width: 769px) and (max-width: 1024px)");
+  const isPhone = useIsWindow('(max-width: 768px)');
+  const isIPad = useIsWindow('(min-width: 769px) and (max-width: 1024px)');
 
   // sử dụng useSelector để lấy thông tin người dùng
   const user = useSelector((state) => state.auth.currentUser);
@@ -36,7 +36,7 @@ function ProductPage() {
     {
       skip: !product?.id,
       refetchOnMountOrArgChange: true,
-    },
+    }
   );
 
   // Sử dụng useToastQueue để hiển thị thông báo
@@ -63,7 +63,7 @@ function ProductPage() {
   return (
     <div className="w-full bg-backgroundGrayColor h-auto">
       {/* Toast Queue để hiển thị thông báo thành công*/}
-      <StackBar toasts={toasts} width={"300px"} height={"80px"} />
+      <StackBar toasts={toasts} width={'300px'} />
       {isLoadingProduct || isLoadingLiked || isFetchingProduct ? (
         <ProductPageSkeleton />
       ) : (
@@ -94,7 +94,7 @@ function ProductPage() {
           {product && (
             <div
               className={`max-w-[1200px] w-full mx-auto p-2 md:p-4 flex bg-white rounded-sm gap-3 md:gap-6 lg:gap-[36px] h-auto 
-                  ${isPhone ? "flex-col" : ""}`}
+                  ${isPhone ? 'flex-col' : ''}`}
             >
               {/* Nữa bên trái chứa hình ảnh, chia sẻ, lượt thích */}
               <LeftData

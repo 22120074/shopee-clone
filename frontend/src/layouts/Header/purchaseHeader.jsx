@@ -1,58 +1,58 @@
-import "../../css/header.css";
-import { useSelector } from "react-redux";
-import useToastQueue from "../../hooks/useToastQueue";
-import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { userImageUrlFormat } from "../../utils/stringFormat";
-import useIsWindow from "../../hooks/useIsWindow";
-import StackBar from "../../components/StackBar";
-import { useLogoutMutation } from "../../features/api/authQuery";
-import { useCheckShopQuery } from "../../features/api/shopQuery";
-import NotificationDropdown from "../../components/dropdownComponents/notificationDropdown";
+import '../../css/header.css';
+import { useSelector } from 'react-redux';
+import useToastQueue from '../../hooks/useToastQueue';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { userImageUrlFormat } from '../../utils/stringFormat';
+import useIsWindow from '../../hooks/useIsWindow';
+import StackBar from '../../components/StackBar';
+import { useLogoutMutation } from '../../features/api/authQuery';
+import { useCheckShopQuery } from '../../features/api/shopQuery';
+import NotificationDropdown from '../../components/dropdownComponents/notificationDropdown';
 
 export default function PurchaseHeader() {
-  const isDesktop = useIsWindow("(min-width: 1024px)");
+  const isDesktop = useIsWindow('(min-width: 1024px)');
   const location = useLocation();
   const { toasts, addToast } = useToastQueue(3, 1500);
 
   const nameUrl =
-    location.pathname === "/purchase"
-      ? "thanh toán"
-      : location.pathname === "/purchase/vnpay_return"
-        ? "kết quả thanh toán"
-        : "";
+    location.pathname === '/purchase'
+      ? 'thanh toán'
+      : location.pathname === '/purchase/vnpay_return'
+        ? 'kết quả thanh toán'
+        : '';
 
   // Lấy thông tin người dùng từ Redux store
   const user = useSelector((state) => state.auth.currentUser);
-  const isSticky = useLocation().pathname === "/";
+  const isSticky = useLocation().pathname === '/';
 
   // dùng useState để quản lí animation
-  const [openUserDropdown, setOpenUserDropdown] = useState("closed");
+  const [openUserDropdown, setOpenUserDropdown] = useState('closed');
   const [openNotificationDropdown, setOpenNotificationDropdown] =
-    useState("closed");
+    useState('closed');
 
   const [logout] = useLogoutMutation();
   const { refetch: checkShop } = useCheckShopQuery(
     user?.userId || user?.googleID,
     {
       skip: !user,
-    },
+    }
   );
 
   const handleLogout = async () => {
     try {
       await logout().unwrap();
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
     }
   };
 
   // dùng useEffect để quản lí đóng mở dropdown
   useEffect(() => {
     let timer;
-    if (openUserDropdown === "close") {
+    if (openUserDropdown === 'close') {
       timer = setTimeout(() => {
-        setOpenUserDropdown("closed");
+        setOpenUserDropdown('closed');
       }, 200);
     }
     return () => clearTimeout(timer);
@@ -60,9 +60,9 @@ export default function PurchaseHeader() {
 
   useEffect(() => {
     let timer;
-    if (openNotificationDropdown === "close") {
+    if (openNotificationDropdown === 'close') {
       timer = setTimeout(() => {
-        setOpenNotificationDropdown("closed");
+        setOpenNotificationDropdown('closed');
       }, 200);
     }
     return () => clearTimeout(timer);
@@ -70,8 +70,8 @@ export default function PurchaseHeader() {
 
   // Dùng useEffect để fix lỗi tự open dropdown khi từ /cart quay về trang chủ
   useEffect(() => {
-    setOpenUserDropdown("closed");
-    setOpenNotificationDropdown("closed");
+    setOpenUserDropdown('closed');
+    setOpenNotificationDropdown('closed');
   }, [location.pathname]);
 
   const navigateShop = async (e) => {
@@ -80,22 +80,22 @@ export default function PurchaseHeader() {
     try {
       const shop = await checkShop();
       if (shop) {
-        window.open("/shop/dashboard", "_blank");
+        window.open('/shop/dashboard', '_blank');
       } else {
-        window.open("/shop/register", "_blank");
+        window.open('/shop/register', '_blank');
       }
     } catch (error) {
-      console.error("Lỗi kiểm tra shop:", error);
-      addToast("Vui lòng đăng nhập để tiếp tục.", "error", "warning");
+      console.error('Lỗi kiểm tra shop:', error);
+      addToast('Vui lòng đăng nhập để tiếp tục.', 'error', 'warning');
     }
   };
 
   return (
     <header
-      className={`${isSticky ? "sticky top-0 z-[30]" : "relative"} Web-header
+      className={`${isSticky ? 'sticky top-0 z-[30]' : 'relative'} Web-header
        flex flex-col bg-primaryColor min-w-0 w-full lg:h-[140px]`}
     >
-      <StackBar toasts={toasts} width={"300px"} height={"100px"} />
+      <StackBar toasts={toasts} width={'300px'} />
       {/* Phần 1 của Navbar */}
       <div
         className={`navbar flex items-center justify-between pl-4 lg:pl-0 py-2 lg:py-0 w-full
@@ -146,10 +146,10 @@ export default function PurchaseHeader() {
           <li
             className="notification_dropdown_wrapper lg:text-sm text-xl text-white relative mx-[6px]"
             onMouseEnter={
-              isDesktop ? () => setOpenNotificationDropdown("open") : undefined
+              isDesktop ? () => setOpenNotificationDropdown('open') : undefined
             }
             onMouseLeave={
-              isDesktop ? () => setOpenNotificationDropdown("close") : undefined
+              isDesktop ? () => setOpenNotificationDropdown('close') : undefined
             }
           >
             <i className="lg:top-[calc(50%-6px)] top-[calc(50%-9px)] fa-regular fa-bell absolute left-[-18px]"></i>
@@ -183,10 +183,10 @@ export default function PurchaseHeader() {
                   <li
                     className="user_wrapper pr-[9px] relative"
                     onMouseEnter={
-                      isDesktop ? () => setOpenUserDropdown("open") : undefined
+                      isDesktop ? () => setOpenUserDropdown('open') : undefined
                     }
                     onMouseLeave={
-                      isDesktop ? () => setOpenUserDropdown("close") : undefined
+                      isDesktop ? () => setOpenUserDropdown('close') : undefined
                     }
                   >
                     <Link to="/user/orders">
@@ -195,7 +195,7 @@ export default function PurchaseHeader() {
                           <img
                             src={
                               userImageUrlFormat(user.avatarUrl) ||
-                              "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
+                              'https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg'
                             }
                             alt="avatar"
                             className="user_avatar w-8 h-8 object-cover"
