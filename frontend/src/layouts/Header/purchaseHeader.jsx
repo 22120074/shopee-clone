@@ -1,7 +1,7 @@
 import '../../css/header.css';
 import { useSelector } from 'react-redux';
 import useToastQueue from '../../hooks/useToastQueue';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { userImageUrlFormat } from '../../utils/stringFormat';
 import useIsWindow from '../../hooks/useIsWindow';
@@ -9,8 +9,11 @@ import StackBar from '../../components/StackBar';
 import { useLogoutMutation } from '../../features/api/authQuery';
 import { useCheckShopQuery } from '../../features/api/shopQuery';
 import NotificationDropdown from '../../components/dropdownComponents/notificationDropdown';
+import { useGetUnreadCountQuery } from '../../features/api/notificationQuery';
+import clsx from 'clsx';
 
 export default function PurchaseHeader() {
+  const navigate = useNavigate();
   const isDesktop = useIsWindow('(min-width: 1024px)');
   const location = useLocation();
   const { toasts, addToast } = useToastQueue(3, 1500);
@@ -24,6 +27,12 @@ export default function PurchaseHeader() {
 
   // Lấy thông tin người dùng từ Redux store
   const user = useSelector((state) => state.auth.currentUser);
+  const unreadCount = useSelector((state) => state.notification.unreadCount);
+
+  useGetUnreadCountQuery(undefined, {
+    skip: !user,
+  });
+
   const isSticky = useLocation().pathname === '/';
 
   // dùng useState để quản lí animation
@@ -151,9 +160,26 @@ export default function PurchaseHeader() {
             onMouseLeave={
               isDesktop ? () => setOpenNotificationDropdown('close') : undefined
             }
+            onClick={() => {
+              if (!isDesktop) {
+                navigate('/user/notifications/orders');
+              }
+            }}
           >
             <i className="lg:top-[calc(50%-6px)] top-[calc(50%-9px)] fa-regular fa-bell absolute left-[-18px]"></i>
             <span className="hidden lg:inline-block">Thông Báo</span>
+            {unreadCount > 0 && (
+              <span
+                className={clsx(
+                  'absolute  text-primaryTextColor text-xs rounded-full w-4 h-4',
+                  'flex items-center justify-center bg-white border border-primaryColor font-medium',
+                  unreadCount >= 10 && 'w-5 h-5',
+                  'lg:top-[-4px] lg:left-[calc(0%-14px)] top-[-15px] left-[-12px]'
+                )}
+              >
+                {unreadCount}
+              </span>
+            )}
             <NotificationDropdown
               openNotificationDropdown={openNotificationDropdown}
             />
@@ -188,10 +214,20 @@ export default function PurchaseHeader() {
                     onMouseLeave={
                       isDesktop ? () => setOpenUserDropdown('close') : undefined
                     }
+                    onClick={() => {
+                      if (!isDesktop) {
+                        setOpenUserDropdown(
+                          openUserDropdown === 'open' ? 'close' : 'open'
+                        );
+                      }
+                    }}
                   >
-                    <Link to="/user/orders">
+                    <Link
+                      to="/user/orders"
+                      className="pointer-events-none lg:pointer-events-auto"
+                    >
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+                        <div className="w-8 h-8 rounded-full overflow-hidden mr-2 flex-shrink-0 select-none">
                           <img
                             src={
                               userImageUrlFormat(user.avatarUrl) ||
@@ -201,7 +237,7 @@ export default function PurchaseHeader() {
                             className="user_avatar w-8 h-8 object-cover"
                           />
                         </div>
-                        <div className="max-w-[100px] overflow-hidden">
+                        <div className="hidden md:block flex-shrink-0 whitespace-nowrap">
                           {user.displayName ||
                             user.name ||
                             user.phone ||
@@ -211,7 +247,7 @@ export default function PurchaseHeader() {
                     </Link>
                     {/* Dropdown menu người dùng*/}
                     <div
-                      className={`user_dropdown w-auto min-w-max absolute ${openUserDropdown}`}
+                      className={`user_dropdown w-auto min-w-max absolute select-none ${openUserDropdown}`}
                     >
                       <ul className="flex flex-col text-black">
                         <li className="user_dropdown-item hover:bg-gray-100 hover:text-hoverTextColorHeader">

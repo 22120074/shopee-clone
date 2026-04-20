@@ -1,22 +1,22 @@
-import "../../css/header.css";
-import clsx from "clsx";
-import { useDispatch, useSelector } from "react-redux";
-import useToastQueue from "../../hooks/useToastQueue";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { userImageUrlFormat } from "../../utils/stringFormat";
-import { clearAllItem } from "../../features/cart/cartSlice";
-import emptyCart from "../../assets/Empty-bro.svg";
-import PrimaryButton from "../../components/buttons/Button";
-import useIsWindow from "../../hooks/useIsWindow";
-import StackBar from "../../components/StackBar";
-import { useLogoutMutation } from "../../features/api/authQuery";
-import { useCheckShopQuery } from "../../features/api/shopQuery";
-import { useGetUnreadCountQuery } from "../../features/api/notificationQuery";
-import NotificationDropdown from "../../components/dropdownComponents/notificationDropdown";
+import '../../css/header.css';
+import clsx from 'clsx';
+import { useDispatch, useSelector } from 'react-redux';
+import useToastQueue from '../../hooks/useToastQueue';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { userImageUrlFormat } from '../../utils/stringFormat';
+import { clearAllItem } from '../../features/cart/cartSlice';
+import emptyCart from '../../assets/Empty-bro.svg';
+import PrimaryButton from '../../components/buttons/Button';
+import useIsWindow from '../../hooks/useIsWindow';
+import StackBar from '../../components/StackBar';
+import { useLogoutMutation } from '../../features/api/authQuery';
+import { useCheckShopQuery } from '../../features/api/shopQuery';
+import { useGetUnreadCountQuery } from '../../features/api/notificationQuery';
+import NotificationDropdown from '../../components/dropdownComponents/notificationDropdown';
 
 function Header() {
-  const isDesktop = useIsWindow("(min-width: 1024px)");
+  const isDesktop = useIsWindow('(min-width: 1024px)');
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,20 +24,20 @@ function Header() {
 
   // Lấy thông tin người dùng từ Redux store
   const user = useSelector((state) => state.auth.currentUser);
-  const isSticky = useLocation().pathname === "/";
+  const isSticky = useLocation().pathname === '/';
 
   // Lấy thông tin giỏ hàng từ Redux store
   const items = useSelector((state) => state.cart.items);
   const unreadCount = useSelector((state) => state.notification.unreadCount);
 
   // Lấy thông tin location từ URL
-  const urlPath = location.pathname === "/cart" ? "cart" : "";
+  const urlPath = location.pathname === '/cart' ? 'cart' : '';
 
   // dùng useState để quản lí animation
-  const [openUserDropdown, setOpenUserDropdown] = useState("closed");
+  const [openUserDropdown, setOpenUserDropdown] = useState('closed');
   const [openNotificationDropdown, setOpenNotificationDropdown] =
-    useState("closed");
-  const [openCartDropdown, setOpenCartDropdown] = useState("closed");
+    useState('closed');
+  const [openCartDropdown, setOpenCartDropdown] = useState('closed');
 
   useGetUnreadCountQuery(undefined, {
     skip: !user,
@@ -48,7 +48,7 @@ function Header() {
     user?.userId || user?.googleID,
     {
       skip: !user,
-    },
+    }
   );
 
   const handleLogout = async () => {
@@ -56,16 +56,16 @@ function Header() {
       await logout().unwrap();
       dispatch(clearAllItem());
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
     }
   };
 
   // dùng useEffect để quản lí đóng mở dropdown
   useEffect(() => {
     let timer;
-    if (openUserDropdown === "close") {
+    if (openUserDropdown === 'close') {
       timer = setTimeout(() => {
-        setOpenUserDropdown("closed");
+        setOpenUserDropdown('closed');
       }, 200);
     }
     return () => clearTimeout(timer);
@@ -73,9 +73,9 @@ function Header() {
 
   useEffect(() => {
     let timer;
-    if (openCartDropdown === "close") {
+    if (openCartDropdown === 'close') {
       timer = setTimeout(() => {
-        setOpenCartDropdown("closed");
+        setOpenCartDropdown('closed');
       }, 200);
     }
     return () => clearTimeout(timer);
@@ -83,9 +83,9 @@ function Header() {
 
   useEffect(() => {
     let timer;
-    if (openNotificationDropdown === "close") {
+    if (openNotificationDropdown === 'close') {
       timer = setTimeout(() => {
-        setOpenNotificationDropdown("closed");
+        setOpenNotificationDropdown('closed');
       }, 200);
     }
     return () => clearTimeout(timer);
@@ -93,9 +93,9 @@ function Header() {
 
   // Dùng useEffect để fix lỗi tự open dropdown khi từ /cart quay về trang chủ
   useEffect(() => {
-    setOpenCartDropdown("closed");
-    setOpenUserDropdown("closed");
-    setOpenNotificationDropdown("closed");
+    setOpenCartDropdown('closed');
+    setOpenUserDropdown('closed');
+    setOpenNotificationDropdown('closed');
   }, [location.pathname]);
 
   const navigateShop = async (e) => {
@@ -104,26 +104,26 @@ function Header() {
     try {
       const shop = await checkShop().unwrap();
       if (shop) {
-        window.open("/shop/dashboard", "_blank");
+        window.open('/shop/dashboard', '_blank');
       } else {
-        window.open("/shop/register", "_blank");
+        window.open('/shop/register', '_blank');
       }
     } catch (error) {
-      console.error("Lỗi kiểm tra shop:", error);
-      addToast("Vui lòng đăng nhập để tiếp tục.", "error", "warning");
+      console.error('Lỗi kiểm tra shop:', error);
+      addToast('Vui lòng đăng nhập để tiếp tục.', 'error', 'warning');
     }
   };
 
   return (
     <header
-      className={`${isSticky ? "sticky top-0 z-[30]" : "relative"} Web-header flex flex-col bg-primaryColor min-w-0 w-full
-                ${urlPath === "cart" ? "lg:h-[140px]" : "lg:h-[120px]"} h-[56px] z-50`}
+      className={`${isSticky ? 'sticky top-0 z-[30]' : 'relative'} Web-header flex flex-col bg-primaryColor min-w-0 w-full
+                ${urlPath === 'cart' ? 'lg:h-[140px]' : 'lg:h-[120px]'} h-[56px] z-50`}
     >
-      <StackBar toasts={toasts} width={"300px"} height={"100px"} />
+      <StackBar toasts={toasts} width={'300px'} />
       {/* Phần 1 của Navbar */}
       <div
         className={`navbar flex items-center justify-between pl-4 lg:pl-0 py-2 lg:py-0 w-full max-w-[1200px] mx-auto
-                ${urlPath === "cart" ? "lg:h-[56px]" : "lg:h-[32px] lg:mt-[2px]"} h-full gap-6 lg:gap-0`}
+                ${urlPath === 'cart' ? 'lg:h-[56px]' : 'lg:h-[32px] lg:mt-[2px]'} h-full gap-6 lg:gap-0`}
       >
         {/* Hỗ trợ của web */}
         <ul className="flex-row items-center hidden lg:flex">
@@ -170,20 +170,26 @@ function Header() {
           <li
             className="notification_dropdown_wrapper lg:text-sm text-xl text-white relative mx-[6px]"
             onMouseEnter={
-              isDesktop ? () => setOpenNotificationDropdown("open") : undefined
+              isDesktop ? () => setOpenNotificationDropdown('open') : undefined
             }
             onMouseLeave={
-              isDesktop ? () => setOpenNotificationDropdown("close") : undefined
+              isDesktop ? () => setOpenNotificationDropdown('close') : undefined
             }
+            onClick={() => {
+              if (!isDesktop) {
+                navigate('/user/notifications/orders');
+              }
+            }}
           >
             <i className="lg:top-[calc(50%-6px)] top-[calc(50%-9px)] fa-regular fa-bell absolute left-[-18px]"></i>
             <span className="hidden lg:inline-block">Thông Báo</span>
             {unreadCount > 0 && (
               <span
                 className={clsx(
-                  "absolute top-[-4px] left-[calc(0%-14px)] text-primaryTextColor text-xs rounded-full w-4 h-4",
-                  "flex items-center justify-center bg-white border border-primaryColor font-medium",
-                  unreadCount >= 10 && "w-5 h-5",
+                  'absolute  text-primaryTextColor text-xs rounded-full w-4 h-4',
+                  'flex items-center justify-center bg-white border border-primaryColor font-medium',
+                  unreadCount >= 10 && 'w-5 h-5',
+                  'lg:top-[-4px] lg:left-[calc(0%-14px)] top-[-15px] left-[-12px]'
                 )}
               >
                 {unreadCount}
@@ -218,25 +224,35 @@ function Header() {
                   <li
                     className="user_wrapper pr-[9px] relative"
                     onMouseEnter={
-                      isDesktop ? () => setOpenUserDropdown("open") : undefined
+                      isDesktop ? () => setOpenUserDropdown('open') : undefined
                     }
                     onMouseLeave={
-                      isDesktop ? () => setOpenUserDropdown("close") : undefined
+                      isDesktop ? () => setOpenUserDropdown('close') : undefined
                     }
+                    onClick={() => {
+                      if (!isDesktop) {
+                        setOpenUserDropdown(
+                          openUserDropdown === 'open' ? 'close' : 'open'
+                        );
+                      }
+                    }}
                   >
-                    <Link to="/user/orders">
+                    <Link
+                      to="/user/orders"
+                      className="pointer-events-none lg:pointer-events-auto"
+                    >
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+                        <div className="w-8 h-8 rounded-full overflow-hidden mr-2 flex-shrink-0 select-none">
                           <img
                             src={
                               userImageUrlFormat(user.avatarUrl) ||
-                              "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
+                              'https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg'
                             }
                             alt="avatar"
                             className="user_avatar w-8 h-8 object-cover"
                           />
                         </div>
-                        <div className="max-w-[100px] overflow-hidden">
+                        <div className="hidden md:block flex-shrink-0 whitespace-nowrap">
                           {user.displayName ||
                             user.name ||
                             user.phone ||
@@ -246,7 +262,7 @@ function Header() {
                     </Link>
                     {/* Dropdown menu người dùng*/}
                     <div
-                      className={`user_dropdown w-auto min-w-max absolute ${openUserDropdown}`}
+                      className={`user_dropdown w-auto min-w-max absolute select-none ${openUserDropdown}`}
                     >
                       <ul className="flex flex-col text-black">
                         <li className="user_dropdown-item hover:bg-gray-100 hover:text-hoverTextColorHeader">
@@ -283,7 +299,7 @@ function Header() {
         </ul>
       </div>
       {/* Phần 2 của Navbar */}
-      {urlPath === "cart" ? (
+      {urlPath === 'cart' ? (
         <div className="hidden lg:block bg-white w-full h-full border-b border-gray-200">
           <div className="flex items-center justify-between h-full mx-auto max-w-[1200px]">
             {/* Phần Logo */}
@@ -379,8 +395,8 @@ function Header() {
           {/* Phần giỏ hàng */}
           <div
             className="navbar_cart relative"
-            onMouseEnter={() => setOpenCartDropdown("open")}
-            onMouseLeave={() => setOpenCartDropdown("close")}
+            onMouseEnter={() => setOpenCartDropdown('open')}
+            onMouseLeave={() => setOpenCartDropdown('close')}
           >
             <Link
               to="/cart"
@@ -394,7 +410,7 @@ function Header() {
             {/* Layout sản phẩm trong giỏ hàng */}
             <div
               className={`cart_dropdown absolute bg-white shadow-lg rounded-sm w-[400px] z-40
-                            ${items.length === 0 ? "h-[300px]" : "h-auto"}
+                            ${items.length === 0 ? 'h-[300px]' : 'h-auto'}
                             ${openCartDropdown}`}
             >
               {/* Nội dung giỏ hàng */}
@@ -425,11 +441,11 @@ function Header() {
                           <div
                             className=""
                             style={{
-                              width: "36px",
-                              height: "36px",
+                              width: '36px',
+                              height: '36px',
                               backgroundImage: `url(${item.selectedAttributes.attribute.imageUrl || item.imageUrl})`,
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
+                              backgroundSize: 'cover',
+                              backgroundPosition: 'center',
                             }}
                           ></div>
                           <p className="text-[14px] leading-5 max-w-[250px] line-clamp-1">
@@ -441,14 +457,14 @@ function Header() {
                           {(
                             item.selectedAttributes.attribute.price *
                             ((100 - item.discount) / 100)
-                          ).toLocaleString("vi-VN")}
+                          ).toLocaleString('vi-VN')}
                         </div>
                       </li>
                     ))}
                   </ul>
                   <div
                     className={`flex flex-row items-center w-full mt-5 order-last
-                                            ${items.length > 5 ? "justify-between" : "justify-end"}`}
+                                            ${items.length > 5 ? 'justify-between' : 'justify-end'}`}
                   >
                     {items.length > 5 && (
                       <p className="text-xs text-gray-400 text-center capitalize">
@@ -459,7 +475,7 @@ function Header() {
                       height="36px"
                       width="136px"
                       text="Xem Giỏ Hàng"
-                      onClick={() => navigate("/cart")}
+                      onClick={() => navigate('/cart')}
                       type="button"
                     />
                   </div>
