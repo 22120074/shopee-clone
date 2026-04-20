@@ -1,6 +1,7 @@
-import NormalButton from "../buttons/NormalButton";
-import PrimaryButton from "../buttons/Button";
-import Spinner from "../skeletons/spinnerButton";
+import NormalButton from '../buttons/NormalButton';
+import PrimaryButton from '../buttons/Button';
+import Spinner from '../skeletons/spinnerButton';
+import clsx from 'clsx';
 
 export default function PurchaseSelection({
   paymentMethod,
@@ -11,7 +12,7 @@ export default function PurchaseSelection({
   return (
     <div className="bg-white p-6 mt-4 max-w-[1200px] mx-auto border-b border-dashed border-grayTextColor/30">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 md:gap-8 flex-wrap">
           <span className="capitalize text-sm font-normal text-grayTextColor">
             Phương thức thanh toán
           </span>
@@ -24,7 +25,7 @@ export default function PurchaseSelection({
               height="36px"
               className="!text-base !relative"
             >
-              {paymentMethod === "vnpay" && (
+              {paymentMethod === 'vnpay' && (
                 <div
                   className="absolute bottom-0 right-0 w-0 h-0 border-b-[14px] border-l-[14px] 
                 border-b-primaryColor border-l-transparent"
@@ -41,7 +42,7 @@ export default function PurchaseSelection({
               height="36px"
               className="!text-base !relative"
             >
-              {paymentMethod === "cod" && (
+              {paymentMethod === 'cod' && (
                 <div
                   className="absolute bottom-0 right-0 w-0 h-0 border-b-[14px] border-l-[14px] 
                 border-b-primaryColor border-l-transparent"
@@ -53,9 +54,14 @@ export default function PurchaseSelection({
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-between mt-12 pt-8 border-t border-gray-100">
+      <div
+        className={clsx(
+          'flex items-center md:justify-between flex-wrap gap-2 justify-end',
+          'mt-4 md:mt-12 pt-4 md:pt-8 border-t border-gray-100'
+        )}
+      >
         <div className="text-sm text-grayTextColor font-normal">
-          Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo{" "}
+          Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo{' '}
           <span className="text-hoverTextColorHeader cursor-pointer hover:underline">
             Điều khoản
           </span>
@@ -68,13 +74,13 @@ export default function PurchaseSelection({
         >
           <div
             className={`absolute top-0 left-0 w-full h-full flex items-center justify-center
-              ${isOrdering ? "bg-white/50" : "hidden"}`}
+              ${isOrdering ? 'bg-white/50' : 'hidden'}`}
           >
             <Spinner
-              size={"30px"}
-              stroke={"5px"}
-              _hidden={isOrdering ? "" : "hidden"}
-              color={"white"}
+              size={'30px'}
+              stroke={'5px'}
+              _hidden={isOrdering ? '' : 'hidden'}
+              color={'white'}
             />
           </div>
         </PrimaryButton>

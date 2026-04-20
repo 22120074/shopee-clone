@@ -5,8 +5,8 @@ function ProductList({ cartItems, addToast, isPhone }) {
       className={`bg-white h-auto max-w-[1200px] mx-auto items-center
     ${
       isPhone
-        ? "w-full flex h-full pl-2 pr-3 py-3 gap-3"
-        : "grid [grid-template-columns:1fr_150px_150px_150px] px-10"
+        ? 'w-full flex h-auto pl-2 pr-3 py-3 gap-3'
+        : 'grid [grid-template-columns:1fr_150px_150px_150px] px-10'
     }`}
     >
       {isPhone ? (
@@ -15,59 +15,69 @@ function ProductList({ cartItems, addToast, isPhone }) {
           <div
             className="flex-shrink-0 rounded-sm"
             style={{
-              width: "80px",
-              height: "80px",
+              width: '80px',
+              height: '80px',
               backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }}
           ></div>
-          {/* Tên sản phẩm, phân loại sản phẩm, ( giá tiền, điều chỉnh số lượng ) */}
-          <div className="flex-1 flex flex-col items-start h-[80px] justify-between">
-            <div className="relative flex items-start w-full justify-between">
-              <div className="w-[180px] line-clamp-1 text-sm font-normal text-start">
+          {/* Nội dung */}
+          <div className="w-full flex flex-col items-start justify-start gap-4">
+            {/* Tên sản phẩm, phân loại sản phẩm*/}
+            <div className="relative flex flex-col items-start w-full justify-start">
+              <div className="w-full line-clamp-1 text-sm font-normal text-start">
                 {attribute.name}
               </div>
-              <div className="absolute w-auto top-4 left-0">
-                <div
-                  className="inline-flex text-sm capitalize text-moregrayTextColor 
-                  font-medium items-center gap-2 bg-lessgrayColor px-1 rounded-sm"
-                >
-                  <div className="text-xs capitalize text-grayTextColor w-auto whitespace-normal">
-                    {attribute.selectedAttributes.color}
-                    {attribute.selectedAttributes.size !== null ? ", " : ""}
-                    {attribute.selectedAttributes.size}
-                  </div>
+              <div className="relative flex gap-1 text-grayTextColor flex-wrap">
+                <div className="text-sm capitalize text-inherit">
+                  phân loại:
+                </div>
+                <div className="text-sm capitalize text-inherit w-auto whitespace-normal">
+                  {attribute.selectedAttributes.color}
+                  {attribute.selectedAttributes.size !== null ? ', ' : ''}
+                  {attribute.selectedAttributes.size}
                 </div>
               </div>
             </div>
-            <div className="flex items-end w-full justify-between">
-              <div className="flex items-center justify-start text-sm font-normal gap-1 mt-5">
-                <div className="whitespace-nowrap text-primaryTextColor font-medium">
-                  <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                  {(
-                    (attribute.selectedAttributes.attribute.price *
-                      (100 - (attribute.discount || 0))) /
-                    100
-                  ).toLocaleString("vi-VN")}
-                </div>
-                {attribute.discount > 0 && (
-                  <div className="relative text-[#929292] whitespace-nowrap">
-                    <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
-                    {attribute.selectedAttributes.attribute.price.toLocaleString(
-                      "vi-VN",
-                    )}
-                    <div className="absolute top-[50%] right-0 w-full h-[1px] bg-[#929292]"></div>
+            {/* Giá tiền & số lượng & thành tiền */}
+            <div className="flex items-start w-full justify-between">
+              {/* Đơn giá & số lượng */}
+              <div className="flex items-center justify-center gap-2">
+                {/* Đơn giá */}
+                <div className="flex justify-center items-center font-normal gap-2">
+                  {attribute.discount > 0 && (
+                    <div className="relative text-grayTextColor whitespace-nowrap">
+                      {attribute.selectedAttributes.attribute.price.toLocaleString(
+                        'vi-VN'
+                      )}
+                      <i className="fa-solid fa-dong-sign text-grayTextColor text-[10px] relative top-[-4px]"></i>
+                      <div className="absolute top-[50%] bg-grayTextColor right-0 w-full h-[1px]"></div>
+                    </div>
+                  )}
+                  <div className="whitespace-nowrap font-medium text-primaryTextColor">
+                    {(
+                      (attribute.selectedAttributes.attribute.price *
+                        (100 - (attribute.discount || 0))) /
+                      100
+                    ).toLocaleString('vi-VN')}
+                    <i className="fa-solid fa-dong-sign text-primaryTextColor text-[10px] relative top-[-4px]"></i>
                   </div>
-                )}
+                </div>
+                {/* Số lượng */}
+                <div className="flex justify-center items-center text-inherit">
+                  x{attribute.quantity}
+                </div>
               </div>
-              <div className="flex justify-end items-center h-4 text-inherit w-full rounded-sm overflow-hidden text-sm">
-                <div
-                  className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
-                    [&::-webkit-outer-spin-button]:appearance-none 
-                    [&::-webkit-inner-spin-button]:appearance-none
-                    focus:outline-none bg-transparent border-y border-[#CCCCCC]`}
-                ></div>
+              {/* Thành tiền */}
+              <div className="whitespace-nowrap font-medium text-primaryTextColor">
+                {(
+                  attribute.quantity *
+                  ((attribute.selectedAttributes.attribute.price *
+                    (100 - (attribute.discount || 0))) /
+                    100)
+                ).toLocaleString('vi-VN')}
+                <i className="fa-solid fa-dong-sign text-primaryTextColor text-[10px] relative top-[-4px]"></i>
               </div>
             </div>
           </div>
@@ -82,11 +92,11 @@ function ProductList({ cartItems, addToast, isPhone }) {
               <div
                 className="rounded-sm"
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: '40px',
+                  height: '40px',
                   backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
                 }}
               ></div>
               {/* Tên sản phẩm */}
@@ -101,7 +111,7 @@ function ProductList({ cartItems, addToast, isPhone }) {
               <div className="text-sm capitalize text-inherit">phân loại:</div>
               <div className="text-sm capitalize text-inherit w-auto whitespace-normal">
                 {attribute.selectedAttributes.color}
-                {attribute.selectedAttributes.size !== null ? ", " : ""}
+                {attribute.selectedAttributes.size !== null ? ', ' : ''}
                 {attribute.selectedAttributes.size}
               </div>
             </div>
@@ -114,13 +124,13 @@ function ProductList({ cartItems, addToast, isPhone }) {
                 (attribute.selectedAttributes.attribute.price *
                   (100 - (attribute.discount || 0))) /
                 100
-              ).toLocaleString("vi-VN")}
+              ).toLocaleString('vi-VN')}
               <i className="fa-solid fa-dong-sign text-grayTextColor text-[10px] relative top-[-4px]"></i>
             </div>
             {attribute.discount > 0 && (
               <div className="relative text-grayTextColor whitespace-nowrap text-xs">
                 {attribute.selectedAttributes.attribute.price.toLocaleString(
-                  "vi-VN",
+                  'vi-VN'
                 )}
                 <i className="fa-solid fa-dong-sign text-grayTextColor text-[10px] relative top-[-4px]"></i>
                 <div className="absolute top-[50%] bg-grayTextColor right-0 w-full h-[1px]"></div>
@@ -142,7 +152,7 @@ function ProductList({ cartItems, addToast, isPhone }) {
               ((attribute.selectedAttributes.attribute.price *
                 (100 - (attribute.discount || 0))) /
                 100)
-            ).toLocaleString("vi-VN")}
+            ).toLocaleString('vi-VN')}
             <i className="fa-solid fa-dong-sign text-[10px] text-grayTextColor relative top-[7px] right-[1px]"></i>
           </div>
         </>

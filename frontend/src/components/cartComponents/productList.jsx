@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from "react";
-import { updateQuantityItem, removeItem } from "../../features/cart/cartSlice";
-import { useDispatch } from "react-redux";
-import DetailProductDropDown from "../../components/cartComponents/detailProductDropDown";
+import { useState, useRef, useEffect } from 'react';
+import { updateQuantityItem, removeItem } from '../../features/cart/cartSlice';
+import { useDispatch } from 'react-redux';
+import DetailProductDropDown from '../../components/cartComponents/detailProductDropDown';
+import clsx from 'clsx';
 
 function ProductList({
   cartItems,
@@ -17,7 +18,7 @@ function ProductList({
   const [openDropdown, setOpenDropdown] = useState(null);
   // Dùng useState để lưu trạng thái cho các input số lượng
   const [quantityInputs, setQuantityInputs] = useState(
-    cartItems.map((item) => item.quantity.toString()),
+    cartItems.map((item) => item.quantity.toString())
   );
   // Tạo ref để giữ timeout, mỗi popup một ref
   const popupIncreaseTimeout = useRef(null);
@@ -27,9 +28,9 @@ function ProductList({
   // Hàm xử lí input.onchange, xử lí input.onblur
   const handleQuantityClick = (e) => {
     const { action, id } = e.currentTarget.dataset;
-    if (action === "increase") {
+    if (action === 'increase') {
       quantityIncrease(id);
-    } else if (action === "decrease") {
+    } else if (action === 'decrease') {
       quantityDecrease(id);
     }
   };
@@ -38,7 +39,7 @@ function ProductList({
     const stock =
       cartItems[index].stock.find(
         (attr) =>
-          attr.attributeID === cartItems[index].selectedAttributes.attribute.id,
+          attr.attributeID === cartItems[index].selectedAttributes.attribute.id
       )?.quantity || 0;
 
     console.log(stock);
@@ -51,9 +52,9 @@ function ProductList({
       popupIncreaseTimeout.current = setTimeout(() => {
         // Hiển thị popup thông báo cho việc tăng số lượng quá giới hạn
         addToast(
-          "Số lượng sản phẩm đã đạt giới hạn tối đa. Không thể tăng thêm.",
-          "error",
-          "warning",
+          'Số lượng sản phẩm đã đạt giới hạn tối đa. Không thể tăng thêm.',
+          'error',
+          'warning'
         );
       }, 400);
       return;
@@ -69,14 +70,14 @@ function ProductList({
       clearTimeout(popupIncreaseTimeout.current);
 
     popupIncreaseTimeout.current = setTimeout(() => {
-      addToast("Số lượng sản phẩm đã được cập nhật.", "success", "check");
+      addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
     }, 400);
 
     dispatch(
       updateQuantityItem({
         id: cartItems[index].selectedAttributes.attribute.id,
         quantity: parseInt(quantityInputs[index]) + 1,
-      }),
+      })
     );
   };
 
@@ -87,9 +88,9 @@ function ProductList({
 
       popupDecreaseTimeout.current = setTimeout(() => {
         addToast(
-          "Số lượng sản phẩm nhỏ nhất là 1. Không thể giảm thêm.",
-          "error",
-          "warning",
+          'Số lượng sản phẩm nhỏ nhất là 1. Không thể giảm thêm.',
+          'error',
+          'warning'
         );
       }, 400);
       return;
@@ -105,14 +106,14 @@ function ProductList({
       clearTimeout(popupDecreaseTimeout.current);
 
     popupDecreaseTimeout.current = setTimeout(() => {
-      addToast("Số lượng sản phẩm đã được cập nhật.", "success", "check");
+      addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
     }, 400);
 
     dispatch(
       updateQuantityItem({
         id: cartItems[index].selectedAttributes.attribute.id,
         quantity: parseInt(quantityInputs[index]) - 1,
-      }),
+      })
     );
   };
 
@@ -131,7 +132,7 @@ function ProductList({
     const stock =
       cartItems[index].stock.find(
         (attr) =>
-          attr.attributeID === cartItems[index].selectedAttributes.attribute.id,
+          attr.attributeID === cartItems[index].selectedAttributes.attribute.id
       )?.quantity || 0;
     if (parseInt(value) > 0) {
       if (parseInt(value) > stock) {
@@ -144,12 +145,12 @@ function ProductList({
           updateQuantityItem({
             id: cartItems[index].selectedAttributes.attribute.id,
             quantity: stock,
-          }),
+          })
         );
         addToast(
-          "Số lượng sản phẩm vượt quá giới hạn trong kho. Đã tự động điều chỉnh về giá trị tối đa.",
-          "error",
-          "warning",
+          'Số lượng sản phẩm vượt quá giới hạn trong kho. Đã tự động điều chỉnh về giá trị tối đa.',
+          'error',
+          'warning'
         );
       } else {
         setQuantityInputs((prev) => {
@@ -161,9 +162,9 @@ function ProductList({
           updateQuantityItem({
             id: cartItems[index].selectedAttributes.attribute.id,
             quantity: parseInt(value),
-          }),
+          })
         );
-        addToast("Số lượng sản phẩm đã được cập nhật.", "success", "check");
+        addToast('Số lượng sản phẩm đã được cập nhật.', 'success', 'check');
       }
     }
   };
@@ -171,7 +172,7 @@ function ProductList({
   // Hàm xử lí xóa sản phẩm bằng cách gọi dispatch(removeItem(id))
   const handleRemoveItem = (id) => {
     dispatch(removeItem(id));
-    addToast("Sản phẩm đã được xóa khỏi giỏ hàng.", "success", "trash");
+    addToast('Sản phẩm đã được xóa khỏi giỏ hàng.', 'success', 'trash');
   };
 
   // Hàm xử lí Check một CheckBox
@@ -204,7 +205,7 @@ function ProductList({
                 (100 - item.discount)) /
                 100)
           );
-        }, 0),
+        }, 0)
       );
     } else {
       setIsChecked(cartItems.map(() => false));
@@ -215,18 +216,23 @@ function ProductList({
   return cartItems.map((attribute, index) => (
     <div
       key={index}
-      className={`bg-white h-auto max-w-[1200px] mx-auto border-b border-gray-200 items-center mt-4 py-3
-                w-full flex h-full pl-2 pr-3 gap-3
-                md:grid md:[grid-template-columns:1fr_100px_100px_100px_50px] md:px-2 md:gap-4
-                lg:grid lg:[grid-template-columns:1fr_1fr_1fr_1fr_1fr] lg:px-10`}
+      className={clsx(
+        'bg-white h-auto max-w-[1200px] mx-auto border-b border-gray-200 items-center mt-4 py-3',
+        'w-full flex h-full pl-2 pr-3 gap-3',
+        'md:grid md:[grid-template-columns:1fr_100px_100px_100px_50px] md:px-2 md:gap-4',
+        'lg:grid lg:[grid-template-columns:1fr_1fr_1fr_1fr_1fr] lg:px-10'
+      )}
     >
       {/* Điện thoại */}
       <>
         {/* Checkbox */}
         <input
           type="checkbox"
-          className="md:hidden flex-shrink-0 relative inline-block appearance-none w-[16px] h-[16px] border border-[#DBDBDB] 
-                            rounded-sm checked:bg-primaryColor checked:border-primaryColor"
+          className={clsx(
+            'md:hidden flex-shrink-0 relative appearance-none w-[18px] h-[18px]',
+            'border border-[#DBDBDB] rounded-sm',
+            'checked:bg-primaryColor checked:border-primaryColor'
+          )}
           checked={isChecked[index]}
           onChange={() => handleCheckboxChange(index)}
         />
@@ -234,11 +240,11 @@ function ProductList({
         <div
           className="md:hidden flex-shrink-0 rounded-sm"
           style={{
-            width: "80px",
-            height: "80px",
+            width: '80px',
+            height: '80px',
             backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
         ></div>
         {/* Tên sản phẩm, phân loại sản phẩm, ( giá tiền, điều chỉnh số lượng ) */}
@@ -249,20 +255,24 @@ function ProductList({
             </div>
             <div className="absolute w-auto top-4 left-0">
               <div
-                className="inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2
-                                        bg-lessgrayColor px-1 rounded-sm"
+                className={clsx(
+                  'inline-flex text-sm capitalize font-medium items-center gap-2',
+                  'bg-lessgrayColor text-moregrayTextColor px-1 rounded-sm'
+                )}
                 onClick={() =>
                   setOpenDropdown(openDropdown === index ? null : index)
                 }
               >
                 <div className="text-xs capitalize text-grayTextColor w-auto whitespace-normal">
                   {attribute.selectedAttributes.color}
-                  {attribute.selectedAttributes.size !== null ? ", " : ""}
+                  {attribute.selectedAttributes.size !== null ? ', ' : ''}
                   {attribute.selectedAttributes.size}
                 </div>
                 <i
-                  className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
-                                            ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                  className={clsx(
+                    'fa-solid fa-caret-down text-sm transition-transform duration-100',
+                    openDropdown === index ? 'rotate-180' : 'rotate-0'
+                  )}
                 ></i>
               </div>
               {/* Phần dropdown */}
@@ -288,13 +298,13 @@ function ProductList({
                   (attribute.selectedAttributes.attribute.price *
                     (100 - (attribute.discount || 0))) /
                   100
-                ).toLocaleString("vi-VN")}
+                ).toLocaleString('vi-VN')}
               </div>
               {attribute.discount > 0 && (
                 <div className="relative text-[#929292] whitespace-nowrap">
                   <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
                   {attribute.selectedAttributes.attribute.price.toLocaleString(
-                    "vi-VN",
+                    'vi-VN'
                   )}
                   <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
                 </div>
@@ -302,9 +312,10 @@ function ProductList({
             </div>
             <div className="flex justify-end items-center h-4 text-inherit w-full rounded-sm overflow-hidden text-sm">
               <button
-                className={`w-6 h-full flex items-center justify-center
-                                        border border-[#CCCCCC] text-xs rounded-tl-sm rounded-bl-sm
-                                        `}
+                className={clsx(
+                  'w-6 h-full flex items-center justify-center',
+                  'border border-[#CCCCCC] text-xs rounded-tl-sm rounded-bl-sm'
+                )}
                 onClick={handleQuantityClick}
                 data-action="decrease"
                 data-id={index}
@@ -320,31 +331,30 @@ function ProductList({
                 onKeyDown={(e) => {
                   if (
                     !(
-                      (e.key >= "0" && e.key <= "9") ||
+                      (e.key >= '0' && e.key <= '9') ||
                       [
-                        "Backspace",
-                        "Delete",
-                        "ArrowLeft",
-                        "ArrowRight",
-                        "Tab",
+                        'Backspace',
+                        'Delete',
+                        'ArrowLeft',
+                        'ArrowRight',
+                        'Tab',
                       ].includes(e.key)
                     )
                   ) {
                     e.preventDefault();
                   }
                 }}
-                className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
-                                        [&::-webkit-outer-spin-button]:appearance-none 
-                                        [&::-webkit-inner-spin-button]:appearance-none
-                                        focus:outline-none
-                                        bg-transparent
-                                        border-y border-[#CCCCCC]
-                                        `}
+                className={clsx(
+                  'flex-1 h-full text-center [appearance:textfield] max-w-[50px]',
+                  '[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+                  'focus:outline-none bg-transparent border-y border-[#CCCCCC]'
+                )}
               />
               <button
-                className={`w-6 h-full flex items-center justify-center
-                                        border border-[#CCCCCC] text-xs rounded-tr-sm rounded-br-sm
-                                        `}
+                className={clsx(
+                  'w-6 h-full flex items-center justify-center',
+                  'border border-[#CCCCCC] text-xs rounded-tr-sm rounded-br-sm'
+                )}
                 onClick={handleQuantityClick}
                 data-action="increase"
                 data-id={index}
@@ -361,8 +371,11 @@ function ProductList({
           {/* Checkbox */}
           <input
             type="checkbox"
-            className="flex-shrink-0 relative inline-block appearance-none w-[16px] h-[16px] border border-[#DBDBDB] 
-                            rounded-sm checked:bg-primaryColor checked:border-primaryColor"
+            className={clsx(
+              'flex-shrink-0 relative inline-block appearance-none w-[18px] h-[18px]',
+              'border border-[#DBDBDB] rounded-sm',
+              'checked:bg-primaryColor checked:border-primaryColor'
+            )}
             checked={isChecked[index]}
             onChange={() => handleCheckboxChange(index)}
           />
@@ -370,11 +383,11 @@ function ProductList({
           <div
             className="flex-shrink-0 rounded-sm"
             style={{
-              width: "80px",
-              height: "80px",
+              width: '80px',
+              height: '80px',
               backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }}
           ></div>
           {/* Tên sản phẩm, phân loại sản phẩm, ( giá tiền, điều chỉnh số lượng ) */}
@@ -384,20 +397,24 @@ function ProductList({
             </div>
             <div className="absolute w-auto top-4 left-0">
               <div
-                className="inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2
-                                        bg-lessgrayColor px-1 rounded-sm"
+                className={clsx(
+                  'inline-flex text-sm capitalize text-moregrayTextColor font-medium items-center gap-2',
+                  'bg-lessgrayColor px-1 rounded-sm'
+                )}
                 onClick={() =>
                   setOpenDropdown(openDropdown === index ? null : index)
                 }
               >
                 <div className="text-xs capitalize text-grayTextColor w-auto whitespace-normal">
                   {attribute.selectedAttributes.color}
-                  {attribute.selectedAttributes.size !== null ? ", " : ""}
+                  {attribute.selectedAttributes.size !== null ? ', ' : ''}
                   {attribute.selectedAttributes.size}
                 </div>
                 <i
-                  className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
-                                            ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                  className={clsx(
+                    'fa-solid fa-caret-down text-sm transition-transform duration-100',
+                    openDropdown === index ? 'rotate-180' : 'rotate-0'
+                  )}
                 ></i>
               </div>
               {/* Phần dropdown */}
@@ -415,7 +432,7 @@ function ProductList({
             <div className="relative text-[#929292] whitespace-nowrap">
               <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
               {attribute.selectedAttributes.attribute.price.toLocaleString(
-                "vi-VN",
+                'vi-VN'
               )}
               <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
             </div>
@@ -426,15 +443,16 @@ function ProductList({
               (attribute.selectedAttributes.attribute.price *
                 (100 - (attribute.discount || 0))) /
               100
-            ).toLocaleString("vi-VN")}
+            ).toLocaleString('vi-VN')}
           </div>
         </div>
         {/* Số lượng */}
         <div className="hidden md:flex lg:hidden justify-center items-center h-8  text-inherit w-full">
           <button
-            className={`w-[30px] h-full flex items-center justify-center
-                            border border-[#CCCCCC] text-xs
-                            `}
+            className={clsx(
+              'w-[30px] h-full flex items-center justify-center',
+              'border border-[#CCCCCC] text-xs'
+            )}
             onClick={handleQuantityClick}
             data-action="decrease"
             data-id={index}
@@ -450,31 +468,30 @@ function ProductList({
             onKeyDown={(e) => {
               if (
                 !(
-                  (e.key >= "0" && e.key <= "9") ||
+                  (e.key >= '0' && e.key <= '9') ||
                   [
-                    "Backspace",
-                    "Delete",
-                    "ArrowLeft",
-                    "ArrowRight",
-                    "Tab",
+                    'Backspace',
+                    'Delete',
+                    'ArrowLeft',
+                    'ArrowRight',
+                    'Tab',
                   ].includes(e.key)
                 )
               ) {
                 e.preventDefault();
               }
             }}
-            className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
-                            [&::-webkit-outer-spin-button]:appearance-none 
-                            [&::-webkit-inner-spin-button]:appearance-none
-                            focus:outline-none
-                            bg-transparent
-                            border-y border-[#CCCCCC]
-                            `}
+            className={clsx(
+              'flex-1 h-full text-center [appearance:textfield] max-w-[50px]',
+              '[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+              'focus:outline-none bg-transparent border-y border-[#CCCCCC]'
+            )}
           />
           <button
-            className={`w-[30px] h-full flex items-center justify-center
-                            border border-[#CCCCCC] text-xs
-                            `}
+            className={clsx(
+              'w-[30px] h-full flex items-center justify-center',
+              'border border-[#CCCCCC] text-xs'
+            )}
             onClick={handleQuantityClick}
             data-action="increase"
             data-id={index}
@@ -490,7 +507,7 @@ function ProductList({
             ((attribute.selectedAttributes.attribute.price *
               (100 - (attribute.discount || 0))) /
               100)
-          ).toLocaleString("vi-VN")}
+          ).toLocaleString('vi-VN')}
         </div>
         {/* Thao tác */}
         <button
@@ -509,8 +526,11 @@ function ProductList({
           {/* Checkbox */}
           <input
             type="checkbox"
-            className="relative appearance-none w-[18px] h-[18px] border border-[#DBDBDB] rounded-sm 
-                            checked:bg-primaryColor checked:border-primaryColor"
+            className={clsx(
+              'relative appearance-none w-[18px] h-[18px]',
+              'border border-[#DBDBDB] rounded-sm',
+              'checked:bg-primaryColor checked:border-primaryColor'
+            )}
             checked={isChecked[index]}
             onChange={() => handleCheckboxChange(index)}
           />
@@ -520,11 +540,11 @@ function ProductList({
             <div
               className="rounded-sm"
               style={{
-                width: "80px",
-                height: "80px",
+                width: '80px',
+                height: '80px',
                 backgroundImage: `url(${attribute.selectedAttributes.attribute.imageUrl || attribute.imageUrl})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
               }}
             ></div>
             {/* Tên sản phẩm */}
@@ -545,14 +565,16 @@ function ProductList({
                 }
               >
                 <i
-                  className={`fa-solid fa-caret-down text-sm transition-transform duration-100 
-                                    ${openDropdown === index ? "rotate-180" : "rotate-0"}`}
+                  className={clsx(
+                    'fa-solid fa-caret-down text-sm transition-transform duration-100',
+                    openDropdown === index ? 'rotate-180' : 'rotate-0'
+                  )}
                 ></i>
               </button>
             </div>
             <div className="text-sm capitalize text-grayTextColor w-[140px] whitespace-normal">
               {attribute.selectedAttributes.color}
-              {attribute.selectedAttributes.size !== null ? ", " : ""}
+              {attribute.selectedAttributes.size !== null ? ', ' : ''}
               {attribute.selectedAttributes.size}
             </div>
             {/* Phần dropdown */}
@@ -566,7 +588,7 @@ function ProductList({
             <div className="relative text-[#929292] whitespace-nowrap">
               <i className="fa-solid fa-dong-sign text-[10px] relative top-[-4px]"></i>
               {attribute.selectedAttributes.attribute.price.toLocaleString(
-                "vi-VN",
+                'vi-VN'
               )}
               <div className="absolute top-[50%] right-0 w-full h-[1px] bg-black"></div>
             </div>
@@ -577,15 +599,16 @@ function ProductList({
               (attribute.selectedAttributes.attribute.price *
                 (100 - (attribute.discount || 0))) /
               100
-            ).toLocaleString("vi-VN")}
+            ).toLocaleString('vi-VN')}
           </div>
         </div>
         {/* Số lượng */}
         <div className="hidden lg:flex justify-center items-center h-8  text-inherit w-full max-w-[150px]">
           <button
-            className={`w-[30px] h-full flex items-center justify-center
-                            border border-[#CCCCCC] text-xs
-                            `}
+            className={clsx(
+              'w-[30px] h-full flex items-center justify-center',
+              'border border-[#CCCCCC] text-xs'
+            )}
             onClick={handleQuantityClick}
             data-action="decrease"
             data-id={index}
@@ -601,31 +624,30 @@ function ProductList({
             onKeyDown={(e) => {
               if (
                 !(
-                  (e.key >= "0" && e.key <= "9") ||
+                  (e.key >= '0' && e.key <= '9') ||
                   [
-                    "Backspace",
-                    "Delete",
-                    "ArrowLeft",
-                    "ArrowRight",
-                    "Tab",
+                    'Backspace',
+                    'Delete',
+                    'ArrowLeft',
+                    'ArrowRight',
+                    'Tab',
                   ].includes(e.key)
                 )
               ) {
                 e.preventDefault();
               }
             }}
-            className={`flex-1 h-full text-center [appearance:textfield] max-w-[50px]
-                            [&::-webkit-outer-spin-button]:appearance-none 
-                            [&::-webkit-inner-spin-button]:appearance-none
-                            focus:outline-none
-                            bg-transparent
-                            border-y border-[#CCCCCC]
-                            `}
+            className={clsx(
+              'flex-1 h-full text-center [appearance:textfield] max-w-[50px]',
+              '[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+              'focus:outline-none bg-transparent border-y border-[#CCCCCC]'
+            )}
           />
           <button
-            className={`w-[30px] h-full flex items-center justify-center
-                            border border-[#CCCCCC] text-xs
-                            `}
+            className={clsx(
+              'w-[30px] h-full flex items-center justify-center',
+              'border border-[#CCCCCC] text-xs'
+            )}
             onClick={handleQuantityClick}
             data-action="increase"
             data-id={index}
@@ -641,7 +663,7 @@ function ProductList({
             ((attribute.selectedAttributes.attribute.price *
               (100 - (attribute.discount || 0))) /
               100)
-          ).toLocaleString("vi-VN")}
+          ).toLocaleString('vi-VN')}
         </div>
         {/* Thao tác */}
         <button
