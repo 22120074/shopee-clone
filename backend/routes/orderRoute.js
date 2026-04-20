@@ -5,6 +5,7 @@ const {
   createVNPayUrl,
   vnpayReturn,
   vnpayIpn,
+  getListOrderItemsWithDetailsController,
 } = require("../controllers/orderController");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -15,5 +16,7 @@ router.post("/create-url", protect, createVNPayUrl);
 router.get("/vnpay-return", vnpayReturn);
 // VNPAY server tự động gọi ngầm vào API này (Webhook) để báo trạng thái cập nhật DB (Không cần protect)
 router.get("/vnpay-ipn", vnpayIpn);
+
+router.get("/list", protect, getListOrderItemsWithDetailsController);
 
 module.exports = router;

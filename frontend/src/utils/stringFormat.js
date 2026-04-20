@@ -26,3 +26,16 @@ export const formatPayDate = (dateStr) => {
   const second = dateStr.substring(12, 14);
   return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
 };
+
+export const getOrderStatus = (status) => {
+  switch (status) {
+    case "PENDING":
+      return "Chờ thanh toán";
+    case "PAID":
+      return "Đã thanh toán";
+    case "FAILED":
+      return "Đã hủy";
+    default:
+      return "";
+  }
+};

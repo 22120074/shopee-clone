@@ -28,6 +28,13 @@ export const orderQuery = createApi({
         ),
       invalidatesTags: ["Order"],
     }),
+    getListOrderItemsWithDetails: builder.query({
+      queryFn: ({ statusFilter, cursor }) =>
+        handleAxiosRequestWithLoginNavigate(() =>
+          OrderService.getListOrderItemsWithDetails(statusFilter, cursor),
+        ),
+      invalidatesTags: ["Order"],
+    }),
   }),
 });
 
@@ -35,4 +42,6 @@ export const {
   useCreateOrderMutation,
   useCreateVnpayUrlMutation,
   useVnpayReturnUrlQuery,
+  useGetListOrderItemsWithDetailsQuery,
+  useLazyGetListOrderItemsWithDetailsQuery,
 } = orderQuery;

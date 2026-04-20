@@ -1,4 +1,6 @@
 const redisClient = require("../config/redisConfig");
+const mongoose = require("mongoose");
+const Shop = require("../models/Mongoose/Shop");
 const dbPostgre = require("../models/PostgreSql/index");
 const { Sequelize, Op } = require("sequelize");
 const { BadRequest, NotFound, InternalServer } = require("../utils/appErrors");
@@ -10,6 +12,7 @@ const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
 const Stock = dbPostgre.Stock;
 const Order = dbPostgre.Order;
+const ImageProduct = dbPostgre.ImageProduct;
 const OrderItem = dbPostgre.OrderItem;
 const sequelize = dbPostgre.sequelize;
 
@@ -270,10 +273,213 @@ const updateOrderStatus = async (orderId, newStatus) => {
   }
 };
 
+/**
+ * Lấy danh sách OrderItem gộp chung với status của Order, có phân trang (cursor).
+ * Dữ liệu trả về được gộp theo cụm (OrderId + ShopId).
+ * Mỗi phần tử trả về Frontend chỉ chứa sản phẩm của 1 Shop duy nhất.
+ */
+const getListOrderItemsWithDetails = async (
+  userId,
+  statusFilter = "ALL",
+  cursor = null,
+) => {
+  try {
+    const limit = 5;
+    let decodedCursor = null;
+
+    if (
+      cursor &&
+      cursor !== "0" &&
+      cursor !== "null" &&
+      cursor !== "undefined"
+    ) {
+      try {
+        const cursorStr = Buffer.from(cursor, "base64").toString("utf-8");
+        if (cursorStr) {
+          decodedCursor = JSON.parse(cursorStr);
+        }
+      } catch (err) {
+        decodedCursor = null;
+      }
+    }
+
+    const orderItemWhere = {};
+    if (decodedCursor) {
+      orderItemWhere[Op.or] = [
+        { createdAt: { [Op.lt]: new Date(decodedCursor.createdAt) } },
+        {
+          createdAt: new Date(decodedCursor.createdAt),
+          id: { [Op.lt]: decodedCursor.id },
+        },
+      ];
+    }
+
+    const orderWhere = { userId: userId };
+    if (statusFilter !== "ALL") {
+      orderWhere.status = statusFilter;
+    }
+
+    const items = await OrderItem.findAll({
+      where: orderItemWhere,
+      limit: limit + 1,
+      order: [
+        ["createdAt", "DESC"],
+        ["id", "DESC"],
+      ],
+      include: [
+        {
+          model: Order,
+          where: orderWhere,
+          attributes: ["status", "createdAt"],
+        },
+        {
+          model: Attribute,
+          attributes: {
+            exclude: ["productId", "publicId", "createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: Product,
+              attributes: ["name", "fromStore", "favorite", "discount"],
+              include: [
+                {
+                  model: ImageProduct,
+                  attributes: ["imageUrl"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const hasNextPage = items.length > limit;
+    const paginatedItems = hasNextPage ? items.slice(0, limit) : items;
+
+    let nextCursor = null;
+    if (hasNextPage) {
+      const lastItem = paginatedItems[paginatedItems.length - 1];
+      const cursorData = JSON.stringify({
+        createdAt: lastItem.createdAt,
+        id: lastItem.id,
+      });
+      nextCursor = Buffer.from(cursorData).toString("base64");
+    }
+
+    // Cache để lưu trữ thông tin shop tạm thời
+    const shopCache = {};
+
+    const formattedData = await Promise.all(
+      paginatedItems.map(async (item) => {
+        const itemJson = item.toJSON();
+        const productInfo = itemJson.Attribute.Product;
+
+        let shopData;
+        const fromStore = productInfo.fromStore;
+
+        if (shopCache[fromStore]) {
+          shopData = shopCache[fromStore];
+        } else {
+          if (
+            typeof fromStore === "string" &&
+            !mongoose.Types.ObjectId.isValid(fromStore)
+          ) {
+            shopData = await Shop.findOne({ googleID: fromStore });
+          } else {
+            shopData = await Shop.findOne({ userId: fromStore });
+          }
+          shopCache[fromStore] = shopData;
+        }
+
+        const shopName = shopData ? shopData.nameShop : "Shop không tồn tại";
+
+        let finalImageUrl = itemJson.Attribute.imageUrl;
+        if (!finalImageUrl) {
+          if (
+            productInfo.ImageProducts &&
+            productInfo.ImageProducts.length > 0
+          ) {
+            finalImageUrl = productInfo.ImageProducts[0].imageUrl;
+          }
+        }
+
+        return {
+          orderItemId: itemJson.id,
+          orderId: itemJson.orderId,
+          orderStatus: itemJson.Order.status,
+          quantity: itemJson.quantity,
+          purchasePrice: itemJson.purchasePrice,
+          createdAt: itemJson.createdAt,
+          orderCreatedAt: itemJson.Order.createdAt,
+          product: {
+            name: productInfo.name,
+            shopName: shopName,
+            shopId: fromStore,
+            favorite: productInfo.favorite,
+            discount: productInfo.discount,
+          },
+          attribute: {
+            id: itemJson.Attribute.id,
+            nameEach: itemJson.Attribute.nameEach,
+            size: itemJson.Attribute.size,
+            price: itemJson.Attribute.price,
+            imageUrl: finalImageUrl,
+          },
+        };
+      }),
+    );
+
+    // GROUPING
+    const groupedData = [];
+
+    formattedData.forEach((item) => {
+      // Tìm nhóm dựa trên sự kết hợp của OrderId VÀ ShopId
+      let group = groupedData.find(
+        (g) => g.orderId === item.orderId && g.shopId === item.product.shopId,
+      );
+
+      // Nếu chưa có nhóm (Block) cho Order này + Shop này thì tạo mới
+      if (!group) {
+        group = {
+          orderId: item.orderId,
+          orderStatus: item.orderStatus,
+          orderCreatedAt: item.orderCreatedAt,
+          shopId: item.product.shopId,
+          shopName: item.product.shopName,
+          items: [], // Chứa các OrderItems của duy nhất Shop này trong Order này
+        };
+        groupedData.push(group);
+      }
+
+      // Thêm item vào nhóm tương ứng
+      group.items.push({
+        orderItemId: item.orderItemId,
+        quantity: item.quantity,
+        purchasePrice: item.purchasePrice,
+        createdAt: item.createdAt,
+        productName: item.product.name,
+        favorite: item.product.favorite,
+        discount: item.product.discount,
+        attribute: item.attribute,
+      });
+    });
+
+    return {
+      data: groupedData,
+      pagination: {
+        hasNextPage,
+        nextCursor,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
   createMultiItemOrder,
   createPaymentUrl,
   verifyReturnUrl,
   getOrderById,
   updateOrderStatus,
+  getListOrderItemsWithDetails,
 };

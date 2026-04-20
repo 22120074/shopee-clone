@@ -4,6 +4,7 @@ const {
   verifyReturnUrl,
   getOrderById,
   updateOrderStatus,
+  getListOrderItemsWithDetails,
 } = require("../services/order.service");
 const { Success } = require("../utils/responseHelper");
 const { BadRequest } = require("../utils/appErrors");
@@ -125,5 +126,20 @@ exports.vnpayIpn = async (req, res, next) => {
   } catch (error) {
     console.error("🔥 CRITICAL ERROR in VNPAY IPN:", error);
     return res.status(200).json({ RspCode: "99", Message: "Unknown error" });
+  }
+};
+
+exports.getListOrderItemsWithDetailsController = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const { statusFilter, cursor } = req.query;
+    const result = await getListOrderItemsWithDetails(
+      userId,
+      statusFilter,
+      cursor,
+    );
+    return Success(res, result, "Lấy danh sách đơn hàng thành công!");
+  } catch (error) {
+    next(error);
   }
 };

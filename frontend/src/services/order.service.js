@@ -28,3 +28,12 @@ export const vnpayReturnUrl = (queryParams) => {
     },
   );
 };
+
+export const getListOrderItemsWithDetails = (statusFilter, cursor) => {
+  return axios.get(
+    `${process.env.REACT_APP_API_URL}/order/list?statusFilter=${statusFilter}&cursor=${cursor}`,
+    {
+      withCredentials: true,
+    },
+  );
+};
