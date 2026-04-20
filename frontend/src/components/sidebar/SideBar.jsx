@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import clsx from "clsx";
-import { userImageUrlFormat } from "../../utils/stringFormat";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import clsx from 'clsx';
+import { userImageUrlFormat } from '../../utils/stringFormat';
 
 function SideBar({ isOpen }) {
   const navigate = useNavigate();
@@ -11,56 +11,73 @@ function SideBar({ isOpen }) {
 
   let path = window.location.pathname; // Lấy đường dẫn hiện tại
   // let mainSegment = path.split('/')[1]; // Lấy phần đầu tiên sau dấu '/'
-  let firstSegment = path.split("/")[2]; // Lấy phần đầu hai sau dấu '/'
-  let secondSegment = path.split("/")[3]; // Lấy phần thứ ba sau dấu '/'
+  let firstSegment = path.split('/')[2]; // Lấy phần đầu hai sau dấu '/'
+  let secondSegment = path.split('/')[3]; // Lấy phần thứ ba sau dấu '/'
 
   // State để quản lý việc mở rộng mục Summary
   const [lastOpen, setLastOpen] = useState([false, false, false]);
   const [open, setOpen] = useState([
-    false || firstSegment === "notifications",
-    false || firstSegment === "account",
-    false || firstSegment === "orders",
+    false || firstSegment === 'notifications',
+    false || firstSegment === 'account',
+    false || firstSegment === 'orders',
   ]);
 
   useEffect(() => {
     if (firstSegment || secondSegment) {
       setOpen([
-        false || firstSegment === "notifications",
-        false || firstSegment === "account",
-        false || firstSegment === "orders",
+        false || firstSegment === 'notifications',
+        false || firstSegment === 'account',
+        false || firstSegment === 'orders',
       ]);
     }
   }, [firstSegment, secondSegment]);
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto';
     }
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto';
     };
   }, [isOpen]);
+
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && !hasInteracted) {
+      setHasInteracted(true);
+    }
+  }, [isOpen, hasInteracted]);
+
+  const getAnimationClass = () => {
+    if (!hasInteracted) return '';
+    return isOpen ? 'animate-slide-in-left' : 'animate-slide-out-left';
+  };
 
   return (
     <div
       className={clsx(
-        "fixed top-0 left-0 z-50 md:relative flex flex-col flex-shrink-0 items-center justify-start",
-        "bg-white md:bg-backgroundGrayColor w-52 h-screen md:min-h-[600px] select-none",
-        "shadow-[2px_0_8px_rgba(0,0,0,0.15)] md:shadow-none md:animate-none",
-        { "animate-slide-in-left": isOpen, "animate-slide-out-left": !isOpen },
+        'fixed top-0 left-0 z-50 md:relative flex flex-col flex-shrink-0 items-center justify-start',
+        'bg-white md:bg-backgroundGrayColor w-52 h-screen md:min-h-[600px] select-none',
+        'shadow-[2px_0_8px_rgba(0,0,0,0.15)] md:shadow-none md:animate-none',
+        getAnimationClass(),
+        {
+          'translate-x-0': isOpen,
+          '-translate-x-full md:translate-x-0': !isOpen && !hasInteracted,
+        }
       )}
     >
       <div className="flex items-center justify-start gap-2 w-full h-28 px-4 md:px-0">
         <div
           className="w-14 h-14 rounded-full overflow-hidden mr-2 border cursor-pointer"
-          onClick={() => navigate("/user/account/profile")}
+          onClick={() => navigate('/user/account/profile')}
         >
           <img
             src={
               userImageUrlFormat(user?.avatarUrl) ||
-              "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
+              'https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg'
             }
             alt="avatar"
             className="user_avatar w-14 h-14 object-cover"
@@ -70,7 +87,7 @@ function SideBar({ isOpen }) {
           {user.name || user.phone || user._id}
           <div
             className="text-moregrayTextColor font-normal text-base flex items-center cursor-pointer"
-            onClick={() => navigate("/user/account/profile")}
+            onClick={() => navigate('/user/account/profile')}
           >
             <i className="fa-solid fa-pen-to-square"></i>
             Sửa hồ sơ
@@ -87,7 +104,7 @@ function SideBar({ isOpen }) {
               if (!open[0]) {
                 setLastOpen(open);
                 setOpen([true, false, false]);
-                navigate("/user/notifications/orders");
+                navigate('/user/notifications/orders');
               }
             }}
           >
@@ -96,29 +113,29 @@ function SideBar({ isOpen }) {
           </div>
           <div
             className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
-                    ${open[0] ? "animate-expandingHeight" : lastOpen[0] ? "animate-collapsingHeight" : "hidden"}`}
+                    ${open[0] ? 'animate-expandingHeight' : lastOpen[0] ? 'animate-collapsingHeight' : 'hidden'}`}
           >
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
-                            ${secondSegment === "orders" ? "text-primaryTextColor" : ""}
+                            ${secondSegment === 'orders' ? 'text-primaryTextColor' : ''}
                         `}
-              onClick={() => navigate("/user/notifications/orders")}
+              onClick={() => navigate('/user/notifications/orders')}
             >
               Cập nhật đơn hàng
             </div>
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
-                            ${secondSegment === "wallet" ? "text-primaryTextColor" : ""}
+                            ${secondSegment === 'wallet' ? 'text-primaryTextColor' : ''}
                         `}
-              onClick={() => navigate("/user/notifications/wallet")}
+              onClick={() => navigate('/user/notifications/wallet')}
             >
               Cập nhật ví
             </div>
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
-                            ${secondSegment === "shopee" ? "text-primaryTextColor" : ""}
+                            ${secondSegment === 'shopee' ? 'text-primaryTextColor' : ''}
                         `}
-              onClick={() => navigate("/user/notifications/shopee")}
+              onClick={() => navigate('/user/notifications/shopee')}
             >
               Cập nhật Shopee
             </div>
@@ -132,7 +149,7 @@ function SideBar({ isOpen }) {
               if (!open[1]) {
                 setLastOpen(open);
                 setOpen([false, true, false]);
-                navigate("/user/account/profile");
+                navigate('/user/account/profile');
               }
             }}
           >
@@ -141,51 +158,51 @@ function SideBar({ isOpen }) {
           </div>
           <div
             className={`flex flex-col items-start justify-center w-full gap-2 mt-2 overflow-hidden
-                    ${open[1] ? "animate-expandingHeight" : lastOpen[0] ? "animate-collapsingHeight" : "hidden"}`}
+                    ${open[1] ? 'animate-expandingHeight' : lastOpen[0] ? 'animate-collapsingHeight' : 'hidden'}`}
           >
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
                             ${
-                              secondSegment === "profile" ||
-                              secondSegment === "email-vertify" ||
-                              secondSegment === "phone-vertify"
-                                ? "text-primaryTextColor"
-                                : ""
+                              secondSegment === 'profile' ||
+                              secondSegment === 'email-vertify' ||
+                              secondSegment === 'phone-vertify'
+                                ? 'text-primaryTextColor'
+                                : ''
                             }
                         `}
-              onClick={() => navigate("/user/account/profile")}
+              onClick={() => navigate('/user/account/profile')}
             >
               Hồ sơ
             </div>
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
-                            ${secondSegment === "bank" ? "text-primaryTextColor" : ""}
+                            ${secondSegment === 'bank' ? 'text-primaryTextColor' : ''}
                         `}
-              onClick={() => navigate("/user/account/bank")}
+              onClick={() => navigate('/user/account/bank')}
             >
               Ngân hàng
             </div>
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
-                            ${secondSegment === "address" ? "text-primaryTextColor" : ""}
+                            ${secondSegment === 'address' ? 'text-primaryTextColor' : ''}
                         `}
-              onClick={() => navigate("/user/account/address")}
+              onClick={() => navigate('/user/account/address')}
             >
               Địa chỉ
             </div>
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
-                            ${secondSegment === "password" ? "text-primaryTextColor" : ""}
+                            ${secondSegment === 'password' ? 'text-primaryTextColor' : ''}
                         `}
-              onClick={() => navigate("/user/account/password")}
+              onClick={() => navigate('/user/account/password')}
             >
               Đổi mật khẩu
             </div>
             <div
               className={`pl-8 pr-2 text-base w-full cursor-pointer hover:text-primaryTextColor 
-                            ${secondSegment === "privacy" ? "text-primaryTextColor" : ""}
+                            ${secondSegment === 'privacy' ? 'text-primaryTextColor' : ''}
                         `}
-              onClick={() => navigate("/user/account/privacy")}
+              onClick={() => navigate('/user/account/privacy')}
             >
               Những thiết lập riêng tư
             </div>
@@ -193,13 +210,13 @@ function SideBar({ isOpen }) {
         </div>
         <div
           className={`flex items-center justify-start w-full relative pl-8 text-base cursor-pointer hover:text-primaryTextColor 
-                    ${open[2] ? "text-primaryTextColor" : ""}
+                    ${open[2] ? 'text-primaryTextColor' : ''}
                 `}
           onClick={() => {
             if (!open[2]) {
               setLastOpen(open);
               setOpen([false, false, true]);
-              navigate("/user/orders");
+              navigate('/user/orders');
             }
           }}
         >
