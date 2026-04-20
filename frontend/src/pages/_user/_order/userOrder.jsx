@@ -19,8 +19,6 @@ export default function UserOrder() {
     cursor: null,
   });
 
-  console.log(data);
-
   const [triggerGetMore, { isFetching: isFetchingMore }] =
     useLazyGetListOrderItemsWithDetailsQuery();
 
@@ -41,8 +39,8 @@ export default function UserOrder() {
   ];
   const activeIndex = tabs.findIndex((tab) => tab.id === activeTab);
 
-  const handleLoadMore = async () => {
-    if (!cursor) return;
+  const handleLoadMore = useCallback(async () => {
+    if (!cursor || isFetchingMore) return;
     try {
       const res = await triggerGetMore({
         statusFilter: activeTab,
@@ -57,7 +55,7 @@ export default function UserOrder() {
     } catch (err) {
       console.error('Lỗi tải thêm đơn hàng:', err);
     }
-  };
+  }, [cursor, activeTab, triggerGetMore, isFetchingMore]);
 
   const observerRef = useRef();
   const loadMoreRef = useCallback(
@@ -71,7 +69,7 @@ export default function UserOrder() {
       });
       if (node) observerRef.current.observe(node);
     },
-    [isFetching, isFetchingMore, hasMore, cursor, activeTab]
+    [isFetching, isFetchingMore, hasMore, handleLoadMore]
   );
 
   const handleSetStatusFilter = (statusFilter) => {
