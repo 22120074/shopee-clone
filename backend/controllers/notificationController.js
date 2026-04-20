@@ -2,6 +2,7 @@ const {
   getNotifications,
   markAsRead,
   markAllAsRead,
+  getUnreadCount,
 } = require("../services/notification.service");
 const { Success } = require("../utils/responseHelper");
 const { BadRequest } = require("../utils/appErrors");
@@ -44,8 +45,23 @@ const markAllAsReadController = async (req, res, next) => {
   }
 };
 
+const getUnreadCountController = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const unreadCount = await getUnreadCount(userId);
+    return Success(
+      res,
+      unreadCount,
+      "Lấy số lượng thông báo chưa đọc thành công",
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getNotificationsController,
   markAsReadController,
   markAllAsReadController,
+  getUnreadCountController,
 };

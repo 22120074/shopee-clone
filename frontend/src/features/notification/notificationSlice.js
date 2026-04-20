@@ -12,12 +12,9 @@ const notificationSlice = createSlice({
   reducers: {
     addNotification: (state, action) => {
       state.list.unshift(action.payload);
-      state.unreadCount += 1;
-    },
-    addNotifications: (state, action) => {
-      // action.payload là mảng các thông báo mới: [noti_a, noti_b, ...]
-      state.list.push(...action.payload);
-      state.unreadCount += action.payload.length;
+      if (!action.payload.isRead) {
+        state.unreadCount += 1;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -26,9 +23,6 @@ const notificationSlice = createSlice({
         notificationQuery.endpoints.getFirstTimeNotifications.matchFulfilled,
         (state, { payload }) => {
           state.list = payload?.rows || [];
-          state.unreadCount = (payload?.rows || []).filter(
-            (n) => !n.isRead,
-          ).length;
           state.nextCursor = payload?.nextCursor;
           state.hasNextPage = payload?.hasNextPage;
         },
@@ -38,8 +32,6 @@ const notificationSlice = createSlice({
         (state, { payload }) => {
           const newRows = payload?.rows || [];
           state.list.push(...newRows);
-          const newUnreadCount = newRows.filter((n) => !n.isRead).length;
-          state.unreadCount += newUnreadCount;
           state.nextCursor = payload?.nextCursor;
           state.hasNextPage = payload?.hasNextPage;
         },
@@ -62,6 +54,12 @@ const notificationSlice = createSlice({
             n.isRead = true;
           });
           state.unreadCount = 0;
+        },
+      )
+      .addMatcher(
+        notificationQuery.endpoints.getUnreadCount.matchFulfilled,
+        (state, { payload }) => {
+          state.unreadCount = payload;
         },
       );
   },

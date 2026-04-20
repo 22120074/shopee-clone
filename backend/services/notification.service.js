@@ -71,10 +71,15 @@ const deleteNotification = async (notificationId) => {
   await Notification.destroy({ where: { id: notificationId } });
 };
 
+const getUnreadCount = async (userId) => {
+  return await Notification.count({ where: { userId, isRead: false } });
+};
+
 module.exports = {
   createAndSendNotification,
   getNotifications,
   markAsRead,
   markAllAsRead,
   deleteNotification,
+  getUnreadCount,
 };

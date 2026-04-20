@@ -32,6 +32,10 @@ export const notificationQuery = createApi({
       queryFn: () =>
         handleAxiosRequest(() => NotificationService.markAllAsRead()),
     }),
+    getUnreadCount: builder.query({
+      queryFn: () =>
+        handleAxiosRequest(() => NotificationService.getUnreadCount()),
+    }),
   }),
 });
 
@@ -41,4 +45,5 @@ export const {
   useLazyGetNotificationsQuery,
   useMarkAsReadMutation,
   useMarkAllAsReadMutation,
+  useGetUnreadCountQuery,
 } = notificationQuery;

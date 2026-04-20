@@ -1,4 +1,5 @@
 import "../../css/header.css";
+import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import useToastQueue from "../../hooks/useToastQueue";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -11,6 +12,7 @@ import useIsWindow from "../../hooks/useIsWindow";
 import StackBar from "../../components/StackBar";
 import { useLogoutMutation } from "../../features/api/authQuery";
 import { useCheckShopQuery } from "../../features/api/shopQuery";
+import { useGetUnreadCountQuery } from "../../features/api/notificationQuery";
 import NotificationDropdown from "../../components/dropdownComponents/notificationDropdown";
 
 function Header() {
@@ -26,6 +28,7 @@ function Header() {
 
   // Lấy thông tin giỏ hàng từ Redux store
   const items = useSelector((state) => state.cart.items);
+  const unreadCount = useSelector((state) => state.notification.unreadCount);
 
   // Lấy thông tin location từ URL
   const urlPath = location.pathname === "/cart" ? "cart" : "";
@@ -35,6 +38,10 @@ function Header() {
   const [openNotificationDropdown, setOpenNotificationDropdown] =
     useState("closed");
   const [openCartDropdown, setOpenCartDropdown] = useState("closed");
+
+  useGetUnreadCountQuery(undefined, {
+    skip: !user,
+  });
 
   const [logout] = useLogoutMutation();
   const { refetch: checkShop } = useCheckShopQuery(
@@ -171,6 +178,17 @@ function Header() {
           >
             <i className="lg:top-[calc(50%-6px)] top-[calc(50%-9px)] fa-regular fa-bell absolute left-[-18px]"></i>
             <span className="hidden lg:inline-block">Thông Báo</span>
+            {unreadCount > 0 && (
+              <span
+                className={clsx(
+                  "absolute top-[-4px] left-[calc(0%-14px)] text-primaryTextColor text-xs rounded-full w-4 h-4",
+                  "flex items-center justify-center bg-white border border-primaryColor font-medium",
+                  unreadCount >= 10 && "w-5 h-5",
+                )}
+              >
+                {unreadCount}
+              </span>
+            )}
             <NotificationDropdown
               openNotificationDropdown={openNotificationDropdown}
             />

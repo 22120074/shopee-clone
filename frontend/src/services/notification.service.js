@@ -42,3 +42,12 @@ export const markAllAsRead = () => {
     },
   );
 };
+
+export const getUnreadCount = () => {
+  return axios.get(
+    `${process.env.REACT_APP_API_URL}/notification/get-unread-count`,
+    {
+      withCredentials: true,
+    },
+  );
+};
