@@ -1,7 +1,7 @@
 const socketIo = require("socket.io");
 
 let io;
-// Lưu trữ danh sách user online: { userId: socketId }
+// Lưu trữ danh sách user online: { userId: [socketId1, socketId2, ...] }
 let onlineUsers = {};
 
 const initSocket = (server) => {
@@ -15,15 +15,22 @@ const initSocket = (server) => {
 
   io.on("connection", (socket) => {
     socket.on("register-user", (userId) => {
-      onlineUsers[userId] = socket.id;
-      console.log(`User ${userId} đang online tại socket: ${socket.id}`);
+      if (!onlineUsers[userId]) {
+        onlineUsers[userId] = [];
+      }
+      if (!onlineUsers[userId].includes(socket.id)) {
+        onlineUsers[userId].push(socket.id);
+      }
+      console.log(`User ${userId} kết nối thêm thiết bị: ${socket.id}`);
     });
 
     socket.on("disconnect", () => {
       for (let userId in onlineUsers) {
-        if (onlineUsers[userId] === socket.id) {
+        onlineUsers[userId] = onlineUsers[userId].filter(
+          (id) => id !== socket.id,
+        );
+        if (onlineUsers[userId].length === 0) {
           delete onlineUsers[userId];
-          break;
         }
       }
     });
@@ -33,9 +40,12 @@ const initSocket = (server) => {
 };
 
 const sendNotification = (receiverId, data) => {
-  const socketId = onlineUsers[receiverId];
-  if (socketId) {
-    io.to(socketId).emit("get-notification", data);
+  const socketIds = onlineUsers[receiverId];
+
+  if (socketIds && socketIds.length > 0) {
+    socketIds.forEach((id) => {
+      io.to(id).emit("get-notification", data);
+    });
   }
 };
 
