@@ -86,32 +86,55 @@ export default function UserOrder() {
       className={clsx('w-full flex flex-col items-center justify-start gap-2')}
     >
       {/* Tab */}
-      <div
-        className={clsx(
-          'w-full h-14 flex items-start justify-start relative',
-          'bg-white mt-4 rounded-sm shadow-sm select-none'
-        )}
-      >
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => handleSetStatusFilter(tab.id)}
+      <div className="w-full mt-4">
+        {/* MOBILE */}
+        <div className="block lg:hidden w-full">
+          <select
+            value={activeTab}
+            onChange={(e) => {
+              handleSetStatusFilter(e.target.value);
+            }}
             className={clsx(
-              'flex items-center justify-center h-14 w-40 px-4 py-2 text-lg font-normal z-10 transition-colors duration-200',
-              activeTab === tab.id
-                ? 'text-primaryColor'
-                : 'text-black hover:text-primaryColor'
+              'w-full h-12 px-4 py-2 bg-white border border-gray-200 rounded-sm shadow-sm',
+              'text-base text-black focus:outline-none focus:ring-1 focus:ring-primaryColor appearance-none'
             )}
           >
-            {tab.label}
-          </button>
-        ))}
+            {tabs.map((tab) => (
+              <option key={tab.id} value={tab.id}>
+                {tab.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* DESKTOP */}
         <div
-          className="absolute bottom-0 left-0 h-[2px] w-40 bg-primaryColor transition-transform duration-300 ease-in-out"
-          style={{
-            transform: `translateX(${activeIndex * 100}%)`,
-          }}
-        />
+          className={clsx(
+            'hidden lg:flex',
+            'w-full h-14 items-start justify-start relative',
+            'bg-white rounded-sm shadow-sm select-none'
+          )}
+        >
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => handleSetStatusFilter(tab.id)}
+              className={clsx(
+                'flex items-center justify-center h-14 w-40 px-4 py-2 text-lg font-normal z-10 transition-colors duration-200',
+                activeTab === tab.id
+                  ? 'text-primaryColor'
+                  : 'text-black hover:text-primaryColor'
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+          <div
+            className="absolute bottom-0 left-0 h-[2px] w-40 bg-primaryColor transition-transform duration-300 ease-in-out"
+            style={{
+              transform: `translateX(${activeIndex * 100}%)`,
+            }}
+          />
+        </div>
       </div>
       {/* List Order */}
       {isFetching ? (
@@ -145,7 +168,6 @@ export default function UserOrder() {
           </div>
         </>
       ) : data?.data?.length === 0 ? (
-        // Cập nhật: Chỉ hiện dòng này nếu chính xác data trả về từ cache/api là rỗng
         <div
           className={clsx(
             'w-full flex flex-col items-center justify-start gap-2 mt-4'
