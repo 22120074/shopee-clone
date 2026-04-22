@@ -1,32 +1,32 @@
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import * as ProductService from "../../services/product.service";
-import { getUserRating } from "../../services/cart.service";
+import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
+import * as ProductService from '../../services/product.service';
+import { getUserRating } from '../../services/cart.service';
 import {
   handleAxiosRequest,
   handleAxiosRequestWithLoginNavigate,
-} from "../../utils/axiosHandle";
+} from '../../utils/axiosHandle';
 
 export const productQuery = createApi({
-  reducerPath: "productQuery",
+  reducerPath: 'productQuery',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["Product", "Review", "Like"],
+  tagTypes: ['Product', 'Review', 'Like', 'Search'],
   endpoints: (builder) => ({
     getAllProducts: builder.query({
       queryFn: () => handleAxiosRequest(ProductService.getAllProducts),
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: "Product", id: _id })),
-              { type: "Product", id: "LIST" },
+              ...result.map(({ _id }) => ({ type: 'Product', id: _id })),
+              { type: 'Product', id: 'LIST' },
             ]
-          : [{ type: "Product", id: "LIST" }],
+          : [{ type: 'Product', id: 'LIST' }],
     }),
 
     getOneProduct: builder.query({
       queryFn: (productID) =>
         handleAxiosRequest(() => ProductService.getOneProduct(productID)),
       providesTags: (result, error, productID) => [
-        { type: "Product", id: productID },
+        { type: 'Product', id: productID },
       ],
     }),
 
@@ -34,47 +34,47 @@ export const productQuery = createApi({
       queryFn: (productID) =>
         handleAxiosRequest(() => ProductService.isLikedProduct(productID)),
       providesTags: (result, error, productID) => [
-        { type: "Like", id: productID },
+        { type: 'Like', id: productID },
       ],
     }),
 
     likeProduct: builder.mutation({
       queryFn: ({ productID, userID }) =>
         handleAxiosRequestWithLoginNavigate(() =>
-          ProductService.likeProduct(productID, userID),
+          ProductService.likeProduct(productID, userID)
         ),
       invalidatesTags: (result, error, { productID }) => [
-        { type: "Like", id: productID },
+        { type: 'Like', id: productID },
       ],
     }),
 
     unlikeProduct: builder.mutation({
       queryFn: ({ productID, userID }) =>
         handleAxiosRequestWithLoginNavigate(() =>
-          ProductService.unlikeProduct(productID, userID),
+          ProductService.unlikeProduct(productID, userID)
         ),
       invalidatesTags: (result, error, { productID }) => [
-        { type: "Like", id: productID },
+        { type: 'Like', id: productID },
       ],
     }),
 
     getProductReviews: builder.query({
       queryFn: ({ productID, limit, page, typeSort }) =>
         handleAxiosRequest(() =>
-          ProductService.getProductReviews(productID, limit, page, typeSort),
+          ProductService.getProductReviews(productID, limit, page, typeSort)
         ),
       providesTags: (result, error, { productID }) => [
-        { type: "Review", id: productID },
+        { type: 'Review', id: productID },
       ],
     }),
 
     getEachNumofTypeRating: builder.query({
       queryFn: (productID) =>
         handleAxiosRequest(() =>
-          ProductService.getEachNumofTypeRating(productID),
+          ProductService.getEachNumofTypeRating(productID)
         ),
       providesTags: (result, error, productID) => [
-        { type: "Product", id: productID },
+        { type: 'Product', id: productID },
       ],
     }),
 
@@ -82,7 +82,27 @@ export const productQuery = createApi({
       queryFn: (userIds) =>
         handleAxiosRequest(() => getUserRating({ data: userIds })),
       providesTags: (result, error, userIds) => [
-        { type: "Review", id: userIds },
+        { type: 'Review', id: userIds },
+      ],
+    }),
+
+    suggestProductNames: builder.query({
+      queryFn: ({ keyword, limit }) =>
+        handleAxiosRequest(() =>
+          ProductService.suggestProductNames(keyword, limit)
+        ),
+      providesTags: (result, error, { keyword }) => [
+        { type: 'Search', id: keyword },
+      ],
+    }),
+
+    searchProductsByName: builder.query({
+      queryFn: ({ keyword, limit }) =>
+        handleAxiosRequest(() =>
+          ProductService.searchProductsByName(keyword, limit)
+        ),
+      providesTags: (result, error, { keyword }) => [
+        { type: 'Search', id: keyword },
       ],
     }),
   }),
@@ -97,4 +117,7 @@ export const {
   useGetProductReviewsQuery,
   useGetEachNumofTypeRatingQuery,
   useGetUserRatingQuery,
+  useSuggestProductNamesQuery,
+  useLazySuggestProductNamesQuery,
+  useSearchProductsByNameQuery,
 } = productQuery;

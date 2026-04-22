@@ -14,6 +14,7 @@ import { useLogoutMutation } from '../../features/api/authQuery';
 import { useCheckShopQuery } from '../../features/api/shopQuery';
 import { useGetUnreadCountQuery } from '../../features/api/notificationQuery';
 import NotificationDropdown from '../../components/dropdownComponents/notificationDropdown';
+import SearchBar from '../../components/input/searchBar';
 
 function Header() {
   const isDesktop = useIsWindow('(min-width: 1024px)');
@@ -372,16 +373,7 @@ function Header() {
           </div>
           {/* Phần tìm kiếm */}
           <div className="flex items-center flex-col min-w-0 flex-1 h-full">
-            <div className="navbar_input-wrapper flex items-center mt-4 w-full h-[40px] bg-white pl-[10px]">
-              <input
-                type="text"
-                className="navbar_input text-sm w-full h-10 flex-1"
-                placeholder="Shopee bao ship 0Đ - Đăng kí ngay!"
-              />
-              <button className="w-[60px] h-[calc(100%-6px)] bg-primaryColor flex items-center justify-center m-[3px] rounded-sm">
-                <i className="fa-solid fa-magnifying-glass text-white"></i>
-              </button>
-            </div>
+            <SearchBar />
             <ul className="flex flex-row gap-3 justify-start max-w-full overflow-x-hidden whitespace-nowrap py-[8px] w-full">
               <li className="text-xs text-white">Máy quạt cầm tay</li>
               <li className="text-xs text-white">Áo thun trơn ôm</li>

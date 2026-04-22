@@ -2,6 +2,7 @@ const dbPostgre = require("../models/PostgreSql/index");
 const Shop = require("../models/Mongoose/Shop");
 const { Sequelize } = require("sequelize");
 const mongoose = require("mongoose");
+const { QueryTypes } = require("sequelize");
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
@@ -316,6 +317,105 @@ const getEachNumofTypeRating = async (productID) => {
   return result;
 };
 
+const suggestProductNames = async (keyword, limit = 5) => {
+  if (!keyword || keyword.trim() === "") return [];
+
+  // Sử dụng Raw Query để tận dụng tối đa unaccent và pg_trgm similarity
+  // ILIKE kết hợp unaccent để lọc. similarity để sắp xếp độ chính xác.
+  const query = `
+    SELECT "name"
+    FROM "Products"
+    WHERE immutable_unaccent("name") ILIKE immutable_unaccent(:searchKeyword)
+       OR similarity(immutable_unaccent("name"), immutable_unaccent(:exactKeyword)) > 0.2
+    GROUP BY "name"
+    ORDER BY similarity(immutable_unaccent("name"), immutable_unaccent(:exactKeyword)) DESC
+    LIMIT :limit;
+  `;
+
+  const results = await dbPostgre.sequelize.query(query, {
+    replacements: {
+      searchKeyword: `%${keyword}%`,
+      exactKeyword: keyword,
+      limit: limit,
+    },
+    type: QueryTypes.SELECT,
+  });
+
+  // Trả về một mảng chỉ chứa các chuỗi tên sản phẩm (VD: ['Áo thun nam', 'Áo thun nữ'])
+  return results.map((item) => item.name);
+};
+
+const searchProductsByName = async (keyword, limit = 20) => {
+  if (!keyword || keyword.trim() === "") return [];
+
+  // Bước 1: Tìm ID của các sản phẩm khớp với tên (sử dụng unaccent và ILIKE)
+  const query = `
+    SELECT "id"
+    FROM "Products"
+    WHERE immutable_unaccent("name") ILIKE immutable_unaccent(:searchKeyword)
+    ORDER BY similarity(immutable_unaccent("name"), immutable_unaccent(:exactKeyword)) DESC
+    LIMIT :limit;
+  `;
+
+  const productIdsResult = await dbPostgre.sequelize.query(query, {
+    replacements: {
+      searchKeyword: `%${keyword}%`,
+      exactKeyword: keyword,
+      limit: limit,
+    },
+    type: QueryTypes.SELECT,
+  });
+
+  if (productIdsResult.length === 0) return [];
+
+  const productIds = productIdsResult.map((item) => item.id);
+
+  // Bước 2: Dùng Model Sequelize để lấy ra chi tiết các sản phẩm đó
+  const products = await Product.findAll({
+    where: {
+      id: productIds,
+    },
+    raw: true,
+  });
+
+  // Bước 3: Gắn thêm các dữ liệu phụ (Attributes, Image, SoldCount)
+  // (Tái sử dụng logic giống hệt hàm getAllProduct của bạn)
+  const productWithExtra = await Promise.all(
+    products.map(async (product) => {
+      const attributes = await Attribute.findAll({
+        where: { productId: product.id },
+        attributes: ["id", "price"],
+        raw: true,
+      });
+
+      const image = await ImageProduct.findOne({
+        where: { productId: product.id },
+        attributes: ["id", "imageUrl"],
+        raw: true,
+      });
+
+      const soldCount =
+        (await Sold.sum("quantity", {
+          where: { productId: product.id },
+        })) || 0;
+
+      return {
+        ...product,
+        attributes,
+        image,
+        soldCount,
+      };
+    }),
+  );
+
+  // Bước 4: Sắp xếp lại productWithExtra theo đúng thứ tự mảng productIds ban đầu (để giữ nguyên logic order by similarity)
+  const sortedProducts = productIds.map((id) =>
+    productWithExtra.find((p) => p.id === id),
+  );
+
+  return sortedProducts;
+};
+
 module.exports = {
   getAllProduct,
   getOneProduct,
@@ -326,4 +426,6 @@ module.exports = {
   getReviewsByRating,
   getReviewsWithMedia,
   getEachNumofTypeRating,
+  suggestProductNames,
+  searchProductsByName,
 };

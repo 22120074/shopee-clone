@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
 export const getAllProducts = () => {
   return axios.get(`${process.env.REACT_APP_API_URL}/product/getAll?limit=48`, {
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Content-Type': 'application/json' },
   });
 };
 
@@ -10,8 +10,8 @@ export const getOneProduct = (productID) => {
   return axios.get(
     `${process.env.REACT_APP_API_URL}/product/getDataProduct?productID=${productID}`,
     {
-      headers: { "Content-Type": "application/json" },
-    },
+      headers: { 'Content-Type': 'application/json' },
+    }
   );
 };
 
@@ -19,9 +19,9 @@ export const isLikedProduct = (productID) => {
   return axios.get(
     `${process.env.REACT_APP_API_URL}/product/isLiked?productID=${productID}`,
     {
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
       withCredentials: true,
-    },
+    }
   );
 };
 
@@ -30,16 +30,16 @@ export const likeProduct = (productID, userID) => {
     `${process.env.REACT_APP_API_URL}/product/like`,
     { productID, userID },
     {
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
       withCredentials: true,
-    },
+    }
   );
 };
 
 export const unlikeProduct = (productID, userID) => {
   return axios.delete(`${process.env.REACT_APP_API_URL}/product/unlike`, {
     data: { productID, userID },
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Content-Type': 'application/json' },
     withCredentials: true,
   });
 };
@@ -48,8 +48,8 @@ export const getProductReviews = (productID, limit = 6, page = 1, typeSort) => {
   return axios.get(
     `${process.env.REACT_APP_API_URL}/product/reviews?productID=${productID}&limit=${limit}&page=${page}&typeSort=${typeSort}`,
     {
-      headers: { "Content-Type": "application/json" },
-    },
+      headers: { 'Content-Type': 'application/json' },
+    }
   );
 };
 
@@ -57,7 +57,25 @@ export const getEachNumofTypeRating = (productID) => {
   return axios.get(
     `${process.env.REACT_APP_API_URL}/product/eachNumReviews?productID=${productID}`,
     {
-      headers: { "Content-Type": "application/json" },
-    },
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+};
+
+export const suggestProductNames = (keyword, limit = 5) => {
+  return axios.get(
+    `${process.env.REACT_APP_API_URL}/product/suggestNames?keyword=${keyword}&limit=${limit}`,
+    {
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+};
+
+export const searchProductsByName = (keyword, limit = 20) => {
+  return axios.get(
+    `${process.env.REACT_APP_API_URL}/product/searchByName?keyword=${keyword}&limit=${limit}`,
+    {
+      headers: { 'Content-Type': 'application/json' },
+    }
   );
 };

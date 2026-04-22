@@ -8,6 +8,8 @@ const {
   getReviewsByRating,
   getReviewsWithMedia,
   getEachNumofTypeRating,
+  suggestProductNames,
+  searchProductsByName,
 } = require("../services/product.service");
 const { Success } = require("../utils/responseHelper");
 const { BadRequest } = require("../utils/appErrors");
@@ -112,6 +114,26 @@ module.exports.getEachNumofTypeRating = async (req, res, next) => {
     const { productID } = req.query;
     const ratings = await getEachNumofTypeRating(productID);
     return Success(res, ratings, "Lấy thống kê đánh giá thành công");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.suggestProductNamesController = async (req, res, next) => {
+  try {
+    const { keyword, limit } = req.query;
+    const names = await suggestProductNames(keyword, limit);
+    return Success(res, names, "Lấy danh sách gợi ý tên sản phẩm thành công");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.searchProductsByNameController = async (req, res, next) => {
+  try {
+    const { keyword, limit } = req.query;
+    const products = await searchProductsByName(keyword, limit);
+    return Success(res, products, "Lấy danh sách sản phẩm thành công");
   } catch (error) {
     next(error);
   }
