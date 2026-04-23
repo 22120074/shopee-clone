@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { notificationQuery } from "../api/notificationQuery";
+import { createSlice } from '@reduxjs/toolkit';
+import { notificationQuery } from '../api/notificationQuery';
 
 const notificationSlice = createSlice({
-  name: "notification",
+  name: 'notification',
   initialState: {
     list: [],
     unreadCount: 0,
@@ -25,7 +25,7 @@ const notificationSlice = createSlice({
           state.list = payload?.rows || [];
           state.nextCursor = payload?.nextCursor;
           state.hasNextPage = payload?.hasNextPage;
-        },
+        }
       )
       .addMatcher(
         notificationQuery.endpoints.getNotifications.matchFulfilled,
@@ -34,18 +34,19 @@ const notificationSlice = createSlice({
           state.list.push(...newRows);
           state.nextCursor = payload?.nextCursor;
           state.hasNextPage = payload?.hasNextPage;
-        },
+        }
       )
       .addMatcher(
         notificationQuery.endpoints.markAsRead.matchFulfilled,
         (state, action) => {
-          const id = action.meta.arg;
+          const id = action.meta.arg.originalArgs;
+
           const notification = state.list.find((n) => n.id === id);
           if (notification && !notification.isRead) {
             notification.isRead = true;
             state.unreadCount = Math.max(0, state.unreadCount - 1);
           }
-        },
+        }
       )
       .addMatcher(
         notificationQuery.endpoints.markAllAsRead.matchFulfilled,
@@ -54,13 +55,13 @@ const notificationSlice = createSlice({
             n.isRead = true;
           });
           state.unreadCount = 0;
-        },
+        }
       )
       .addMatcher(
         notificationQuery.endpoints.getUnreadCount.matchFulfilled,
         (state, { payload }) => {
           state.unreadCount = payload;
-        },
+        }
       );
   },
 });

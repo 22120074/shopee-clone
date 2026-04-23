@@ -198,6 +198,7 @@ function Header() {
             )}
             <NotificationDropdown
               openNotificationDropdown={openNotificationDropdown}
+              setOpenNotificationDropdown={setOpenNotificationDropdown}
             />
           </li>
           <li className="hidden lg:block relative mx-[18px] my-0 text-sm text-white">

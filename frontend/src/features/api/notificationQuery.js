@@ -1,40 +1,42 @@
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import * as NotificationService from "../../services/notification.service";
-import { handleAxiosRequest } from "../../utils/axiosHandle";
+import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
+import * as NotificationService from '../../services/notification.service';
+import { handleAxiosRequest } from '../../utils/axiosHandle';
 
 export const notificationQuery = createApi({
-  reducerPath: "notificationQuery",
+  reducerPath: 'notificationQuery',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["Notification"],
+  tagTypes: ['Notification', 'UnreadCount'],
   endpoints: (builder) => ({
     getFirstTimeNotifications: builder.query({
       queryFn: ({ limit }) =>
         handleAxiosRequest(() =>
-          NotificationService.getFirstTimeNotifications(limit),
+          NotificationService.getFirstTimeNotifications(limit)
         ),
-      providesTags: ["Notification"],
+      providesTags: ['Notification'],
     }),
     getNotifications: builder.query({
       queryFn: ({ limit, cursor }) =>
         handleAxiosRequest(() =>
-          NotificationService.getNotifications(limit, cursor),
+          NotificationService.getNotifications(limit, cursor)
         ),
-      providesTags: ["Notification"],
+      providesTags: ['Notification'],
     }),
     markAsRead: builder.mutation({
       queryFn: (notificationId) =>
         handleAxiosRequest(() =>
-          NotificationService.markAsRead(notificationId),
+          NotificationService.markAsRead(notificationId)
         ),
-      invalidatesTags: ["Notification"],
+      invalidatesTags: ['UnreadCount'],
     }),
     markAllAsRead: builder.mutation({
       queryFn: () =>
         handleAxiosRequest(() => NotificationService.markAllAsRead()),
+      invalidatesTags: ['UnreadCount'],
     }),
     getUnreadCount: builder.query({
       queryFn: () =>
         handleAxiosRequest(() => NotificationService.getUnreadCount()),
+      providesTags: ['UnreadCount'],
     }),
   }),
 });

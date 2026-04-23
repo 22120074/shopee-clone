@@ -1,22 +1,25 @@
-import "../../css/header.css";
-import clsx from "clsx";
-import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { userImageUrlFormat } from "../../utils/stringFormat";
-import { useSelector } from "react-redux";
-import NotificationContent from "../others/notificationContent";
-import Spinner from "../skeletons/spinnerButton";
+import '../../css/header.css';
+import clsx from 'clsx';
+import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { userImageUrlFormat } from '../../utils/stringFormat';
+import { useSelector } from 'react-redux';
+import NotificationContent from '../others/notificationContent';
+import Spinner from '../skeletons/spinnerButton';
 import {
   useMarkAsReadMutation,
   useLazyGetNotificationsQuery,
   useGetFirstTimeNotificationsQuery,
   useMarkAllAsReadMutation,
-} from "../../features/api/notificationQuery";
+} from '../../features/api/notificationQuery';
 
-export default function NotificationDropdown({ openNotificationDropdown }) {
+export default function NotificationDropdown({
+  openNotificationDropdown,
+  setOpenNotificationDropdown,
+}) {
   const navigate = useNavigate();
 
-  const isOpen = openNotificationDropdown === "open";
+  const isOpen = openNotificationDropdown === 'open';
 
   const user = useSelector((state) => state.auth.currentUser);
   const notifications = useSelector((state) => state.notification.list);
@@ -30,7 +33,7 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
     { limit: 5 },
     {
       skip: !user,
-    },
+    }
   );
 
   const [triggerGetNotifications, { isLoading, isFetching }] =
@@ -57,9 +60,9 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
       },
       {
         root: null,
-        rootMargin: "0px",
+        rootMargin: '0px',
         threshold: 0.1,
-      },
+      }
     );
 
     const currentTarget = observerRef.current;
@@ -83,8 +86,9 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
 
   const handleClick = async (type, notification) => {
     try {
+      setOpenNotificationDropdown('close');
       markAsRead(notification.id).unwrap();
-      if (type === "NEW_PRODUCT") {
+      if (type === 'NEW_PRODUCT') {
         navigate(`/product/${JSON.parse(notification.content).id}`);
       }
     } catch (error) {
@@ -119,8 +123,8 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
       {/* Notification List Container */}
       <div
         className={clsx(
-          "w-full flex flex-col items-start justify-start",
-          "min-h-[400px] max-h-[500px] overflow-y-auto overflow-x-hidden",
+          'w-full flex flex-col items-start justify-start',
+          'min-h-[400px] max-h-[500px] overflow-y-auto overflow-x-hidden'
         )}
       >
         {notifications?.length === 0 ? (
@@ -132,9 +136,9 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
             <div
               key={index}
               className={clsx(
-                "w-full p-2 flex items-start justify-start gap-2 cursor-pointer",
-                notification.isRead ? "bg-white" : "bg-notificationBg",
-                "hover:bg-primaryRatingColor",
+                'w-full p-2 flex items-start justify-start gap-2 cursor-pointer',
+                notification.isRead ? 'bg-white' : 'bg-notificationBg',
+                'hover:bg-primaryRatingColor'
               )}
               onClick={() => handleClick(notification.type, notification)}
             >
@@ -143,7 +147,7 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
                 <img
                   src={
                     userImageUrlFormat(notification?.avatarUrl) ||
-                    "https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
+                    'https://as1.ftcdn.net/v2/jpg/07/24/59/76/1000_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg'
                   }
                   alt="avatar"
                   className="user_avatar w-10 h-10 object-cover"
@@ -155,7 +159,7 @@ export default function NotificationDropdown({ openNotificationDropdown }) {
           ))
         )}
         {hasNextPage === false && notifications?.length > 0 && (
-          <div className={clsx("w-full p-2 text-center text-primaryTextColor")}>
+          <div className={clsx('w-full p-2 text-center text-primaryTextColor')}>
             Đã tải hết thông báo!
           </div>
         )}

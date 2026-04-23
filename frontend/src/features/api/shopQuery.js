@@ -1,55 +1,55 @@
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import * as ShopService from "../../services/shop.service";
+import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
+import * as ShopService from '../../services/shop.service';
 import {
   handleAxiosRequest,
   handleAxiosRequestWithLoginNavigate,
-} from "../../utils/axiosHandle";
+} from '../../utils/axiosHandle';
 
 export const shopQuery = createApi({
-  reducerPath: "shopQuery",
+  reducerPath: 'shopQuery',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["Shop"],
+  tagTypes: ['Shop', 'Follow'],
   endpoints: (builder) => ({
     checkShop: builder.query({
       queryFn: (userId) =>
         handleAxiosRequestWithLoginNavigate(() =>
-          ShopService.checkShop(userId),
+          ShopService.checkShop(userId)
         ),
-      providesTags: ["Shop"],
+      providesTags: ['Shop'],
     }),
     registerShop: builder.mutation({
       queryFn: (shopData) =>
         handleAxiosRequestWithLoginNavigate(() =>
-          ShopService.registerShop(shopData),
+          ShopService.registerShop(shopData)
         ),
-      invalidatesTags: ["Shop"],
+      invalidatesTags: ['Shop'],
     }),
     getShop: builder.query({
       queryFn: (shopId) =>
         handleAxiosRequest(() => ShopService.getShop(shopId)),
-      providesTags: (result, error, shopId) => [{ type: "Shop", id: shopId }],
+      providesTags: (result, error, shopId) => [{ type: 'Shop', id: shopId }],
     }),
     isFollowShop: builder.query({
       queryFn: (shopId) =>
         handleAxiosRequest(() => ShopService.isFollowShop(shopId)),
-      providesTags: (result, error, shopId) => [{ type: "Shop", id: shopId }],
+      providesTags: (result, error, shopId) => [{ type: 'Follow', id: shopId }],
     }),
     followShop: builder.mutation({
       queryFn: (shopId) =>
         handleAxiosRequestWithLoginNavigate(() =>
-          ShopService.followShop(shopId),
+          ShopService.followShop(shopId)
         ),
       invalidatesTags: (result, error, shopId) => [
-        { type: "Shop", id: shopId },
+        { type: 'Follow', id: shopId },
       ],
     }),
     unfollowShop: builder.mutation({
       queryFn: (shopId) =>
         handleAxiosRequestWithLoginNavigate(() =>
-          ShopService.unfollowShop(shopId),
+          ShopService.unfollowShop(shopId)
         ),
       invalidatesTags: (result, error, shopId) => [
-        { type: "Shop", id: shopId },
+        { type: 'Follow', id: shopId },
       ],
     }),
   }),
