@@ -47,13 +47,19 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - **Google OAuth 2.0** - Đăng nhập bằng Google
 - **CORS 2.8.5** - Cross-Origin Resource Sharing
 - **Cookie Parser 1.4.7** - Xử lý cookies
+- **Socket.io** - WebSockets cho thông báo real-time
+- **Cloudinary & Multer** - Lưu trữ và quản lý hình ảnh
+- **VNPay** - Cổng thanh toán trực tuyến
+- **Nodemailer** - Gửi email thông báo
 
-### DevOps & Tools
+### Deployment, DevOps & Tools
 
+- **Vercel** - Hosting platform cho Frontend
+- **Azure VM (Ubuntu)** - Cloud server hosting Backend
+- **Nginx** - Web server & Reverse proxy
 - **Docker & Docker Compose** - Containerization và orchestration
+- **Watchtower** - Tự động cập nhật Docker containers
 - **Nodemon 3.1.10** - Auto-restart server khi development
-- **PostCSS 8.5.6** - CSS post-processor
-- **Autoprefixer 10.4.21** - Tự động thêm CSS prefixes
 
 ---
 
@@ -70,6 +76,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 
 ### 🛍️ Sản phẩm
 
+- [x] Tìm kiếm sản phẩm tối ưu (Debounce API call)
 - [x] Hiển thị danh sách phân loại và kích thước nếu có
 - [x] Chi tiết sản phẩm với hình ảnh
 - [x] Thông tin chi tiết sản phẩm
@@ -101,11 +108,22 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
   - [x] Phone - Update
   - [x] Profile - Update
   - [x] Avatar - Update - Url, File Object
+- [x] Thông báo (Notification)
+  - [x] Hiển thị danh sách thông báo
+  - [x] Tải thêm thông báo mượt mà (Infinite Scroll)
+- [x] Order Dashboard
+  - [x] Hiển thị đơn hàng và bộ lọc trạng thái
+  - [x] Đặt hàng nhiều sản phẩm
+  - [x] Thanh toán trực tuyến với VNPay
+- [x] Quản lý cửa hàng (Shop)
+  - [x] Đăng ký thông tin cửa hàng
+  - [x] Tối ưu hóa truy xuất dữ liệu cửa hàng
+  - [x] Theo dõi / Bỏ theo dõi cửa hàng
 
 ### 🎨 Giao diện & UX
 
 - [x] Responsive design với TailwindCSS - Mobile, Ipad, PC
-- [x] Loading Skeletons - List of user comments
+- [x] Loading Skeletons - Comments, Product Page, Dashboard
 - [x] StackBar Notifications - In Cart, Product, User Layout - Component
 - [x] Image Preview - Thanh hình ảnh & Ảnh chính - Component
 - [x] Image Revealer - Chuyển hình ảnh 1 --> 2 với GSAP - Component
@@ -125,10 +143,7 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 - [ ] Giao diện trang thông tin người dùng
 - [ ] Quản lý đơn hàng
 - [ ] Chat với người bán
-- [ ] Thông báo real-time
 - [ ] Admin dashboard
-- [ ] Báo cáo thống kê
-- [ ] Tối ưu SEO
 
 ---
 
@@ -137,161 +152,163 @@ Dự án **Shopee Clone** được xây dựng nhằm mô phỏng các tính nă
 ```
 shopee-clone/
 │
-├── 📁 backend/                          # Server API (Node.js + Express)
-│   ├── 📁 config/                       # Cấu hình services
-│   │   └── redisConfig.js                   # Cấu hình Redis client
-│   │
-│   ├── 📁 controllers/                  # Logic xử lý requests
-│   │   ├── authController.js                # Xác thực, đăng ký, đăng nhập
-│   │   ├── authGG-Fb.js                     # OAuth Google/Facebook
-│   │   ├── cartController.js                # CRUD giỏ hàng
-│   │   └── productController.js             # Quản lý sản phẩm
-│   │   └── userController.js                # Quản lý người dùng
-│   │
-│   ├── 📁 middleware/                   # Middleware functions
-│   │   ├── authMiddleware.js                # Xác thực JWT token
-│   │   └── errorHandle.js                   # Error handling middleware
-│   │
-│   ├── 📁 models/                       # Database models
-│   │   ├── Cart.js                          # Schema giỏ hàng (MongoDB)
-│   │   ├── User.js                          # Schema người dùng (MongoDB)
-│   │   │
-│   │   └── 📁 PostgreSql/                   # Models PostgreSQL
-│   │       ├── index.js                        # Khởi tạo Sequelize connection
-│   │       ├── product.model.js                # Model sản phẩm
-│   │       ├── detail.model.js                 # Model chi tiết sản phẩm
-│   │       ├── attribute.model.js              # Model thuộc tính
-│   │       ├── rating.model.js                 # Model đánh giá
-│   │       ├── stock.model.js                  # Model kho hàng
-│   │       ├── sold.model.js                   # Model lượt bán
-│   │       ├── like.model.js                   # Model lượt thích
-│   │       ├── image_product.model.js          # Model hình ảnh sản phẩm
-│   │       │
-│   │       └── 📁 Rating/                   # Models đánh giá
-│   │           ├── image.model.js              # Hình ảnh review
-│   │           └── video.model.js              # Video review
-│   │
-│   ├── 📁 routes/                       # API routes
-│   │   ├── authRoute.js                     # Routes xác thực
-│   │   ├── cartRoute.js                     # Routes giỏ hàng
-│   │   └── productRoute.js                  # Routes sản phẩm
-│   │   └── userRoute.js                     # Routes người dùng
-│   │
-│   ├── 📁 services/                     # Business logic layer
-│   │   ├── cart.service.js                  # Service giỏ hàng
-│   │   └── product.service.js               # Service sản phẩm
-│   │   └── user.service.js                  # Service người dùng
-│   │
-│   ├── Dockerfile                       # Docker image cho backend
-│   ├── server.js                        # Server.js
-│   └── package.json                     # Dependencies backend
-│
-├── 📁 frontend/                         # Client Application (React)
-│   ├── 📁 public/                       # Static files
-│   │   ├── index.html                       # HTML template
-│   │   ├── manifest.json                    # PWA manifest
-│   │   └── robots.txt                       # SEO robots
-│   │
-│   ├── 📁 src/
-│   │   ├── 📁 app/                      # Redux configuration
-│   │   │   └── store.js                     # Redux store setup
-│   │   │
-│   │   ├── 📁 assets/                   # Static assets
-│   │   │   ├── Empty-bro.svg                # Empty state illustration
-│   │   │   └── shopee.svg                   # Shopee logo
-│   │   │
-│   │   ├── 📁 components/               # Reusable components
-│   │   │   ├── Header.jsx                   # Header
-│   │   │   ├── Footer.jsx                   # Footer
-│   │   │   ├── SideBar.jsx                  # Sidebar
-│   │   │   ├── Button.jsx                   # Button component
-│   │   │   ├── NormalButton.jsx             # Normal button component
-│   │   │   ├── Pagination.jsx               # Pagination component
-│   │   │   ├── CarouselSlide.jsx            # Carousel slider component
-│   │   │   ├── ImagePreview.jsx             # Image preview
-│   │   │   ├── VideoHls.jsx                 # HLS video player
-│   │   │   ├── ScrolltoTop.jsx              # Scroll to top
-│   │   │   ├── ggButton.jsx                 # Google login button
-│   │   │   ├── fbButton.jsx                 # Facebook login button
-│   │   │   │
-│   │   │   ├── 📁 animations/               # Animation components
-│   │   │   │   └── ImageReveal.jsx          # Image reveal animation
-│   │   │   │
-│   │   │   ├── 📁 cartComponents/           # Cart components
-│   │   │   │   ├── headerCart.jsx              # Cart header
-│   │   │   │   ├── productList.jsx             # Cart product list
-│   │   │   │   └── ...                         # More components
-│   │   │   │
-│   │   │   ├── 📁 productComponents/        # Product components
-│   │   │   │   ├── dataDetailProduct.jsx       # Product detail data
-│   │   │   │   ├── dataRating.jsx              # Rating data display
-│   │   │   │   └── ...                         # More components
-│   │   │   │
-│   │   │   └── 📁 skeletons/                # Loading skeletons
-│   │   │
-│   │   ├── 📁 pages/                    # Page components
-│   │   │   ├── home.jsx                     # Homepage
-│   │   │   ├── TrendingProducts.jsx         # Trending products page
-│   │   │   ├── 📁 _auth/                    # Authentication pages
-│   │   │   ├── 📁 _cart/                    # Cart pages
-│   │   │   ├── 📁 _product/                 # Product pages
-│   │   │   ├── 📁 _user/                    # User pages
-│   │   │       ├── 📁 _notification/             # Notigication pages
-│   │   │       ├── 📁 _order/                    # Order pages
-│   │   │       └── 📁 _account/                  # Profile pages
-│   │   │   └── 📁 _catagory/                # Category pages
-│   │   │
-│   │   ├── 📁 features/                 # Redux slices
-│   │   │   ├── 📁 auth/                     # Auth state management
-│   │   │   └── 📁 cart/                     # Cart state management
-│   │   │
-│   │   ├── 📁 services/                 # API service layer
-│   │   │   ├── auth.service.js              # Auth API calls
-│   │   │   ├── auth.helper.js               # Auth helper functions
-│   │   │   ├── cart.service.js              # Cart API calls
-│   │   │   ├── product.service.js           # Product API calls
-│   │   │   └── user.service.js              # User API calls
-│   │   │
-│   │   ├── 📁 hooks/                    # Custom React hooks
-│   │   │   ├── useIsWindow.jsx              # Window size hook
-│   │   │   └── useToastQueue.jsx            # Toast queue hook
-│   │   │
-│   │   ├── 📁 layouts/                  # Layout components
-│   │   │   ├── MainLayout.jsx               # Main app layout
-│   │   │   └── userLayout.jsx               # User profile layout
-│   │   │
-│   │   ├── 📁 routes/                   # Route configurations
-│   │   │   ├── mainRoute.jsx                # Main routes
-│   │   │   ├── authRoute.jsx                # Auth routes
-│   │   │   └── userRoute.jsx                # User routes
-│   │   │
-│   │   ├── 📁 contexts/                 # React contexts - Đã thay bằng Redux
-│   │   │   └── AuthMode.jsx                 # Auth mode context
-│   │   │
-│   │   ├── 📁 css/                      # CSS
-│   │   │
-│   │   ├── 📁 utils/                    # Utility functions
-│   │   │   ├── numberCheck.js               # Number validation
-│   │   │   ├── numberFormat.js              # Number formatting
-│   │   │   └── stringFormat.js              # String formatting
-│   │   │
-│   │   ├── App.js                       # Main App component
-│   │   ├── App.css                      # App styles
-│   │   ├── App.test.js                  # App tests
-│   │   ├── index.js                     # Entry point
-│   │   └── index.css                    # Global styles
-│   │
-│   ├── tailwind.config.js               # TailwindCSS configuration
-│   ├── postcss.config.js                # PostCSS configuration
-│   ├── product-sample.json              # Sample product data
-│   └── package.json                     # Dependencies frontend
-│
-├── docker-compose.yaml                  # Docker Compose orchestration
-├── script.sql                           # PostgreSQL sample data
-├── scriptRating.sql                     # Rating sample data
-├── client_secret_*.json                 # Google OAuth credentials
-└── README.md                            # Project documentation
-
+│   ├── 📁 backend/
+│   │   ├── Dockerfile
+│   │   ├── 📁 config/
+│   │   │   ├── cloudinaryConfig.js
+│   │   │   ├── redisConfig.js
+│   │   │   └── socketConfig.js
+│   │   ├── 📁 controllers/
+│   │   │   ├── authController.js
+│   │   │   ├── notificationController.js
+│   │   │   ├── orderController.js
+│   │   │   ├── ...
+│   │   ├── 📁 middleware/
+│   │   │   ├── authMiddleware.js
+│   │   │   ├── errorHandle.js
+│   │   │   └── upload.js
+│   │   ├── 📁 models/
+│   │   │   ├── 📁 Mongoose/
+│   │   │   │   ├── Cart.js
+│   │   │   │   ├── Shop.js
+│   │   │   │   └── User.js
+│   │   │   └── 📁 PostgreSql/
+│   │   │       ├── 📁 Notification/
+│   │   │       │   └── notification.model.js
+│   │   │       ├── 📁 Order/
+│   │   │       │   ├── order.model.js
+│   │   │       │   └── order_item.model.js
+│   │   │       ├── 📁 Product/
+│   │   │       │   ├── attribute.model.js
+│   │   │       │   ├── detail.model.js
+│   │   │       │   ├── image_product.model.js
+│   │   │       │   ├── like.model.js
+│   │   │       │   ├── product.model.js
+│   │   │       │   ├── sold.model.js
+│   │   │       │   └── stock.model.js
+│   │   │       ├── 📁 Rating/
+│   │   │       │   ├── image.model.js
+│   │   │       │   ├── rating.model.js
+│   │   │       │   └── video.model.js
+│   │   │       ├── 📁 Shop/
+│   │   │       ├── 📁 User/
+│   │   │       │   └── follower.model.js
+│   │   │       └── index.js
+│   │   ├── 📁 routes/
+│   │   ├── 📁 services/
+│   │   └── 📁 utils/
+│   │       ├── appErrors.js
+│   │       ├── redisHelper.js
+│   │       └── responseHelper.js
+│   │   ├── server.js
+|   |
+│   ├── 📁 frontend/
+│   │   ├── 📁 src/
+│   │   │   ├── App.js
+│   │   │   ├── 📁 app/
+│   │   │   │   └── store.js
+│   │   │   ├── 📁 assets/
+│   │   │   ├── 📁 components/
+│   │   │   │   ├── 📁 animations/
+│   │   │   │   ├── 📁 buttons/
+│   │   │   │   ├── 📁 cartComponents/
+│   │   │   │   ├── 📁 dropdownComponents/
+│   │   │   │   ├── 📁 home/
+│   │   │   │   ├── 📁 input/
+│   │   │   │   ├── 📁 layout/
+│   │   │   │   ├── 📁 orderComponents/
+│   │   │   │   ├── 📁 others/
+│   │   │   │   ├── 📁 productComponents/
+│   │   │   │   ├── 📁 purchaseComponents/
+│   │   │   │   ├── 📁 shopComponents/
+│   │   │   │   │   └── 📁 product/
+│   │   │   │   ├── 📁 sidebar/
+│   │   │   │   ├── 📁 skeletons/
+│   │   │   │   └── 📁 userComponents/
+│   │   │   ├── 📁 config/
+│   │   │   │   └── socket.config.js
+│   │   │   ├── 📁 contexts/
+│   │   │   │   ├── AuthInitializer.js
+│   │   │   │   └── SocketInitializer.js
+│   │   │   ├── 📁 css/
+│   │   │   ├── 📁 features/
+│   │   │   │   ├── 📁 api/
+│   │   │   │   │   ├── authQuery.js
+│   │   │   │   │   ├── cartQuery.js
+│   │   │   │   │   ├── 📁 config/
+│   │   │   │   │   │   └── cartConfig.js
+│   │   │   │   │   ├── mediaQuery.js
+│   │   │   │   │   ├── notificationQuery.js
+│   │   │   │   │   ├── orderQuery.js
+│   │   │   │   │   ├── productQuery.js
+│   │   │   │   │   ├── shopProductQuery.js
+│   │   │   │   │   ├── shopQuery.js
+│   │   │   │   │   └── userQuery.js
+│   │   │   │   ├── 📁 auth/
+│   │   │   │   │   └── authSlice.js
+│   │   │   │   ├── 📁 cart/
+│   │   │   │   │   └── cartSlice.js
+│   │   │   │   ├── 📁 notification/
+│   │   │   │   │   └── notificationSlice.js
+│   │   │   │   └── 📁 shop/
+│   │   │   │       └── shopSlice.js
+│   │   │   ├── 📁 hooks/
+│   │   │   │   ├── useSocket.jsx
+│   │   │   │   └── ...
+│   │   │   ├── 📁 layouts/
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── 📁 Header/
+│   │   │   │   │   ├── Header.jsx
+│   │   │   │   │   ├── ...
+│   │   │   │   ├── MainLayout.jsx
+│   │   │   │   ├── ...
+│   │   │   ├── 📁 pages/
+│   │   │   │   ├── 📁 _auth/
+│   │   │   │   │   ├── authPage.jsx
+│   │   │   │   │   ├── login.jsx
+│   │   │   │   │   └── register.jsx
+│   │   │   │   ├── 📁 _cart/
+│   │   │   │   │   └── cartPage.jsx
+│   │   │   │   ├── 📁 _catagory/
+│   │   │   │   │   └── categoryPage.jsx
+│   │   │   │   ├── 📁 _product/
+│   │   │   │   │   ├── TrendingProductLayout.jsx
+│   │   │   │   │   └── productPage.jsx
+│   │   │   │   ├── 📁 _profile/
+│   │   │   │   │   ├── 📁 _shop/
+│   │   │   │   │   │   └── shopProfile.jsx
+│   │   │   │   │   └── 📁 _user/
+│   │   │   │   ├── 📁 _purchase/
+│   │   │   │   │   ├── purchasePage.jsx
+│   │   │   │   │   └── 📁 vnpay_return/
+│   │   │   │   │       └── page.jsx
+│   │   │   │   ├── 📁 _shop/
+│   │   │   │   │   ├── 📁 _orders/
+│   │   │   │   │   ├── 📁 _products/
+│   │   │   │   │   │   └── 📁 _add/
+│   │   │   │   │   │       └── addProduct.jsx
+│   │   │   │   │   ├── dashboard.jsx
+│   │   │   │   │   ├── registerPage.jsx
+│   │   │   │   │   └── shopUnknown.jsx
+│   │   │   │   ├── 📁 _user/
+│   │   │   │   │   ├── 📁 _account/
+│   │   │   │   │   │   ├── emailVertify.jsx
+│   │   │   │   │   │   ├── no-emailUpdate.jsx
+│   │   │   │   │   │   ├── phoneVertify.jsx
+│   │   │   │   │   │   └── userProfile.jsx
+│   │   │   │   │   ├── 📁 _notification/
+│   │   │   │   │   ├── 📁 _order/
+│   │   │   │   │   │   └── userOrder.jsx
+│   │   │   │   │   └── userUnknown.jsx
+│   │   │   │   └── home.jsx
+│   │   │   ├── 📁 routes/
+│   │   │   ├── 📁 services/
+│   │   │   └── 📁 utils/
+│   │   └── tailwind.config.js
+├── docker-compose.yaml
+├── script.sql
+├── scriptRating.sql
+└── README.md
 ```
 
 ---
@@ -300,15 +317,12 @@ shopee-clone/
 
 ### PostgreSQL (Chính)
 
-- **Products**: Thông tin sản phẩm, hình ảnh, video
-- **Detail**: Thông tin chi tiết sản phẩm
-- **Ratings**: Đánh giá và review
-- **Stock**: Quản lý kho hàng
-- **Attributes**: Thuộc tính sản phẩm
-- **Like**: Lượt thích
-- **Sold**: Lượt bán
-- **Ảnh sản phẩm**: Ảnh chi tiết của sản phẩm
-- **Ảnh - Video đánh giá**: Ảnh và video của đánh giá
+- **Products**: Thông tin sản phẩm, chi tiết, thuộc tính, hình ảnh, tồn kho, lượt bán, lượt thích
+- **Ratings**: Đánh giá, hình ảnh và video review
+- **Orders**: Thông tin đơn hàng và chi tiết đơn hàng
+- **Notifications**: Thông báo hệ thống theo thời gian thực
+- **Users**: Người theo dõi (Followers)
+- **Shops**: Cửa hàng (nếu có)
 
 ### MongoDB (Phụ)
 
@@ -453,10 +467,6 @@ REACT_APP_GOOGLE_CLIENT_ID=
 
 ## 🐳 Docker Deployment
 
-### Services được triển khai:
-
-- **Redis**: Cache & Session storage (Port 6379)
-
 ### Docker Commands:
 
 ```bash
@@ -502,7 +512,3 @@ docker-compose up --build -d
 
 **Sinh viên**: 22120074 - Đỗ Nhật Duy
 **Repository**: [shopee-clone](https://github.com/22120074/shopee-clone)
-
----
-
-_Cập nhật lần cuối: 06/10/2025_
