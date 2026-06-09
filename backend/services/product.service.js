@@ -345,75 +345,290 @@ const suggestProductNames = async (keyword, limit = 5) => {
   return results.map((item) => item.name);
 };
 
-const searchProductsByName = async (keyword, limit = 20) => {
-  if (!keyword || keyword.trim() === "") return [];
+// const searchProductsByName = async (keyword, page = 1, limit = 20) => {
+//   if (!keyword || keyword.trim() === "") {
+//     return {
+//       rows: [],
+//       totalPages: 0,
+//       currentPage: page,
+//     };
+//   }
 
-  // Bước 1: Tìm ID của các sản phẩm khớp với tên (sử dụng unaccent và ILIKE)
-  const query = `
-    SELECT "id"
+//   const offset = (page - 1) * limit;
+//   const searchKeyword = `%${keyword}%`;
+
+//   const countQuery = `
+//     SELECT COUNT("id") AS total
+//     FROM "Products"
+//     WHERE immutable_unaccent("name") ILIKE immutable_unaccent(:searchKeyword)
+//   `;
+
+//   const dataQuery = `
+//     SELECT "id"
+//     FROM "Products"
+//     WHERE immutable_unaccent("name") ILIKE immutable_unaccent(:searchKeyword)
+//     ORDER BY similarity(immutable_unaccent("name"), immutable_unaccent(:exactKeyword)) DESC
+//     LIMIT :limit OFFSET :offset;
+//   `;
+
+//   const [countResult, productIdsResult] = await Promise.all([
+//     dbPostgre.sequelize.query(countQuery, {
+//       replacements: { searchKeyword },
+//       type: QueryTypes.SELECT,
+//     }),
+//     dbPostgre.sequelize.query(dataQuery, {
+//       replacements: { searchKeyword, exactKeyword: keyword, limit, offset },
+//       type: QueryTypes.SELECT,
+//     }),
+//   ]);
+
+//   const totalRecords = parseInt(countResult[0]?.total || 0, 10);
+//   const totalPages = Math.ceil(totalRecords / limit);
+
+//   if (productIdsResult.length === 0) {
+//     return {
+//       rows: [],
+//       totalPages,
+//       currentPage: page,
+//     };
+//   }
+
+//   const productIds = productIdsResult.map((item) => item.id);
+
+//   const [products, attributes, images, soldCounts] = await Promise.all([
+//     Product.findAll({
+//       where: { id: productIds },
+//       raw: true,
+//     }),
+//     Attribute.findAll({
+//       where: { productId: productIds },
+//       attributes: ["id", "productId", "price"],
+//       raw: true,
+//     }),
+//     ImageProduct.findAll({
+//       where: { productId: productIds },
+//       attributes: ["id", "productId", "imageUrl"],
+//       raw: true,
+//     }),
+//     Sold.findAll({
+//       where: { productId: productIds },
+//       attributes: [
+//         "productId",
+//         [Sequelize.fn("sum", Sequelize.col("quantity")), "totalSold"],
+//       ],
+//       group: ["productId"],
+//       raw: true,
+//     }),
+//   ]);
+
+//   const attributeMap = attributes.reduce((acc, attr) => {
+//     if (!acc[attr.productId]) acc[attr.productId] = [];
+//     acc[attr.productId].push({ id: attr.id, price: attr.price });
+//     return acc;
+//   }, {});
+
+//   const imageMap = images.reduce((acc, img) => {
+//     if (!acc[img.productId]) {
+//       acc[img.productId] = { id: img.id, imageUrl: img.imageUrl };
+//     }
+//     return acc;
+//   }, {});
+
+//   const soldMap = soldCounts.reduce((acc, sold) => {
+//     acc[sold.productId] = parseInt(sold.totalSold || 0, 10);
+//     return acc;
+//   }, {});
+
+//   const productMap = products.reduce((acc, product) => {
+//     acc[product.id] = {
+//       ...product,
+//       attributes: attributeMap[product.id] || [],
+//       image: imageMap[product.id] || null,
+//       soldCount: soldMap[product.id] || 0,
+//     };
+//     return acc;
+//   }, {});
+
+//   const sortedProducts = productIds.map((id) => productMap[id]);
+
+//   return {
+//     rows: sortedProducts,
+//     totalPages,
+//     currentPage: page,
+//   };
+// };
+
+const searchProductsByName = async (
+  keyword,
+  page = 1,
+  limit = 20,
+  filters = {},
+) => {
+  const { category, minRating, minPrice, maxPrice } = filters;
+
+  if (
+    (!keyword || keyword.trim() === "") &&
+    !category &&
+    minRating === undefined &&
+    minPrice === undefined &&
+    maxPrice === undefined
+  ) {
+    return {
+      rows: [],
+      totalPages: 0,
+      currentPage: page,
+    };
+  }
+
+  const offset = (page - 1) * limit;
+  let whereConditions = [];
+  let replacements = { limit, offset };
+
+  if (keyword && keyword.trim() !== "") {
+    whereConditions.push(
+      `immutable_unaccent("Products"."name") ILIKE immutable_unaccent(:searchKeyword)`,
+    );
+    replacements.searchKeyword = `%${keyword}%`;
+    replacements.exactKeyword = keyword;
+  }
+
+  if (category) {
+    whereConditions.push(`"Products"."category" = :category`);
+    replacements.category = category;
+  }
+
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    let priceConds = [];
+    if (minPrice !== undefined) {
+      priceConds.push(`a."price" >= :minPrice`);
+      replacements.minPrice = minPrice;
+    }
+    if (maxPrice !== undefined) {
+      priceConds.push(`a."price" <= :maxPrice`);
+      replacements.maxPrice = maxPrice;
+    }
+    whereConditions.push(`EXISTS (
+      SELECT 1 FROM "Attributes" a 
+      WHERE a."productId" = "Products"."id" AND ${priceConds.join(" AND ")}
+    )`);
+  }
+
+  if (minRating !== undefined) {
+    whereConditions.push(`(
+      SELECT COALESCE(AVG(r."rate"), 0) 
+      FROM "Ratings" r 
+      WHERE r."productId" = "Products"."id"
+    ) >= :minRating`);
+    replacements.minRating = minRating;
+  }
+
+  const whereClause =
+    whereConditions.length > 0 ? `WHERE ${whereConditions.join(" AND ")}` : "";
+
+  const orderClause =
+    keyword && keyword.trim() !== ""
+      ? `ORDER BY similarity(immutable_unaccent("Products"."name"), immutable_unaccent(:exactKeyword)) DESC`
+      : `ORDER BY "Products"."createdAt" DESC`;
+
+  const countQuery = `
+    SELECT COUNT("Products"."id") AS total
     FROM "Products"
-    WHERE immutable_unaccent("name") ILIKE immutable_unaccent(:searchKeyword)
-    ORDER BY similarity(immutable_unaccent("name"), immutable_unaccent(:exactKeyword)) DESC
-    LIMIT :limit;
+    ${whereClause}
   `;
 
-  const productIdsResult = await dbPostgre.sequelize.query(query, {
-    replacements: {
-      searchKeyword: `%${keyword}%`,
-      exactKeyword: keyword,
-      limit: limit,
-    },
-    type: QueryTypes.SELECT,
-  });
+  const dataQuery = `
+    SELECT "Products"."id"
+    FROM "Products"
+    ${whereClause}
+    ${orderClause}
+    LIMIT :limit OFFSET :offset;
+  `;
 
-  if (productIdsResult.length === 0) return [];
+  const [countResult, productIdsResult] = await Promise.all([
+    dbPostgre.sequelize.query(countQuery, {
+      replacements,
+      type: QueryTypes.SELECT,
+    }),
+    dbPostgre.sequelize.query(dataQuery, {
+      replacements,
+      type: QueryTypes.SELECT,
+    }),
+  ]);
+
+  const totalRecords = parseInt(countResult[0]?.total || 0, 10);
+  const totalPages = Math.ceil(totalRecords / limit);
+
+  if (productIdsResult.length === 0) {
+    return {
+      rows: [],
+      totalPages,
+      currentPage: page,
+    };
+  }
 
   const productIds = productIdsResult.map((item) => item.id);
 
-  // Bước 2: Dùng Model Sequelize để lấy ra chi tiết các sản phẩm đó
-  const products = await Product.findAll({
-    where: {
-      id: productIds,
-    },
-    raw: true,
-  });
-
-  // Bước 3: Gắn thêm các dữ liệu phụ (Attributes, Image, SoldCount)
-  // (Tái sử dụng logic giống hệt hàm getAllProduct của bạn)
-  const productWithExtra = await Promise.all(
-    products.map(async (product) => {
-      const attributes = await Attribute.findAll({
-        where: { productId: product.id },
-        attributes: ["id", "price"],
-        raw: true,
-      });
-
-      const image = await ImageProduct.findOne({
-        where: { productId: product.id },
-        attributes: ["id", "imageUrl"],
-        raw: true,
-      });
-
-      const soldCount =
-        (await Sold.sum("quantity", {
-          where: { productId: product.id },
-        })) || 0;
-
-      return {
-        ...product,
-        attributes,
-        image,
-        soldCount,
-      };
+  const [products, attributes, images, soldCounts] = await Promise.all([
+    Product.findAll({
+      where: { id: productIds },
+      raw: true,
     }),
-  );
+    Attribute.findAll({
+      where: { productId: productIds },
+      attributes: ["id", "productId", "price"],
+      raw: true,
+    }),
+    ImageProduct.findAll({
+      where: { productId: productIds },
+      attributes: ["id", "productId", "imageUrl"],
+      raw: true,
+    }),
+    Sold.findAll({
+      where: { productId: productIds },
+      attributes: [
+        "productId",
+        [Sequelize.fn("sum", Sequelize.col("quantity")), "totalSold"],
+      ],
+      group: ["productId"],
+      raw: true,
+    }),
+  ]);
 
-  // Bước 4: Sắp xếp lại productWithExtra theo đúng thứ tự mảng productIds ban đầu (để giữ nguyên logic order by similarity)
-  const sortedProducts = productIds.map((id) =>
-    productWithExtra.find((p) => p.id === id),
-  );
+  const attributeMap = attributes.reduce((acc, attr) => {
+    if (!acc[attr.productId]) acc[attr.productId] = [];
+    acc[attr.productId].push({ id: attr.id, price: attr.price });
+    return acc;
+  }, {});
 
-  return sortedProducts;
+  const imageMap = images.reduce((acc, img) => {
+    if (!acc[img.productId]) {
+      acc[img.productId] = { id: img.id, imageUrl: img.imageUrl };
+    }
+    return acc;
+  }, {});
+
+  const soldMap = soldCounts.reduce((acc, sold) => {
+    acc[sold.productId] = parseInt(sold.totalSold || 0, 10);
+    return acc;
+  }, {});
+
+  const productMap = products.reduce((acc, product) => {
+    acc[product.id] = {
+      ...product,
+      attributes: attributeMap[product.id] || [],
+      image: imageMap[product.id] || null,
+      soldCount: soldMap[product.id] || 0,
+    };
+    return acc;
+  }, {});
+
+  const sortedProducts = productIds.map((id) => productMap[id]);
+
+  return {
+    rows: sortedProducts,
+    totalPages,
+    currentPage: page,
+  };
 };
 
 module.exports = {

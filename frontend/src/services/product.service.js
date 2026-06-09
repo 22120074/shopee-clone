@@ -71,9 +71,9 @@ export const suggestProductNames = (keyword, limit = 5) => {
   );
 };
 
-export const searchProductsByName = (keyword, limit = 20) => {
+export const searchProductsByName = (keyword, page = 1, limit = 20) => {
   return axios.get(
-    `${process.env.REACT_APP_API_URL}/product/searchByName?keyword=${keyword}&limit=${limit}`,
+    `${process.env.REACT_APP_API_URL}/product/searchByName?keyword=${keyword}&page=${page}&limit=${limit}`,
     {
       headers: { 'Content-Type': 'application/json' },
     }

@@ -131,8 +131,27 @@ module.exports.suggestProductNamesController = async (req, res, next) => {
 
 module.exports.searchProductsByNameController = async (req, res, next) => {
   try {
-    const { keyword, limit } = req.query;
-    const products = await searchProductsByName(keyword, limit);
+    const keyword = req.query.keyword || "";
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+
+    let filters = {};
+    if (req.query.filters) {
+      filters = req.query.filters;
+
+      if (filters.minPrice !== undefined) {
+        filters.minPrice = parseFloat(filters.minPrice);
+      }
+      if (filters.maxPrice !== undefined) {
+        filters.maxPrice = parseFloat(filters.maxPrice);
+      }
+      if (filters.minRating !== undefined) {
+        filters.minRating = parseFloat(filters.minRating);
+      }
+    }
+
+    const products = await searchProductsByName(keyword, page, limit, filters);
+
     return Success(res, products, "Lấy danh sách sản phẩm thành công");
   } catch (error) {
     next(error);

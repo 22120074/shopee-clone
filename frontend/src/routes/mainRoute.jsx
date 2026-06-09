@@ -1,15 +1,16 @@
 // src/routes/index.jsx
-import { Route } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
-import CategoryPage from "../pages/_catagory/categoryPage";
-import ProductPage from "../pages/_product/productPage";
-import TrendingProductPage from "../pages/_product/TrendingProductLayout";
-import CartPage from "../pages/_cart/cartPage";
-import Home from "../pages/home";
-import PurchaseLayout from "../layouts/purchaseLayout";
-import PurchasePage from "../pages/_purchase/purchasePage";
-import VnPayReturnPage from "../pages/_purchase/vnpay_return/page";
-import ShopProfile from "../pages/_profile/_shop/shopProfile";
+import { Route } from 'react-router-dom';
+import MainLayout from '../layouts/MainLayout';
+import CategoryPage from '../pages/_catagory/categoryPage';
+import ProductPage from '../pages/_product/productPage';
+import TrendingProductPage from '../pages/_product/TrendingProductLayout';
+import CartPage from '../pages/_cart/cartPage';
+import Home from '../pages/home';
+import PurchaseLayout from '../layouts/purchaseLayout';
+import PurchasePage from '../pages/_purchase/purchasePage';
+import VnPayReturnPage from '../pages/_purchase/vnpay_return/page';
+import ShopProfile from '../pages/_profile/_shop/shopProfile';
+import SearchResultPage from '../pages/_product/_search/page';
 
 export const mainRoutes = (
   <>
@@ -28,6 +29,7 @@ export const mainRoutes = (
         element={<TrendingProductPage />}
       />
       <Route path="/product/:productName" element={<ProductPage />} />
+      <Route path="/search" element={<SearchResultPage />} />
     </Route>
     {/* Giỏ hàng */}
     <Route element={<MainLayout />}>

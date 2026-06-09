@@ -97,9 +97,9 @@ export const productQuery = createApi({
     }),
 
     searchProductsByName: builder.query({
-      queryFn: ({ keyword, limit }) =>
+      queryFn: ({ keyword, page, limit }) =>
         handleAxiosRequest(() =>
-          ProductService.searchProductsByName(keyword, limit)
+          ProductService.searchProductsByName(keyword, page, limit)
         ),
       providesTags: (result, error, { keyword }) => [
         { type: 'Search', id: keyword },
