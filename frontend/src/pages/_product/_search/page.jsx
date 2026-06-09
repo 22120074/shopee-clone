@@ -14,7 +14,12 @@ export default function SearchResultPage() {
   const keyword = searchParams.get('keyword');
 
   const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({});
   const [isSearchingNewKeyword, setIsSearchingNewKeyword] = useState(false);
+
+  const closeSidebar = () => {
+    // No-op on desktop; can be extended for mobile drawer behavior
+  };
 
   const { data, isLoading, isFetching } = useSearchProductsByNameQuery(
     { keyword: keyword, page: page, limit: 20 },
@@ -58,7 +63,7 @@ export default function SearchResultPage() {
       <Stack
         direction="column"
         alignItems="center"
-        justifyContent="center"
+        justifyContent="start"
         className="gap-8"
       >
         <ProductList

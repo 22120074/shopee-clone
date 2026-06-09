@@ -3,6 +3,7 @@ const Shop = require("../models/Mongoose/Shop");
 const { Sequelize } = require("sequelize");
 const mongoose = require("mongoose");
 const { QueryTypes } = require("sequelize");
+const { Op } = Sequelize;
 
 const Product = dbPostgre.Product;
 const Attribute = dbPostgre.Attribute;
@@ -16,45 +17,67 @@ const Stock = dbPostgre.Stock;
 const Video_Rating = dbPostgre.Video_Rating;
 const Image_Rating = dbPostgre.Image_Rating;
 
-// Service liên quan đến lấy thông tin sản phẩm
 const getAllProduct = async (limit) => {
-  // Bước 1: lấy danh sách sản phẩm
+  // 1. Lấy danh sách sản phẩm (1 Query)
   const products = await Product.findAll({
     limit,
     order: [["createdAt", "DESC"]],
     raw: true,
   });
 
-  // Bước 2: xử lý từng product để truy vấn riêng
-  const productWithExtra = await Promise.all(
-    products.map(async (product) => {
-      const attributes = await Attribute.findAll({
-        where: { productId: product.id },
-        attributes: ["id", "price"],
-        raw: true,
-      });
+  if (!products.length) return [];
 
-      const image = await ImageProduct.findOne({
-        where: { productId: product.id },
-        attributes: ["id", "imageUrl"],
-        raw: true,
-      });
+  const productIds = products.map((p) => p.id);
 
-      const soldCount =
-        (await Sold.sum("quantity", {
-          where: { productId: product.id },
-        })) || 0;
-
-      return {
-        ...product,
-        attributes,
-        image,
-        soldCount,
-      };
+  // 2. Truy vấn gộp Attribute, Image, Sold bằng [Op.in] (3 Query chạy song song)
+  const [allAttributes, allImages, allSolds] = await Promise.all([
+    Attribute.findAll({
+      where: { productId: { [Op.in]: productIds } },
+      attributes: ["id", "productId", "price"],
+      raw: true,
     }),
-  );
 
-  return productWithExtra;
+    ImageProduct.findAll({
+      where: { productId: { [Op.in]: productIds } },
+      attributes: ["id", "productId", "imageUrl"],
+      raw: true,
+    }),
+
+    Sold.findAll({
+      where: { productId: { [Op.in]: productIds } },
+      attributes: [
+        "productId",
+        [Sequelize.fn("SUM", Sequelize.col("quantity")), "totalSold"],
+      ],
+      group: ["productId"],
+      raw: true,
+    }),
+  ]);
+
+  const soldsMap = allSolds.reduce((acc, item) => {
+    acc[item.productId] = parseInt(item.totalSold) || 0;
+    return acc;
+  }, {});
+
+  const imagesMap = allImages.reduce((acc, item) => {
+    if (!acc[item.productId]) {
+      acc[item.productId] = { id: item.id, imageUrl: item.imageUrl };
+    }
+    return acc;
+  }, {});
+
+  const attributesMap = allAttributes.reduce((acc, item) => {
+    if (!acc[item.productId]) acc[item.productId] = [];
+    acc[item.productId].push({ id: item.id, price: item.price });
+    return acc;
+  }, {});
+
+  return products.map((product) => ({
+    ...product,
+    attributes: attributesMap[product.id] || [],
+    image: imagesMap[product.id] || null,
+    soldCount: soldsMap[product.id] || 0,
+  }));
 };
 
 const getOneProduct = async (productID) => {
